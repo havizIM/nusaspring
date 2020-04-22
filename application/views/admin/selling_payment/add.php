@@ -24,9 +24,9 @@
 <div class="container-fluid">
     <div class="row">
 
-        <div class="col-12">
-            <div class="card" id="add_container">
-                <div class="card-body" id="main_content">
+        <div class="col-12" id="main_content">
+            <div class="card" id="">
+                <div class="card-body">
                     <div class="text-center">
                         <i class="fa fa-spinner fa-spin fa-5x mb-3"></i>
                         <h1>Loading</h1>

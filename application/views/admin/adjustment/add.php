@@ -65,14 +65,14 @@
                                     </div>
                                     <div class="col-md-12">
                                         <div class="table-responsive">
-                                            <table class="table" id="t_add_products">
+                                            <table class="table" id="t_add_products" style="overflow-x: scroll;">
                                                 <thead>
                                                     <tr>
-                                                        <th style="width: 30%;">Product</th>
-                                                        <th style="width: 20%;">Unit Price</th>
-                                                        <th style="width: 20%;">Qty</th>
-                                                        <th style="width: 20%;">Total</th>
-                                                        <th style="width: 10%;">
+                                                        <th style="min-width: 350px;">Product</th>
+                                                        <th style="min-width: 200px;">Unit Price</th>
+                                                        <th style="min-width: 150px;">Qty</th>
+                                                        <th style="min-width: 200px;">Total</th>
+                                                        <th>
                                                             <button class="btn btn-info btn-md" type="button" id="btn_add_row"><i class="fa fa-plus"></i></button>
                                                         </th>
                                                     </tr>

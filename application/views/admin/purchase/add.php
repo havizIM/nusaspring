@@ -87,7 +87,7 @@
                                             <table class="table" id="t_add_products" style="overflow-x: scroll;">
                                                 <thead>
                                                     <tr>
-                                                        <th style="min-width: 200px;">Product</th>
+                                                        <th style="min-width: 350px;">Product</th>
                                                         <th style="min-width: 200px;">Unit Price</th>
                                                         <th style="min-width: 150px;">Qty</th>
                                                         <th style="min-width: 150px;">Disc (%)</th>

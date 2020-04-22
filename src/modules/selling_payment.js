@@ -114,7 +114,7 @@ const sellingPaymentUI = ((SET) => {
                         <div class="card-body">
                             <div class="text-center">
                                 <i class="fa fa-check fa-5x mb-3"></i>
-                                <h1>Purchase has been paid</h1>
+                                <h1>Selling has been paid</h1>
                                 <h4>Please back</h4>
                             </div>
                         </div>
@@ -167,7 +167,7 @@ const sellingPaymentUI = ((SET) => {
                                                         <div class="input-group-prepend">
                                                             <span class="input-group-text" id="basic-addon1">Rp. </span>
                                                         </div>
-                                                        <input type="number"  min="0" max="${parseFloat(data.total_payment + bills)}" value="0" name="amount" id="amount" class="form-control amount">
+                                                        <input type="number"  min="0" max="${SET.positiveNumber(parseFloat(data.total_payment + bills))}" value="0" name="amount" id="amount" class="form-control amount">
                                                     </div>
                                                 </div>
                                                 
@@ -184,26 +184,26 @@ const sellingPaymentUI = ((SET) => {
                             <div class="col-md-3 col-lg-3">
                                 <div class="card">
                                     <div class="card-body">
-                                        <h5 class="card-title">PURCHASE SUMMARY</h5>
+                                        <h5 class="card-title">SELLING SUMMARY</h5>
                                         <hr>
                                         <small>Total Price</small>
-                                        <h2>Rp. ${SET.realCurrency(bills)}</h2>
+                                        <h2>Rp. ${SET.positiveCurrency(bills)}</h2>
                                         <hr>
                                         <small>Bills</small>
-                                        <h2>Rp. ${SET.realCurrency(bills + data.total_payment)}</h2>
+                                        <h2>Rp. ${SET.positiveCurrency(bills + data.total_payment)}</h2>
                                     </div>
                                 </div>
                                 <div class="card">
                                     <div class="card-body">
                                         <h5 class="card-title">INFORMATION</h5>
                                         <hr>
-                                        <h4><i class="mdi mdi-album"></i> <a href="#/purchase/${data.id}">${data.purchase_number}</a></h4> <small>${data.contact.contact_name}</small>
+                                        <h4><i class="mdi mdi-album"></i> <a href="#/selling/${data.id}">${data.selling_number}</a></h4> <small>${data.contact.contact_name}</small>
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <input type="hidden" name="purchase_id" id="purchase_id" value="${data.id}">
+                                    <input type="hidden" name="selling_id" id="selling_id" value="${data.id}">
                                     <button class="btn btn-info btn-block" type="submit">Save</button>
-                                    <a href="#/purchase/${data.id}" class="btn btn-secondary btn-outline btn-block">Cancel</a>
+                                    <a href="#/selling/${data.id}" class="btn btn-secondary btn-outline btn-block">Cancel</a>
                                 </div>
                             </div>
                         </div>
@@ -296,6 +296,94 @@ const sellingPaymentController = ((SET, DT, UI) => {
             };
             $("div.printableArea").printArea(options);
         });
+    }
+
+    const _submitAdd = TOKEN => {
+        $('#form_add').validate({
+            errorClass: 'is-invalid',
+            successClass: 'is-valid',
+            validClass: 'is-valid',
+            errorElement: 'div',
+            errorPlacement: function (error, element) {
+                error.addClass('invalid-feedback');
+                error.insertAfter(element)
+            },
+            rules: {
+                payment_number: 'required',
+                type: 'required',
+                date: 'required',
+                amount: 'required',
+            },
+            submitHandler: form => {
+                $.ajax({
+                    url: `${SET.apiURL()}selling_payments`,
+                    type: 'POST',
+                    dataType: 'JSON',
+                    data: new FormData(form),
+                    contentType: false,
+                    processData: false,
+                    beforeSend: xhr => {
+                        xhr.setRequestHeader("Authorization", "Bearer " + TOKEN)
+
+                        SET.contentLoader('#add_container')
+                    },
+                    success: res => {
+                        toastr.success(res.message, 'Success', { "progressBar": true, "closeButton": true, "positionClass": 'toast-bottom-right' });
+                        location.hash = `#/selling_payment/${res.results.id}`
+                    },
+                    error: ({ responseJSON }) => {
+                        toastr.error(responseJSON.message, 'Failed', { "progressBar": true, "closeButton": true, "positionClass": 'toast-bottom-right' });
+                    },
+                    complete: () => {
+                        SET.closeSelectedElement('#add_container')
+                    }
+                })
+            }
+        })
+    }
+
+    const _addObserver = (TOKEN, data) => {
+
+        MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
+
+        let container = document.querySelector("#main_content")
+
+        let observer = new MutationObserver(function (mutations, observer) {
+            if (container.contains($('#form_add')[0])) {
+                $('.dropify').dropify();
+
+                _submitAdd(TOKEN)
+            }
+
+
+            observer.disconnect();
+        });
+
+        observer.observe(container, {
+            subtree: true,
+            attributes: true,
+            childList: true,
+        });
+    }
+
+    const _fetchSelling = (TOKEN, id, callback) => {
+        $.ajax({
+            url: `${SET.apiURL()}sellings/${id}`,
+            type: 'GET',
+            dataType: 'JSON',
+            beforeSend: xhr => {
+                xhr.setRequestHeader("Authorization", "Bearer " + TOKEN)
+            },
+            success: res => {
+                callback(res.results)
+            },
+            error: ({ responseJSON }) => {
+                toastr.error(responseJSON.message, 'Failed', { "progressBar": true, "closeButton": true, "positionClass": 'toast-bottom-right' });
+            },
+            complete: () => {
+
+            }
+        })
     }
 
     return {
@@ -496,6 +584,12 @@ const sellingPaymentController = ((SET, DT, UI) => {
             _openDelete('#detail_container')
             _submitDelete(TOKEN, data => {
                 location.hash = '#/selling_payment'
+            })
+        },
+        add: (TOKEN, id) => {
+            _fetchSelling(TOKEN, id, data => {
+                _addObserver(TOKEN, data)
+                UI.renderFormAdd(data)
             })
         }
     }

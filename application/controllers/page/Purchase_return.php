@@ -26,9 +26,10 @@ class Purchase_return extends CI_Controller {
 		$this->load->view(strtolower($this->roles).'/purchase_return/detail', $data);
     }
     
-	public function add()
+	public function add($id)
 	{
-		$this->load->view(strtolower($this->roles).'/purchase_return/add');
+		$data['id'] = $id;
+		$this->load->view(strtolower($this->roles).'/purchase_return/add', $data);
     }
     
 	public function edit($id)

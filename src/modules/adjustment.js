@@ -82,7 +82,7 @@ const adjustmentUI = ((SET) => {
 
                                                         <tr id="row_${count}">
                                                             <td>
-                                                                <select name="product_id[${count}]" id="product_id_${count}" data-id="${count}" class="form-control product_id select2_${v.product_id}" required>
+                                                                <select name="product_id[${count}]" id="product_id_${count}" data-id="${count}" class="form-control product_id select2_${v.product_id}" data-sid="${v.product_id}" data-sname="${v.description}" data-sunit="${v.unit}" data-sprice="${v.unit_price}" required>
                                                                     <option value="" disabled="" selected="">-- Choose Product --</option>
                                                                 </select>
                                                                 <input type="hidden" name="description[${count}]" id="description_${count}" data-id="${count}" value="${v.description}">
@@ -113,7 +113,7 @@ const adjustmentUI = ((SET) => {
                                                                 </div>
                                                             </td>
                                                             <td>
-                                                                <button class="btn btn-danger btn-md btn-remove" type="button" id="btn_remove_row" data-id="${count}" data-remove="true"><i class="fa fa-times"></i></button>
+                                                                <button class="btn btn-danger btn-md btn-remove" type="button" data-id="${count}" data-remove="true"><i class="fa fa-times"></i></button>
                                                             </td>
                                                         </tr>
                                                     `
@@ -139,12 +139,6 @@ const adjustmentUI = ((SET) => {
             `
 
             $('#main_content').html(html)
-        },
-
-        renderSelect2: (adjustment, product) => {
-            adjustment.forEach(v => {
-                $(`.select2_${v.product_id}`).select2({ data: product }).val(v.product_id).trigger('change');
-            })
         },
 
         renderDetail: data => {
@@ -181,7 +175,7 @@ const adjustmentUI = ((SET) => {
                                                         <h3>Details,</h3>
                                                         <h4 class="font-bold">Category: ${data.category},</h4>
                                                         <p class="m-t-30"><b><i class="fa fa-calendar"></i> Date :</b> ${data.date}</p>
-                                                        <p><b><i class="fa fa-calendar"></i> Reference No :</b> ${_replaceNull(data.reference_number)}</p>
+                                                        <p><b><i class="mdi mdi-album"></i> Reference No :</b> ${_replaceNull(data.reference_number)}</p>
                                                     </address>
                                                 </td>
                                             </tr>
@@ -260,7 +254,7 @@ const adjustmentUI = ((SET) => {
 
         },
 
-        renderRow: data => {
+        renderRow: TOKEN => {
 
             count += 1
 
@@ -305,8 +299,42 @@ const adjustmentUI = ((SET) => {
 
             $('#t_add_products tbody').append(html)
 
-            $('.product_id').select2({
-                data: data
+            $('#product_id_'+count).select2({
+                ajax: {
+                    url: `${SET.apiURL()}products`,
+                    dataType: 'JSON',
+                    type: 'GET',
+                    headers: {
+                        "Authorization": "Bearer " + TOKEN,
+                        "Content-Type": "application/json",
+                    },
+                    data: function (params) {
+                        var query = {
+                            search: params.term,
+                            limit: 100
+                        }
+
+                        return query;
+                    },
+                    processResults: function (data) {
+                        let filtered = [];
+
+                        data.results.map(v => {
+                            let obj = {
+                                id: v.id,
+                                text: v.product_name,
+                                price: v.purchase_price,
+                                unit: v.unit === null ? null : v.unit.unit_name
+                            }
+
+                            filtered.push(obj)
+                        })
+
+                        return {
+                            results: filtered
+                        };
+                    }
+                }
             });
         }
     }
@@ -315,9 +343,9 @@ const adjustmentUI = ((SET) => {
 const adjustmentController = ((SET, DT, UI) => {
 
     /* -------------------- ADD ACTION ----------------- */
-    const _addRow = data => {
+    const _addRow = TOKEN => {
         $('#btn_add_row').click(function(){
-            UI.renderRow(data)
+            UI.renderRow(TOKEN)
         })
     }
 
@@ -511,35 +539,74 @@ const adjustmentController = ((SET, DT, UI) => {
 
                 $('.dropify').dropify();
 
-                _fetchProduct(TOKEN, data => {
-                    let filtered = [];
+                $('.product_id').each(function (v) {
+                    let id = $(this).data('id');
 
-                    data.filter(v => {
-                        let obj = {
-                            id: v.id,
-                            text: v.product_name,
-                            price: v.purchase_price,
-                            unit: v.unit === null ? null : v.unit.unit_name
+                    let data = {
+                        id: $(this).data('sid'),
+                        text: $(this).data('sname'),
+                        price: $(this).data('sprice'),
+                        unit: $(this).data('sunit')
+                    }
+
+                    $(this).select2({
+                        ajax: {
+                            url: `${SET.apiURL()}products`,
+                            dataType: 'JSON',
+                            type: 'GET',
+                            headers: {
+                                "Authorization": "Bearer " + TOKEN,
+                                "Content-Type": "application/json",
+                            },
+                            data: function (params) {
+                                var query = {
+                                    search: params.term,
+                                    limit: 100
+                                }
+
+                                return query;
+                            },
+                            processResults: function (data) {
+                                let filtered = [];
+
+                                data.results.map(v => {
+                                    let obj = {
+                                        id: v.id,
+                                        text: v.product_name,
+                                        price: v.purchase_price,
+                                        unit: v.unit === null ? null : v.unit.unit_name
+                                    }
+
+                                    filtered.push(obj)
+                                })
+
+                                return {
+                                    results: filtered
+                                };
+                            }
                         }
-
-                        filtered.push(obj)
                     })
 
-                    UI.renderSelect2(adjustment.products, filtered)
+                    let option = new Option(data.text, data.id, true, true);
+                    $(this).append(option).trigger('change');
 
-                    _addRow(filtered)
-                    _onChangeProduct()
-                    _onKeyupQty()
-                    _onUnitPrice()
-                    _onTotalKeyup()
-                    _getTotal()
-                    _removeRow()
-
-                }, error => {
-                    $('.product_id').select2({
-                        data: []
+                    // manually trigger the `select2:select` event
+                    $(this).trigger({
+                        type: 'select2:select',
+                        params: {
+                            data: data
+                        }
                     });
+
                 })
+
+                _addRow(TOKEN)
+                _onChangeProduct()
+                _onKeyupQty()
+                _onUnitPrice()
+                _onTotalKeyup()
+                _getTotal()
+                _removeRow()
 
                 _submitEdit(TOKEN, id)
             }
@@ -824,38 +891,76 @@ const adjustmentController = ((SET, DT, UI) => {
             UI.resetCount()
 
             $('.dropify').dropify();
-            $('.product_id').select2();
+            $('.product_id').select2({
+                ajax: {
+                    url: `${SET.apiURL()}products`,
+                    dataType: 'JSON',
+                    type: 'GET',
+                    headers: {
+                        "Authorization": "Bearer " + TOKEN,
+                        "Content-Type": "application/json",
+                    },
+                    data: function (params) {
+                        var query = {
+                            search: params.term,
+                            limit: 100
+                        }
 
-            _fetchProduct(TOKEN, data => {
-                let filtered = [];
+                        return query;
+                    },
+                    processResults: function (data) {
+                        let filtered = [];
 
-                data.filter(v => {
-                    let obj = {
-                        id: v.id,
-                        text: v.product_name,
-                        price: v.purchase_price,
-                        unit: v.unit === null ? null : v.unit.unit_name
+                        data.results.map(v => {
+                            let obj = {
+                                id: v.id,
+                                text: v.product_name,
+                                price: v.purchase_price,
+                                unit: v.unit === null ? null : v.unit.unit_name
+                            }
+
+                            filtered.push(obj)
+                        })
+
+                        return {
+                            results: filtered
+                        };
                     }
+                }
+            });
 
-                    filtered.push(obj)
-                })
+            // _fetchProduct(TOKEN, data => {
+            //     let filtered = [];
 
-                $('.product_id').select2({
-                    data: filtered
-                });
+            //     data.filter(v => {
+            //         let obj = {
+            //             id: v.id,
+            //             text: v.product_name,
+            //             price: v.purchase_price,
+            //             unit: v.unit === null ? null : v.unit.unit_name
+            //         }
 
-                _addRow(filtered)
-                _onChangeProduct()
-                _onKeyupQty()
-                _onUnitPrice()
-                _onTotalKeyup()
-                _removeRow()
+            //         filtered.push(obj)
+            //     })
 
-            }, error => {
-                $('.product_id').select2({
-                    data: []
-                });
-            })
+            //     $('.product_id').select2({
+            //         data: filtered
+            //     });
+
+                
+
+            // }, error => {
+            //     $('.product_id').select2({
+            //         data: []
+            //     });
+            // })
+
+            _addRow(TOKEN)
+            _onChangeProduct()
+            _onKeyupQty()
+            _onUnitPrice()
+            _onTotalKeyup()
+            _removeRow()
 
             _submitAdd(TOKEN)
 

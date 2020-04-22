@@ -129,10 +129,22 @@ const sellingUI = ((SET) => {
 
         renderDetail: data => {
             let no = 1;
+            let status;
 
             let total_selling = parseFloat(data.grand_total) + parseFloat(data.total_ppn) + parseFloat(data.total_discount);
             let total_return = parseFloat(data.total_return) + parseFloat(data.total_ppn_return) + parseFloat(data.total_return_discount);
+            let before_payment = total_selling + total_return;
             let bills = total_selling + total_return + parseFloat(data.total_payment)
+
+            if (data.total_payment === 0) {
+                status = `<b class="text-danger">Open</b>`
+            } else {
+                if (before_payment === SET.negativeNumber(data.total_payment)) {
+                    status = `<b class="text-success">Paid</b>`
+                } else {
+                    status = `<b class="text-warning">Partial</b>`
+                }
+            }
 
             let html = `
 
@@ -147,6 +159,8 @@ const sellingUI = ((SET) => {
                             <div class="col-md-12">
                                 <div class="card card-body printableArea">
                                     <h3><b>SELLING</b> <span class="pull-right">#${data.selling_number}</span></h3>
+                                    <br/>
+                                    <b>Status: ${status}</b>
                                     <hr>
                                     <div class="row">
                                         <table class="w-100">
@@ -308,8 +322,8 @@ const sellingUI = ((SET) => {
                                         <div class="col-md-12 mt-5">
                                             <div class="row">
                                                 <div class="col-md-6 text-left">
-                                                    ${total_return !== total_selling ? `<a class="btn btn-outline-danger" href="#/selling_return/add/${data.id}"><i class="fa fa-plus"></i> Add Return </a>` : ''}
-                                                    ${data.total_payment !== bills ? `<a class="btn  btn-outline-success" href="#/selling_payment/add/${data.id}"><i class="fa fa-plus"></i> Add Payment </a>` : ''}
+                                                    ${SET.negativeNumber(total_return) !== total_selling ? `<a class="btn btn-outline-danger" href="#/selling_return/add/${data.id}"><i class="fa fa-plus"></i> Add Return </a>` : ''}
+                                                    ${SET.negativeNumber(data.total_payment) !== before_payment ? `<a class="btn  btn-outline-success" href="#/selling_payment/add/${data.id}"><i class="fa fa-plus"></i> Add Payment </a>` : ''}
                                                 </div>
                                                 <div class="col-md-6 text-right">
                                                     <a class="btn btn-success" href="#/selling/edit/${data.id}"><i class="fa fa-edit"></i> Edit </a>
@@ -343,7 +357,7 @@ const sellingUI = ((SET) => {
 
         },
 
-        renderRow: data => {
+        renderRow: TOKEN => {
 
             count += 1
 
@@ -413,8 +427,42 @@ const sellingUI = ((SET) => {
 
             $('#t_add_products tbody').append(html)
 
-            $('.product_id').select2({
-                data: data
+            $('#product_id_' + count).select2({
+                ajax: {
+                    url: `${SET.apiURL()}products`,
+                    dataType: 'JSON',
+                    type: 'GET',
+                    headers: {
+                        "Authorization": "Bearer " + TOKEN,
+                        "Content-Type": "application/json",
+                    },
+                    data: function (params) {
+                        var query = {
+                            search: params.term,
+                            limit: 100
+                        }
+
+                        return query;
+                    },
+                    processResults: function (data) {
+                        let filtered = [];
+
+                        data.results.map(v => {
+                            let obj = {
+                                id: v.id,
+                                text: v.product_name,
+                                price: v.selling_price,
+                                unit: v.unit === null ? null : v.unit.unit_name
+                            }
+
+                            filtered.push(obj)
+                        })
+
+                        return {
+                            results: filtered
+                        };
+                    }
+                }
             });
         }
     }
@@ -423,9 +471,9 @@ const sellingUI = ((SET) => {
 const sellingController = ((SET, DT, UI) => {
 
     /* -------------------- ADD ACTION ----------------- */
-    const _addRow = data => {
+    const _addRow = TOKEN => {
         $('.btn_add_row').click(function () {
-            UI.renderRow(data)
+            UI.renderRow(TOKEN)
         })
     }
 
@@ -1083,7 +1131,7 @@ const sellingController = ((SET, DT, UI) => {
                             if (payment === 0) {
                                 return `<b class="text-danger">Open</b>`
                             } else {
-                                if (total === payment) {
+                                if (SET.positiveNumber(total) === payment) {
                                     return `<b class="text-success">Paid</b>`
                                 } else {
                                     return `<b class="text-warning">Partial</b>`
@@ -1140,36 +1188,45 @@ const sellingController = ((SET, DT, UI) => {
 
             $('.dropify').dropify();
 
-            $('.product_id').select2();
             $('#contact_id').select2();
+            $('.product_id').select2({
+                ajax: {
+                    url: `${SET.apiURL()}products`,
+                    dataType: 'JSON',
+                    type: 'GET',
+                    headers: {
+                        "Authorization": "Bearer " + TOKEN,
+                        "Content-Type": "application/json",
+                    },
+                    data: function (params) {
+                        var query = {
+                            search: params.term,
+                            limit: 100
+                        }
 
-            _fetchProduct(TOKEN, data => {
-                let filtered = [];
+                        return query;
+                    },
+                    processResults: function (data) {
+                        let filtered = [];
 
-                data.filter(v => {
-                    let obj = {
-                        id: v.id,
-                        text: v.product_name,
-                        price: v.selling_price,
-                        unit: v.unit === null ? null : v.unit.unit_name
+                        data.results.map(v => {
+                            let obj = {
+                                id: v.id,
+                                text: v.product_name,
+                                price: v.selling_price,
+                                unit: v.unit === null ? null : v.unit.unit_name
+                            }
+
+                            filtered.push(obj)
+                        })
+
+                        return {
+                            results: filtered
+                        };
                     }
 
-                    filtered.push(obj)
-                })
-
-                $('.product_id').select2({
-                    data: filtered
-                });
-
-                _addRow(filtered)
-                _onChangeProduct()
-                _removeRow()
-
-            }, error => {
-                $('.product_id').select2({
-                    data: []
-                });
-            })
+                }
+            });
 
             _fetchCustomer(TOKEN, data => {
                 let filtered = [];
@@ -1198,6 +1255,9 @@ const sellingController = ((SET, DT, UI) => {
                 });
             })
 
+            _addRow(TOKEN)
+            _onChangeProduct()
+            _removeRow()
             _onChangePpn()
             _onKeyupUnitPrice()
             _onKeyupQty()

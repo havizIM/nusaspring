@@ -95,7 +95,7 @@ $route['selling/(:num)'] = 'page/selling/detail/$1';
 $route['selling/edit/(:num)'] = 'page/selling/edit/$1';
 
 $route['purchase_return'] = 'page/purchase_return';
-$route['purchase_return/add//(:num)'] = 'page/purchase_return/add//$1';
+$route['purchase_return/add/(:num)'] = 'page/purchase_return/add/$1';
 $route['purchase_return/(:num)'] = 'page/purchase_return/detail/$1';
 $route['purchase_return/edit/(:num)'] = 'page/purchase_return/edit/$1';
 

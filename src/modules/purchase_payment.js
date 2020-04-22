@@ -102,6 +102,7 @@ const purchasePaymentUI = ((SET) => {
             
             $('#main_content').html(html)
         },
+        
         renderFormAdd: data => {
             let bills = parseFloat(data.grand_total + data.total_ppn + data.total_discount + data.total_return + data.total_ppn_return + data.total_return_discount);
             let html;
