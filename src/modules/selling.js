@@ -231,16 +231,6 @@ const sellingUI = ((SET) => {
                                                             <p>Total DPP  : <b>Rp. ${SET.positiveCurrency(parseFloat(data.grand_total + data.total_discount))}</b></p>
                                                             <p>Vat (10%) : <b>Rp. ${SET.positiveCurrency(parseFloat(data.total_ppn))}</b></p>
                                                             <p><h4>Grand Total : <b>Rp. ${SET.positiveCurrency(parseFloat(data.grand_total) + parseFloat(data.total_ppn) + parseFloat(data.total_discount))}</b></h4></p>
-
-                                                            ${data.total_return !== 0 ? `
-                                                                <p class="text-danger">Return: <b>Rp. ${SET.positiveCurrency(parseFloat(data.total_return) + parseFloat(data.total_ppn_return) + parseFloat(data.total_return_discount))}</b></p>
-                                                            ` : ''}
-
-                                                            ${data.total_payment !== 0 ? `
-                                                                <p class="text-success">Payment: <b>Rp. ${SET.positiveCurrency(data.total_payment)}</b></p>
-                                                            ` : ''}
-                                                            <hr>
-                                                            <h3><b>Bills :</b> Rp. ${SET.positiveCurrency(parseFloat(data.grand_total) + parseFloat(data.total_ppn) + parseFloat(data.total_discount) + parseFloat(data.total_return) + parseFloat(data.total_ppn_return) + parseFloat(data.total_return_discount) + parseFloat(data.total_payment))}</h3>
                                                         </div>
                                                     </td>
                                                 </tr>
@@ -282,6 +272,16 @@ const sellingUI = ((SET) => {
                                                                         </tr>
                                                                     ` }
                                                                 </tbody>
+                                                                <tfoot>
+                                                                    <tr>
+                                                                        <td>
+                                                                            <h4>Total Return</h4>
+                                                                        </td>
+                                                                        <td colspan="2" class="text-right">
+                                                                            <b><h4>Rp. ${SET.positiveCurrency(data.total_return)}</h4></b>
+                                                                        </td>
+                                                                    </tr>
+                                                                </tfoot>
                                                             </table>
                                                         </div>
                                                     </div>
@@ -312,6 +312,16 @@ const sellingUI = ((SET) => {
                                                                         </tr>
                                                                     ` }
                                                                 </tbody>
+                                                                <tfoot>
+                                                                    <tr>
+                                                                        <td>
+                                                                            <h4>Total Payment</h4>
+                                                                        </td>
+                                                                        <td colspan="2" class="text-right">
+                                                                            <b><h4>Rp. ${SET.positiveCurrency(data.total_payment)}</h4></b>
+                                                                        </td>
+                                                                    </tr>
+                                                                </tfoot>
                                                             </table>
                                                         </div>
                                                     </div>
@@ -322,8 +332,8 @@ const sellingUI = ((SET) => {
                                         <div class="col-md-12 mt-5">
                                             <div class="row">
                                                 <div class="col-md-6 text-left">
-                                                    ${SET.negativeNumber(total_return) !== total_selling ? `<a class="btn btn-outline-danger" href="#/selling_return/add/${data.id}"><i class="fa fa-plus"></i> Add Return </a>` : ''}
-                                                    ${SET.negativeNumber(data.total_payment) !== before_payment ? `<a class="btn  btn-outline-success" href="#/selling_payment/add/${data.id}"><i class="fa fa-plus"></i> Add Payment </a>` : ''}
+                                                    <a class="btn btn-outline-danger" href="#/selling_return/add/${data.id}"><i class="fa fa-plus"></i> Add Return </a>
+                                                    <a class="btn  btn-outline-success" href="#/selling_payment/add/${data.id}"><i class="fa fa-plus"></i> Add Payment </a>
                                                 </div>
                                                 <div class="col-md-6 text-right">
                                                     <a class="btn btn-success" href="#/selling/edit/${data.id}"><i class="fa fa-edit"></i> Edit </a>
@@ -464,6 +474,10 @@ const sellingUI = ((SET) => {
                     }
                 }
             });
+
+            $('#product_id_' + count).on('select2:open', () => {
+                $(".select2-results:not(:has(a))").prepend('<a href="javascript:void(0)" class="btn_add_product" style="padding: 6px;height: 20px;display: inline-table;">Create new item</a>');
+            })
         }
     }
 })(settingController)
@@ -1091,7 +1105,7 @@ const sellingController = ((SET, DT, UI) => {
                         let sum_return_ppn = res.results.reduce((a, b) => a + b.total_ppn_return, 0);
                         let sum_return_discount = res.results.reduce((a, b) => a + b.total_return_discount, 0);
 
-                        let sum_total = parseFloat((sum_sellings + sum_ppn + sum_discount) + (sum_return + sum_return_ppn + sum_return_discount))
+                        let sum_total = parseFloat((sum_sellings + sum_ppn + sum_discount))
 
                         $('#count_sellings').text(SET.positiveCurrency(res.results.length))
                         $('#sum_sellings').text(`Rp. ${SET.positiveCurrency(sum_total)}`)
@@ -1142,7 +1156,7 @@ const sellingController = ((SET, DT, UI) => {
                     {
                         data: "grand_total",
                         render: function (data, type, row) {
-                            let amount = parseFloat((row.grand_total + row.total_ppn + row.total_discount) + parseFloat(row.total_return + row.total_ppn_return + row.total_return_discount))
+                            let amount = parseFloat((row.grand_total + row.total_ppn + row.total_discount))
 
                             return `
                                 Rp. ${SET.positiveCurrency(amount)}
@@ -1266,6 +1280,14 @@ const sellingController = ((SET, DT, UI) => {
 
                 }
             });
+
+            $('#contact_id').on('select2:open', () => {
+                $(".select2-results:not(:has(a))").prepend('<a href="javascript:void(0)" class="btn_add_contact" style="padding: 6px;height: 20px;display: inline-table;">Create new item</a>');
+            })
+
+            $('.product_id').on('select2:open', () => {
+                $(".select2-results:not(:has(a))").prepend('<a href="javascript:void(0)" class="btn_add_product" style="padding: 6px;height: 20px;display: inline-table;">Create new item</a>');
+            })
 
             _onChangeCustomer()
             _addRow(TOKEN)

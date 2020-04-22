@@ -122,11 +122,11 @@ const productUI = ((SET) => {
                                         <div class="row">
                                             <div class="col-md-6">
                                                 <div><b>Unit</b></div>
-                                                <div>${SET.replaceNull(data.unit.unit_name)}</div>
+                                                <div>${SET.replaceNull(data.unit !== null ? data.unit.unit_name : '-')}</div>
                                             </div>
                                             <div class="col-md-6">
                                                 <div><b>Category</b></div>
-                                                <div>${SET.replaceNull(data.category.category_name)}</div>
+                                                <div>${SET.replaceNull(data.category !== null ? data.category.category_name : '-')}</div>
                                             </div>
                                         </div>
                                     </p>
@@ -540,7 +540,7 @@ const productController = ((SET, DT, UI) => {
                 let total = data.adjustments.reduce((a, b) => a + b.pivot.qty, 0);
 
                 $('#count_adjustment').text(data.adjustments.length);
-                $('#sum_adjustment').text(`${SET.positiveCurrency(total)} ${data.unit.unit_name}`);
+                $('#sum_adjustment').text(`${SET.positiveCurrency(total)} ${data.unit !== null ? data.unit.unit_name : ''}`);
 
                 $('#t_adjustment').DataTable({
                     data: data.adjustments,
@@ -587,7 +587,7 @@ const productController = ((SET, DT, UI) => {
                 let total = data.purchases.reduce((a, b) => a + b.pivot.qty, 0);
 
                 $('#count_purchase').text(data.purchases.length);
-                $('#sum_purchase').text(`${SET.positiveCurrency(total)} ${data.unit.unit_name}`);
+                $('#sum_purchase').text(`${SET.positiveCurrency(total)} ${data.unit !== null ? data.unit.unit_name : ''}`);
 
                 $('#t_purchase').DataTable({
                     data: data.purchases,
@@ -631,7 +631,7 @@ const productController = ((SET, DT, UI) => {
                 let total = data.purchase_returns.reduce((a, b) => a + b.pivot.qty, 0);
 
                 $('#count_purchase_return').text(data.purchase_returns.length);
-                $('#sum_purchase_return').text(`${SET.positiveCurrency(total)} ${data.unit.unit_name}`);
+                $('#sum_purchase_return').text(`${SET.positiveCurrency(total)} ${data.unit !== null ? data.unit.unit_name : ''}`);
 
                 $('#t_purchase_return').DataTable({
                     data: data.purchase_returns,
@@ -675,7 +675,7 @@ const productController = ((SET, DT, UI) => {
                 let total = data.sellings.reduce((a, b) => a + b.pivot.qty, 0);
 
                 $('#count_selling').text(data.sellings.length);
-                $('#sum_selling').text(`${SET.positiveCurrency(total)} ${data.unit.unit_name}`);
+                $('#sum_selling').text(`${SET.positiveCurrency(total)} ${data.unit !== null ? data.unit.unit_name : ''}`);
 
                 $('#t_selling').DataTable({
                     data: data.sellings,
@@ -719,7 +719,7 @@ const productController = ((SET, DT, UI) => {
                 let total = data.selling_returns.reduce((a, b) => a + b.pivot.qty, 0);
 
                 $('#count_selling_return').text(data.selling_returns.length);
-                $('#sum_selling_return').text(`${SET.positiveCurrency(total)} ${data.unit.unit_name}`);
+                $('#sum_selling_return').text(`${SET.positiveCurrency(total)} ${data.unit !== null ? data.unit.unit_name : ''}`);
 
                 $('#t_selling_return').DataTable({
                     data: data.selling_returns,
@@ -789,43 +789,114 @@ const productController = ((SET, DT, UI) => {
             if (container.contains($('#form_edit')[0])) {
                 $('.dropify').dropify();
 
-                _fetchCategory(TOKEN, data => {
-                    let filtered = [];
+                $('#category_id').select2({
+                    ajax: {
+                        url: `${SET.apiURL()}categories`,
+                        dataType: 'JSON',
+                        type: 'GET',
+                        headers: {
+                            "Authorization": "Bearer " + TOKEN,
+                            "Content-Type": "application/json",
+                        },
+                        data: function (params) {
+                            var query = {
+                                search: params.term,
+                                limit: 100,
+                            }
 
-                    data.map(v => {
-                        let obj = {
-                            id: v.id,
-                            text: v.category_name
-                        }
+                            return query;
+                        },
+                        processResults: function (data) {
+                            let filtered = [];
 
-                        filtered.push(obj)
-                    })
+                            data.results.map(v => {
+                                let obj = {
+                                    id: v.id,
+                                    text: v.category_name
+                                }
 
-                    $('#category_id').select2({ data: filtered });
+                                filtered.push(obj)
+                            })
 
+                            return {
+                                results: filtered
+                            };
+                        },
+                        allowClear: true
 
-                    if(detail.category !== null){
-                        $('#category_id').val(detail.category.id).trigger('change')
                     }
+                });
+
+                $('#unit_id').select2({
+                    ajax: {
+                        url: `${SET.apiURL()}units`,
+                        dataType: 'JSON',
+                        type: 'GET',
+                        headers: {
+                            "Authorization": "Bearer " + TOKEN,
+                            "Content-Type": "application/json",
+                        },
+                        data: function (params) {
+                            var query = {
+                                search: params.term,
+                                limit: 100,
+                            }
+
+                            return query;
+                        },
+                        processResults: function (data) {
+                            let filtered = [];
+
+                            data.results.map(v => {
+                                let obj = {
+                                    id: v.id,
+                                    text: v.unit_name
+                                }
+
+                                filtered.push(obj)
+                            })
+
+                            return {
+                                results: filtered
+                            };
+                        },
+                        allowClear: true
+
+                    }
+                });
+
+                if(detail.category !== null){
+                    let option = new Option(detail.category.category_name, detail.unit.id, true, true);
+                    $('#category_id').append(option).trigger('change');
+
+                    // manually trigger the `select2:select` event
+                    $('#category_id').trigger({
+                        type: 'select2:select',
+                        params: {
+                            data: detail.category
+                        }
+                    });
+                }
+
+                if(detail.unit !== null){
+                    let option2 = new Option(detail.unit.unit_name, detail.unit.id, true, true);
+                    $('#unit_id').append(option2).trigger('change');
+
+                    // manually trigger the `select2:select` event
+                    $('#unit_id').trigger({
+                        type: 'select2:select',
+                        params: {
+                            data: detail.unit
+                        }
+                    });
+                }
+
+                $('#unit_id').on('select2:open', () => {
+                    $(".select2-results:not(:has(a))").prepend('<a href="javascript:void(0)" id="btn_add_unit" style="padding: 6px;height: 20px;display: inline-table;">Create new item</a>');
                 })
 
-                _fetchUnit(TOKEN, data => {
-                    let filtered = [];
-
-                    data.map(v => {
-                        let obj = {
-                            id: v.id,
-                            text: v.unit_name
-                        }
-
-                        filtered.push(obj)
-                    })
-
-                    $('#unit_id').select2({ data: filtered });
-
-                    if (detail.unit !== null) {
-                        $('#unit_id').val(detail.unit.id).trigger('change')
-                    }
+                $('#category_id').on('select2:open', () => {
+                    $(".select2-results:not(:has(a))").prepend('<a href="javascript:void(0)" id="btn_add_category" style="padding: 6px;height: 20px;display: inline-table;">Create new item</a>');
                 })
 
                 _submitEdit(TOKEN, id)
@@ -1081,40 +1152,92 @@ const productController = ((SET, DT, UI) => {
 
         add: TOKEN => {
             $('.dropify').dropify();
-            $('#category_id').select2();
-            $('#unit_id').select2();
+
+            $('#category_id').select2({
+                ajax: {
+                    url: `${SET.apiURL()}categories`,
+                    dataType: 'JSON',
+                    type: 'GET',
+                    headers: {
+                        "Authorization": "Bearer " + TOKEN,
+                        "Content-Type": "application/json",
+                    },
+                    data: function (params) {
+                        var query = {
+                            search: params.term,
+                            limit: 100,
+                        }
+
+                        return query;
+                    },
+                    processResults: function (data) {
+                        let filtered = [];
+
+                        data.results.map(v => {
+                            let obj = {
+                                id: v.id,
+                                text: v.category_name
+                            }
+
+                            filtered.push(obj)
+                        })
+
+                        return {
+                            results: filtered
+                        };
+                    },
+                    allowClear: true
+
+                }
+            });
+
+            $('#unit_id').select2({
+                ajax: {
+                    url: `${SET.apiURL()}units`,
+                    dataType: 'JSON',
+                    type: 'GET',
+                    headers: {
+                        "Authorization": "Bearer " + TOKEN,
+                        "Content-Type": "application/json",
+                    },
+                    data: function (params) {
+                        var query = {
+                            search: params.term,
+                            limit: 100,
+                        }
+
+                        return query;
+                    },
+                    processResults: function (data) {
+                        let filtered = [];
+
+                        data.results.map(v => {
+                            let obj = {
+                                id: v.id,
+                                text: v.unit_name
+                            }
+
+                            filtered.push(obj)
+                        })
+
+                        return {
+                            results: filtered
+                        };
+                    },
+                    allowClear: true
+
+                }
+            });
+
+            $('#unit_id').on('select2:open', () => {
+                $(".select2-results:not(:has(a))").prepend('<a href="javascript:void(0)" id="btn_add_unit" style="padding: 6px;height: 20px;display: inline-table;">Create new item</a>');
+            })
+
+            $('#category_id').on('select2:open', () => {
+                $(".select2-results:not(:has(a))").prepend('<a href="javascript:void(0)" id="btn_add_category" style="padding: 6px;height: 20px;display: inline-table;">Create new item</a>');
+            })
 
             _submitAdd(TOKEN)
-
-            _fetchCategory(TOKEN, data => {
-                let filtered = [];
-
-                data.map(v => {
-                    let obj = {
-                        id: v.id,
-                        text: v.category_name
-                    }
-
-                    filtered.push(obj)
-                })
-
-                $('#category_id').select2({ data: filtered });
-            })
-
-            _fetchUnit(TOKEN, data => {
-                let filtered = [];
-
-                data.map(v => {
-                    let obj = {
-                        id: v.id,
-                        text: v.unit_name
-                    }
-
-                    filtered.push(obj)
-                })
-
-                $('#unit_id').select2({ data: filtered });
-            })
         },
 
         edit: (TOKEN, id) => {

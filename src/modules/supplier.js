@@ -81,6 +81,8 @@ const supplierUI = ((SET) => {
         },
 
         renderDetail: data => {
+            let purchase = (parseFloat(data.sum_purchase) + parseFloat(data.sum_purchase_discount) + parseFloat(data.sum_purchase_ppn)) + (parseFloat(data.sum_purchase_return) + parseFloat(data.sum_purchase_return_ppn) + parseFloat(data.sum_purchase_return_discount))
+
             let html = `
                 <ul class="nav nav-tabs customtab" role="tablist">
                     <li class="nav-item"> <a class="nav-link active" data-toggle="tab" href="#info" role="tab"><span class="hidden-sm-up"><i class="ti-info"></i></span> <span class="hidden-xs-down">Info</span></a> </li>
@@ -93,6 +95,30 @@ const supplierUI = ((SET) => {
                     <div class="tab-pane active" id="info" role="tabpanel">
                         <div class="row">
                             <div class="col-md-8">
+
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <div class="d-flex no-block align-items-center">
+                                                    <div>
+                                                        <h3>Rp. ${SET.positiveCurrency((parseFloat(data.sum_purchase) + parseFloat(data.sum_purchase_discount) + parseFloat(data.sum_purchase_ppn)) + (parseFloat(data.sum_purchase_return) + parseFloat(data.sum_purchase_return_ppn) + parseFloat(data.sum_purchase_return_discount)) + parseFloat(data.sum_purchase_payment))}</h3>
+                                                        <h6 class="card-subtitle">Total Debt</h6>
+                                                    </div>
+                                                    <div class="ml-auto">
+                                                        <span class="text-danger display-6"><i class="ti-layout-slider-alt"></i></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-12">
+                                                <div class="progress">
+                                                    <div class="progress-bar bg-danger" role="progressbar" style="width: ${parseFloat(SET.positiveNumber(data.sum_purchase_payment) / SET.positiveNumber(purchase) * 100)}%; height: 6px;" aria-valuenow="${SET.positiveNumber(data.sum_purchase)}" aria-valuemin="0" aria-valuemax="${SET.positiveNumber((parseFloat(data.sum_purchase) + parseFloat(data.sum_purchase_discount) + parseFloat(data.sum_purchase_ppn)) + (parseFloat(data.sum_purchase_return) + parseFloat(data.sum_purchase_return_ppn) + parseFloat(data.sum_purchase_return_discount)))}"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
                                 <div class="p-20">
                                     <p>
                                         <div><b>Name</b></div>
@@ -160,7 +186,7 @@ const supplierUI = ((SET) => {
                                         <div class="d-flex flex-row">
                                             <div class="display-6 align-self-center"><i class="ti-wallet"></i></div>
                                             <div class="p-10 align-self-center">
-                                                <h4 class="m-b-0">Total Debts</h4>
+                                                <h4 class="m-b-0">Total Purchase</h4>
                                                 <span><span id="count_purchase">0</span> Purchase</span>
                                             </div>
                                             <div class="ml-auto align-self-center">
@@ -179,11 +205,7 @@ const supplierUI = ((SET) => {
                                                 <th>Purchase No.</th>
                                                 <th>Reference No.</th>
                                                 <th>Date</th>
-                                                <th>Status</th>
                                                 <th>Total</th>
-                                                <th>Return</th>
-                                                <th>Payment</th>
-                                                <th>Bill</th>
                                             </tr>
                                         </thead>
                                         <tbody></tbody>
@@ -474,7 +496,7 @@ const supplierController = ((SET, DT, UI) => {
                 let sum_purchase_return_ppn = data.purchases.reduce((a, b) => a + b.total_ppn_return, 0);
                 let sum_purchase_return_discount = data.purchases.reduce((a, b) => a + b.total_return_discount, 0);
 
-                let total = parseFloat(sum_purchase + sum_purchase_ppn + sum_purchase_payment + sum_purchase_return + sum_purchase_return_ppn + sum_purchase_discount + sum_purchase_return_discount )
+                let total = parseFloat(sum_purchase + sum_purchase_ppn + sum_purchase_discount)
 
                 $('#count_purchase').text(data.purchases.length);
                 $('#sum_debts').text(`Rp. ${SET.realCurrency(total)}`);
@@ -497,23 +519,6 @@ const supplierController = ((SET, DT, UI) => {
                             data: "date"
                         },
                         {
-                            data: "date",
-                            render: function (data, type, row) {
-                                let total = parseFloat((row.grand_total + row.total_ppn + row.total_discount) + (row.total_return + row.total_ppn_return + row.total_return_discount))
-                                let payment = SET.positiveCurrency(row.total_payment)
-
-                                if(parseFloat(payment) === 0){
-                                    return `<b class="text-danger">Open</b>`
-                                } else {
-                                    if(total === payment){
-                                        return `<b class="text-success">Paid</b>`
-                                    } else {
-                                        return `<b class="text-warning">Partial</b>`
-                                    }
-                                }
-                            }
-                        },
-                        {
                             data: null,
                             render: function (data, type, row) {
                                 let total = parseFloat(row.grand_total + row.total_ppn + row.total_discount)
@@ -523,36 +528,8 @@ const supplierController = ((SET, DT, UI) => {
                                 `;
                             }
                         },
-                        {
-                            data: null,
-                            render: function (data, type, row) {
-                                let total = parseFloat(row.total_return + row.total_ppn_return + row.total_return_discount)
-
-                                return `
-                                    Rp. ${SET.positiveCurrency(total)}
-                                `;
-                            }
-                        },
-                        {
-                            data: null,
-                            render: function (data, type, row) {
-                                return `
-                                    Rp. ${SET.positiveCurrency(row.total_payment)}
-                                `;
-                            }
-                        },
-                        {
-                            data: null,
-                            render: function (data, type, row) {
-                                let total = parseFloat((row.grand_total + row.total_ppn + row.total_discount) + (row.total_return + row.total_ppn_return + row.total_return_discount ) + row.total_payment)
-
-                                return `
-                                    Rp. ${SET.realCurrency(total)}
-                                `;
-                            }
-                        }
                     ],
-                    order: [[0, "asc"]]
+                    order: [[2, "desc"]]
                 })
             }
 
@@ -581,7 +558,7 @@ const supplierController = ((SET, DT, UI) => {
                             data: "reference_number",
                             render: function (data, type, row) {
                                 return `
-                                    <a href="#/purchase/${row.purchase.id}">${row.purchase.purchase_number}</a>
+                                    ${row.purchase !== null ? `<a href="#/purchase/${row.purchase.id}">${row.purchase.purchase_number}</a>` : 'Pembelian'}
                                 `;
                             }
                         },
@@ -600,7 +577,7 @@ const supplierController = ((SET, DT, UI) => {
                             }
                         },
                     ],
-                    order: [[0, "asc"]]
+                    order: [[2, "desc"]]
                 })
             }
 
@@ -625,7 +602,7 @@ const supplierController = ((SET, DT, UI) => {
                             data: "reference_number",
                             render: function (data, type, row) {
                                 return `
-                                    <a href="#/purchase/${row.purchase.id}">${row.purchase.purchase_number}</a>
+                                    ${row.purchase !== null ? `<a href="#/purchase/${row.purchase.id}">${row.purchase.purchase_number}</a>` : 'Pembelian'}
                                 `;
                             }
                         },
@@ -641,7 +618,7 @@ const supplierController = ((SET, DT, UI) => {
                             }
                         },
                     ],
-                    order: [[0, "asc"]]
+                    order: [[2, "desc"]]
                 })
             }
 

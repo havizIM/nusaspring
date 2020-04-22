@@ -66,13 +66,13 @@ const purchaseReturnUI = ((SET) => {
                                                 <td class="w-50 text-right">
                                                     <address>
                                                         <h3>To</h3>
-                                                        <h4 class="font-bold"><a href="#/supplier/${data.purchase.contact.id}">${data.purchase.contact.contact_name}</a></h4>
-                                                        <p class="text-muted m-l-30">${_filterNull(data.purchase.address)},
-                                                        <br> ${_filterNull(data.purchase.email)}</p>
+                                                        <h4 class="font-bold"><a href="#/supplier/${data.contact.id}">${data.contact.contact_name}</a></h4>
+                                                        <p class="text-muted m-l-30">${data.purchase !== null ? `${SET.replaceNull(data.purchase.address)}` : `${SET.replaceNull(data.contact.address)}`},
+                                                        <br> ${data.purchase !== null ? `${SET.replaceNull(data.purchase.email)}` : `${SET.replaceNull(data.contact.email)}`}</p>
 
                                                         <p class="m-t-30"><b><i class="fa fa-calendar"></i> Date :</b> ${data.date}</p>
                                                         <p><b><i class="mdi mdi-album"></i> Return No :</b> ${_replaceNull(data.return_number)}</p>
-                                                        <p><b><i class="mdi mdi-animation"></i> Purchase No :</b> <a href="#/purchase/${data.purchase.id}">${_replaceNull(data.purchase.purchase_number)}</a></p>
+                                                        <p><b><i class="mdi mdi-animation"></i> Purchase No :</b> ${data.purchase !== null ? `<a href="#/purchase/${data.purchase.id}">${_replaceNull(data.purchase.purchase_number)}</a>` : 'Pembelian'}</p>
                                                         <p><b><i class="mdi mdi-animation"></i> Reference No :</b> ${_replaceNull(data.reference_number)}</p>
                                                     </address>
                                                 </td>
@@ -458,6 +458,10 @@ const purchaseReturnUI = ((SET) => {
                         };
                     }
                 }
+            })
+
+            $('#product_id_' + count).on('select2:open', () => {
+                $(".select2-results:not(:has(a))").prepend('<a href="javascript:void(0)" class="btn_add_product" style="padding: 6px;height: 20px;display: inline-table;">Create new item</a>');
             })
         }
     }
@@ -1115,8 +1119,8 @@ const purchaseReturnController = ((SET, DT, UI) => {
                         data: "contact",
                         render: function (data, type, row) {
                             return `
-                                <a href="#/purchase/${row.purchase.id}">${row.purchase.purchase_number}</a>
-                                <div>${row.purchase.contact.contact_name}</div>
+                                <a href="#/supplier/${row.contact.id}">${row.contact.contact_name}</a>
+                                ${row.purchase !== null ? `<div><small><a href="#/purchase/${row.purchase.id}">${row.purchase.purchase_number}</a></small></div>` : '<div>Pembelian</div>'}
                             `;
                         }
                     },
@@ -1154,7 +1158,7 @@ const purchaseReturnController = ((SET, DT, UI) => {
                         }
                     }
                 ],
-                order: [[2, "asc"]]
+                order: [[2, "desc"]]
             })
 
             DT.dtFilter(table)
@@ -1273,6 +1277,14 @@ const purchaseReturnController = ((SET, DT, UI) => {
 
                 }
             });
+
+            $('#contact_id').on('select2:open', () => {
+                $(".select2-results:not(:has(a))").prepend('<a href="javascript:void(0)" class="btn_add_contact" style="padding: 6px;height: 20px;display: inline-table;">Create new item</a>');
+            })
+
+            $('.product_id').on('select2:open', () => {
+                $(".select2-results:not(:has(a))").prepend('<a href="javascript:void(0)" class="btn_add_product" style="padding: 6px;height: 20px;display: inline-table;">Create new item</a>');
+            })
 
             _onChangeSupplier(TOKEN)
             _addRow(TOKEN)

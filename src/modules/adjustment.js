@@ -336,6 +336,10 @@ const adjustmentUI = ((SET) => {
                     }
                 }
             });
+
+            $('#product_id_' + count).on('select2:open', () => {
+                $(".select2-results:not(:has(a))").prepend('<a href="javascript:void(0)" class="btn_add_product" style="padding: 6px;height: 20px;display: inline-table;">Create new item</a>');
+            })
         }
     }
 })(settingController)
@@ -597,6 +601,10 @@ const adjustmentController = ((SET, DT, UI) => {
                             data: data
                         }
                     });
+
+                    $(this).on('select2:open', () => {
+                        $(".select2-results:not(:has(a))").prepend('<a href="javascript:void(0)" class="btn_add_product" style="padding: 6px;height: 20px;display: inline-table;">Create new item</a>');
+                    })
 
                 })
 
@@ -874,7 +882,7 @@ const adjustmentController = ((SET, DT, UI) => {
                         }
                     }
                 ],
-                order: [[2, "asc"]]
+                order: [[2, "desc"]]
             })
 
             DT.dtFilter(table)
@@ -929,23 +937,9 @@ const adjustmentController = ((SET, DT, UI) => {
                 }
             });
 
-            // _fetchProduct(TOKEN, data => {
-            //     let filtered = [];
-
-            //     data.filter(v => {
-            //         let obj = {
-            //             id: v.id,
-            //             text: v.product_name,
-            //             price: v.purchase_price,
-            //             unit: v.unit === null ? null : v.unit.unit_name
-            //         }
-
-            //         filtered.push(obj)
-            //     })
-
-            //     $('.product_id').select2({
-            //         data: filtered
-            //     });
+            $('.product_id').on('select2:open', () => {
+                $(".select2-results:not(:has(a))").prepend('<a href="javascript:void(0)" class="btn_add_product" style="padding: 6px;height: 20px;display: inline-table;">Create new item</a>');
+            })
 
                 
 

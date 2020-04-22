@@ -32,7 +32,7 @@ const sellingPaymentUI = ((SET) => {
                                                 <td class="w-50 text-right">
                                                     <address>
                                                         <h3>From</h3>
-                                                        <h4 class="font-bold"><a href="#/customer/${data.selling.contact.id}">${data.selling.contact.contact_name}</a></h4>
+                                                        <h4 class="font-bold"><a href="#/customer/${data.contact.id}">${data.contact.contact_name}</a></h4>
                                                         <p class="text-muted m-l-30">${SET.filterNull(data.selling.address)},
                                                         <br> ${SET.filterNull(data.selling.email)}</p>
 
@@ -55,7 +55,7 @@ const sellingPaymentUI = ((SET) => {
                                                     <tbody>
                                                         <tr>
                                                             <td class="text-center">1</td>
-                                                            <td><a href="#/selling/${data.selling.id}">${data.selling.selling_number}</a></td>
+                                                            <td>${data.selling !== null ? `<a href="#/selling/${data.selling.id}">${data.selling.selling_number}</a>` : 'Penjualan'}</td>
                                                             <td class="text-right"> Rp. ${SET.positiveCurrency(data.amount)} </td>
                                                         </tr>
                                                     </tbody>
@@ -572,8 +572,8 @@ const sellingPaymentController = ((SET, DT, UI) => {
                         data: "contact",
                         render: function (data, type, row) {
                             return `
-                                <a href="#/selling/${row.selling.id}">${row.selling.selling_number}</a>
-                                <div>${row.selling.contact.contact_name}</div>
+                                <a href="#/customer/${row.contact.id}">${row.contact.contact_name}</a>
+                                ${row.selling !== null ? `<div><small><a href="#/selling/${row.selling.id}">${row.selling.selling_number}</a></small></div>` : '<div>Penjualan</div>'}
                             `;
                         }
                     },
@@ -609,7 +609,7 @@ const sellingPaymentController = ((SET, DT, UI) => {
                         }
                     }
                 ],
-                order: [[2, "asc"]]
+                order: [[2, "desc"]]
             })
 
             DT.dtFilter(table)
@@ -682,6 +682,10 @@ const sellingPaymentController = ((SET, DT, UI) => {
             })
 
             $('#selling_id').select2()
+
+            $('#contact_id').on('select2:open', () => {
+                $(".select2-results:not(:has(a))").prepend('<a href="javascript:void(0)" class="btn_add_contact" style="padding: 6px;height: 20px;display: inline-table;">Create new item</a>');
+            })
 
             _onChangeContact(TOKEN)
             _submitAdd(TOKEN)
