@@ -26,10 +26,16 @@ class Purchase_payment extends CI_Controller {
 		$this->load->view(strtolower($this->roles).'/purchase_payment/detail', $data);
     }
     
-	public function add($id)
+	public function add()
+	{
+		$this->load->view(strtolower($this->roles).'/purchase_payment/add');
+		
+	}
+
+	public function add_with_purchase($id)
 	{
 		$data['id'] = $id;
-		$this->load->view(strtolower($this->roles).'/purchase_payment/add', $data);
+		$this->load->view(strtolower($this->roles).'/purchase_payment/add_with_purchase', $data);
 	}
     
 	public function edit($id)

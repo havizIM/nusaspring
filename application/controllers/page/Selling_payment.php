@@ -26,10 +26,15 @@ class Selling_payment extends CI_Controller {
 		$this->load->view(strtolower($this->roles).'/selling_payment/detail', $data);
     }
     
-	public function add($id)
+	public function add()
+	{
+		$this->load->view(strtolower($this->roles).'/selling_payment/add');
+	}
+
+	public function add_with_selling($id)
 	{
 		$data['id'] = $id;
-		$this->load->view(strtolower($this->roles).'/selling_payment/add', $data);
+		$this->load->view(strtolower($this->roles).'/selling_payment/add_with_selling', $data);
 	}
 
 	public function edit($id)

@@ -157,6 +157,114 @@ const sellingReturnUI = ((SET) => {
 
         },
 
+        renderRow: TOKEN => {
+
+            count += 1
+
+            let html = `
+                <tr id="row_${count}">
+                    <td>
+                        <select name="product_id[${count}]" id="product_id_${count}" data-id="${count}" class="form-control product_id" required>
+                            <option value="" disabled="" selected="">-- Choose Product --</option>
+                        </select>
+                        <input type="hidden" name="description[${count}]" id="description_${count}" data-id="${count}">
+                    </td>
+                    <td>
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="basic-addon1">Rp. </span>
+                            </div>
+                            <input type="number"  min="0" value="0" name="unit_price[${count}]" id="unit_price_${count}" data-id="${count}" class="form-control unit_price">
+                        </div>
+                    </td>
+                    <td>
+                        <div class="input-group mb-3">
+                            <input type="number"  min="0" value="0" name="qty[${count}]" id="qty_${count}" data-id="${count}" class="form-control qty" required>
+                            <div class="input-group-prepend">
+                                <input type="hidden" name="unit[${count}]" id="unit_${count}" data-id="${count}" class="form-control">
+                                <span class="input-group-text" id="unit_text_${count}" data-id="${count}">-</span>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="input-group mb-3">
+                            <input type="number"  min="0" value="0" name="discount_percent[${count}]" id="discount_percent_${count}" data-id="${count}" class="form-control discount_percent">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="basic-addon1">%</span>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="basic-addon1">Rp. </span>
+                            </div>
+                            <input type="number"  min="0" value="0" name="discount_amount[${count}]" id="discount_amount_${count}" data-id="${count}" class="form-control discount_amount">
+                        </div>
+                    </td>
+                    <td>
+                        <div class="text-center">
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input ppn" id="ppn_${count}" name="ppn[${count}]" data-id="${count}">
+                                <label class="custom-control-label" for="ppn_${count}"></label>
+                            </div>
+                            <input type="hidden" value="0" data-id="${count}" id="ppn_amount_${count}" name="ppn_amount[${count}]" class="ppn_amount">
+                        </div>
+                    </td>
+                    <td>
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="basic-addon1">Rp. </span>
+                            </div>
+                            <input type="number" min="0" value="0" name="total[${count}]" id="total_${count}" data-id="${count}" class="form-control total">
+                        </div>
+                    </td>
+                    <td>
+                        <button class="btn btn-danger btn-md btn-remove" type="button" data-id="${count}" data-remove="true"><i class="fa fa-times"></i></button>
+                    </td>
+                </tr>
+            `
+
+            $('#t_add_products tbody').append(html)
+
+            $('#product_id_' + count).select2({
+                ajax: {
+                    url: `${SET.apiURL()}products`,
+                    dataType: 'JSON',
+                    type: 'GET',
+                    headers: {
+                        "Authorization": "Bearer " + TOKEN,
+                        "Content-Type": "application/json",
+                    },
+                    data: function (params) {
+                        var query = {
+                            search: params.term,
+                            limit: 100
+                        }
+
+                        return query;
+                    },
+                    processResults: function (data) {
+                        let filtered = [];
+
+                        data.results.map(v => {
+                            let obj = {
+                                id: v.id,
+                                text: v.product_name,
+                                price: v.selling_price,
+                                unit: v.unit === null ? null : v.unit.unit_name
+                            }
+
+                            filtered.push(obj)
+                        })
+
+                        return {
+                            results: filtered
+                        };
+                    }
+                }
+            });
+        },
 
         renderFormAdd: data => {
 
@@ -182,6 +290,7 @@ const sellingReturnUI = ((SET) => {
                                             </div>
                                             
                                             <input type="hidden" name="selling_id" id="selling_id" value="${data.id}">
+                                            <input type="hidden" name="contact_id" id="contact_id" value="${data.contact.id}">
                                         </div>
                                         <div class="col-md-4">
                                             <div class="form-group">
@@ -491,7 +600,7 @@ const sellingReturnController = ((SET, DT, UI) => {
                 error.insertAfter(element)
             },
             rules: {
-                selling_id: 'required',
+                contact_id: 'required',
                 return_number: 'required',
                 date: 'required',
             },
@@ -595,6 +704,279 @@ const sellingReturnController = ((SET, DT, UI) => {
         });
     }
 
+    const _addRow = TOKEN => {
+        $('.btn_add_row').click(function () {
+            UI.renderRow(TOKEN)
+        })
+    }
+
+    const _removeRow = () => {
+        $('#t_add_products').on('click', '.btn-remove', function () {
+            let id = $(this).data('id')
+            let remove = $(this).data('remove')
+
+            if (remove === true && id) {
+                $('#row_' + id).remove();
+                _calculateAllReturn()
+            }
+        })
+    }
+
+    const _onChangeCustomer = TOKEN => {
+        $('#contact_id').on('select2:select', function (e) {
+            let data = e.params.data
+
+            $('#selling_id').select2({
+                ajax: {
+                    url: `${SET.apiURL()}sellings`,
+                    dataType: 'JSON',
+                    type: 'GET',
+                    headers: {
+                        "Authorization": "Bearer " + TOKEN,
+                        "Content-Type": "application/json",
+                    },
+                    data: function (params) {
+                        var query = {
+                            search: params.term,
+                            limit: 100,
+                            customer: data.id
+                        }
+
+                        return query;
+                    },
+                    processResults: function (data) {
+                        let filtered = [];
+
+                        data.results.map(v => {
+                            let obj = {
+                                id: v.id,
+                                text: v.selling_number,
+                            }
+
+                            filtered.push(obj)
+                        })
+
+                        return {
+                            results: filtered
+                        };
+                    }
+                }
+            })
+
+            $('#selling_id').removeAttr('disabled')
+            $('#selling_id').val('').trigger('change')
+        });
+    }
+
+    const _onChangeProduct = () => {
+        $('#t_add_products').on('select2:select', '.product_id', function (e) {
+            let data = e.params.data
+
+            let id = $(this).data('id')
+
+            $(`#description_${id}`).val(data.text)
+            $(`#unit_price_${id}`).val(data.price).trigger('keyup')
+            $(`#unit_${id}`).val(data.unit)
+            $(`#unit_text_${id}`).text(data.unit)
+
+            if ($('#ppn_' + id).is(':checked')) {
+                let qty = $('#qty_' + id).val()
+                let discount_amount = $('#discount_amount_' + id).val()
+                let total = (parseFloat(data.price) * parseFloat(qty)) - parseFloat(discount_amount)
+                let ppn_amount = (total * 10) / 100
+
+                $('#ppn_amount_' + id).val(ppn_amount)
+                $('#total_' + id).val(total)
+            } else {
+                $('#ppn_amount_' + id).val('0')
+            }
+
+            $('#discount_percent_' + id).trigger('keyup')
+
+            _calculateAllReturn()
+        });
+    }
+
+    const _onChangePpn = () => {
+        $('#check_all_ppn').on('change', function () {
+            if ($(this).is(':checked')) {
+                $('.ppn').each(function () {
+                    $('.ppn').attr('checked', true).trigger('change');
+                })
+            } else {
+                $('.ppn').each(function () {
+                    $('.ppn').attr('checked', false).trigger('change');
+                })
+            }
+
+            _calculateAllReturn()
+        });
+    }
+
+    const _onKeyupUnitPrice = () => {
+        $('#t_add_products').on('keyup', '.unit_price', function () {
+            let id = $(this).data('id')
+            let thisVal = $(this).val()
+            let qty = $('#qty_' + id).val()
+            let discount_amount = $('#discount_amount_' + id).val()
+            let total = (parseFloat(thisVal) * parseFloat(qty)) - parseFloat(discount_amount)
+            let ppn_amount;
+
+            if ($('#ppn_' + id).is(':checked')) {
+                ppn_amount = (total * 10) / 100
+            } else {
+                ppn_amount = 0
+            }
+
+            $('#ppn_amount_' + id).val(ppn_amount)
+            $('#total_' + id).val(total)
+
+            $('#discount_percent_' + id).trigger('keyup')
+
+            _calculateAllReturn()
+        });
+    }
+
+    const _onKeyupQtyReturn = () => {
+        $('#t_add_products').on('keyup', '.qty', function () {
+            let id = $(this).data('id')
+            let thisVal = $(this).val()
+            let unit_price = $('#unit_price_' + id).val()
+            let discount_amount = $('#discount_amount_' + id).val()
+            let total = (parseFloat(unit_price) * parseFloat(thisVal)) - parseFloat(discount_amount)
+            let ppn_amount;
+
+            if ($('#ppn_' + id).is(':checked')) {
+                ppn_amount = (total * 10) / 100
+            } else {
+                ppn_amount = 0
+            }
+
+            $('#ppn_amount_' + id).val(ppn_amount)
+            $('#total_' + id).val(parseFloat(unit_price) * parseFloat(thisVal))
+
+            $('#discount_percent_' + id).trigger('keyup')
+
+            _calculateAllReturn()
+        });
+    }
+
+    const _onPercentKeyup = () => {
+        $('#t_add_products').on('keyup', '.discount_percent', function () {
+            let id = $(this).data('id')
+            let thisVal = $(this).val()
+
+            let unit_price = $('#unit_price_' + id).val()
+            let qty = $('#qty_' + id).val()
+            let total = parseFloat(unit_price) * parseFloat(qty)
+
+            let discount_amount = (parseFloat(total) * parseFloat(thisVal)) / 100
+
+            $('#discount_amount_' + id).val(discount_amount).trigger('keyup')
+        });
+    }
+
+    const _onKeyupDiscount = () => {
+        $('#t_add_products').on('keyup', '.discount_amount', function () {
+            let thisVal = $(this).val()
+            let thisId = $(this).data('id')
+            let ppn_amount;
+
+            let unit_price = $('#unit_price_' + thisId).val()
+            let qty = $('#qty_' + thisId).val()
+            let total = (parseFloat(unit_price) * parseFloat(qty)) - thisVal;
+
+            if ($('#ppn_' + thisId).is(':checked')) {
+                ppn_amount = (total * 10) / 100
+            } else {
+                ppn_amount = 0
+            }
+
+            $('#ppn_amount_' + thisId).val(ppn_amount)
+
+            _calculateAllReturn()
+        })
+    }
+
+    const _onPpnCheck = () => {
+        $('#t_add_products').on('change', '.ppn', function (event, state) {
+            let ppn_amount;
+            let id = $(this).data('id');
+
+            let unit_price = $('#unit_price_' + id).val()
+            let qty = $('#qty_' + id).val()
+            let discount_amount = $('#discount_amount_' + id).val()
+            let total = (parseFloat(unit_price) * parseFloat(qty)) - parseFloat(discount_amount)
+
+            if ($(this).is(':checked')) {
+                console.log(total)
+                ppn_amount = (total * 10) / 100
+            } else {
+                ppn_amount = 0
+            }
+
+            $('#ppn_amount_' + id).val(ppn_amount)
+
+            _calculateAllReturn()
+        })
+    }
+
+    const _onKeyupTotal = () => {
+        $('#t_add_products').on('keyup', '.total', function (event, state) {
+            _calculateAllReturn()
+        })
+    }
+
+
+
+    const _calculateAllReturn = () => {
+        let sub_total = 0;
+        let discount = 0;
+        let total_ppn = 0;
+
+        $('.total').each(function () {
+            let total = $(this).val();
+
+            if (total !== '') {
+                sub_total += parseFloat(total)
+            }
+        })
+
+        $('.discount_amount').each(function () {
+            let total = $(this).val();
+
+            if (total !== '') {
+                discount += parseFloat(total)
+            }
+        })
+
+        $('.ppn_amount').each(function () {
+            let total = $(this).val();
+
+            if (total !== '') {
+                total_ppn += parseFloat(total)
+            }
+        })
+
+        $('#sub_total').val(sub_total).trigger('input')
+        $('#sub_total_text').text(`Rp. ${SET.realCurrency(sub_total)}`)
+
+        $('#total_ppn').val(total_ppn).trigger('input')
+        $('#ppn_text').text(`Rp. ${SET.realCurrency(total_ppn)}`)
+
+        $('#all_discount').val(discount).trigger('input')
+        $('#all_discount_text').text(`Rp. ${SET.realCurrency(discount)}`)
+
+        let total_dpp = parseFloat(sub_total) - parseFloat(discount);
+        $('#total_dpp').val(total_dpp).trigger('input')
+        $('#total_dpp_text').text(`Rp. ${SET.realCurrency(total_dpp)}`)
+
+        let grand_total = parseFloat(total_dpp) + parseFloat(total_ppn)
+        $('#grand_total').val(grand_total).trigger('input')
+        $('#grand_total_text').text(`Rp. ${SET.realCurrency(grand_total)}`)
+
+    }
+
     return {
         data: TOKEN => {
             console.log('Customer Return Controller is running...')
@@ -687,13 +1069,13 @@ const sellingReturnController = ((SET, DT, UI) => {
                             },
                             titleAttr: 'Refresh'
                         },
-                        // {
-                        //     text: '<i class="fa fa-plus"></i>',
-                        //     action: function (e, dt, node, config) {
-                        //         location.hash = '#/customer_return/add'
-                        //     },
-                        //     titleAttr: 'Add'
-                        // },
+                        {
+                            text: '<i class="fa fa-plus"></i>',
+                            action: function (e, dt, node, config) {
+                                location.hash = '#/selling_return/add'
+                            },
+                            titleAttr: 'Add'
+                        },
                         {
                             text: '<i class="fa fa-search"></i>',
                             action: function (e, dt, node, config) {
@@ -790,7 +1172,7 @@ const sellingReturnController = ((SET, DT, UI) => {
                 $('#modal_delete').modal('hide')
             })
         },
-        add: (TOKEN, id) => {
+        addWithSelling: (TOKEN, id) => {
             UI.resetCount()
 
             _fetchSelling(TOKEN, id, data => {
@@ -811,7 +1193,110 @@ const sellingReturnController = ((SET, DT, UI) => {
             _submitDelete(TOKEN, data => {
                 location.hash = '#/customer_return'
             })
-        }
+        },
+        add: TOKEN => {
+            console.log('Add Adjustment Controller is running...')
+
+            UI.resetCount()
+
+            $('.dropify').dropify();
+
+            $('#contact_id').select2({
+                ajax: {
+                    url: `${SET.apiURL()}customers`,
+                    dataType: 'JSON',
+                    type: 'GET',
+                    headers: {
+                        "Authorization": "Bearer " + TOKEN,
+                        "Content-Type": "application/json",
+                    },
+                    data: function (params) {
+                        var query = {
+                            search: params.term,
+                            limit: 100,
+                            type: 'Customer'
+                        }
+
+                        return query;
+                    },
+                    processResults: function (data) {
+                        let filtered = [];
+
+                        data.results.map(v => {
+                            let obj = {
+                                id: v.id,
+                                text: v.contact_name,
+                                email: v.email,
+                                address: v.address
+                            }
+
+                            filtered.push(obj)
+                        })
+
+                        return {
+                            results: filtered
+                        };
+                    }
+
+                }
+            });
+
+            $('#selling_id').select2()
+
+            $('.product_id').select2({
+                ajax: {
+                    url: `${SET.apiURL()}products`,
+                    dataType: 'JSON',
+                    type: 'GET',
+                    headers: {
+                        "Authorization": "Bearer " + TOKEN,
+                        "Content-Type": "application/json",
+                    },
+                    data: function (params) {
+                        var query = {
+                            search: params.term,
+                            limit: 100
+                        }
+
+                        return query;
+                    },
+                    processResults: function (data) {
+                        let filtered = [];
+
+                        data.results.map(v => {
+                            let obj = {
+                                id: v.id,
+                                text: v.product_name,
+                                price: v.selling_price,
+                                unit: v.unit === null ? null : v.unit.unit_name
+                            }
+
+                            filtered.push(obj)
+                        })
+
+                        return {
+                            results: filtered
+                        };
+                    }
+
+                }
+            });
+
+            _onChangeCustomer(TOKEN)
+            _addRow(TOKEN)
+            _onChangeProduct()
+            _removeRow()
+            _onChangePpn()
+            _onKeyupUnitPrice()
+            _onKeyupQtyReturn()
+            _onPercentKeyup()
+            _onKeyupDiscount()
+            _onPpnCheck()
+            _onKeyupTotal()
+
+            _submitAdd(TOKEN)
+
+        },
     }
 })(settingController, dtController, sellingReturnUI)
 

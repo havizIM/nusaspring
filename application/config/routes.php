@@ -95,22 +95,26 @@ $route['selling/(:num)'] = 'page/selling/detail/$1';
 $route['selling/edit/(:num)'] = 'page/selling/edit/$1';
 
 $route['purchase_return'] = 'page/purchase_return';
-$route['purchase_return/add/(:num)'] = 'page/purchase_return/add/$1';
+$route['purchase_return/add'] = 'page/purchase_return/add';
+$route['purchase_return/add/(:num)'] = 'page/purchase_return/add_with_purchase/$1';
 $route['purchase_return/(:num)'] = 'page/purchase_return/detail/$1';
 $route['purchase_return/edit/(:num)'] = 'page/purchase_return/edit/$1';
 
 $route['selling_return'] = 'page/selling_return';
-$route['selling_return/add/(:num)'] = 'page/selling_return/add/$1';
+$route['selling_return/add'] = 'page/selling_return/add';
+$route['selling_return/add/(:num)'] = 'page/selling_return/add_with_selling/$1';
 $route['selling_return/(:num)'] = 'page/selling_return/detail/$1';
 $route['selling_return/edit/(:num)'] = 'page/selling_return/edit/$1';
 
 $route['purchase_payment'] = 'page/purchase_payment';
-$route['purchase_payment/add/(:num)'] = 'page/purchase_payment/add/$1';
+$route['purchase_payment/add'] = 'page/purchase_payment/add';
+$route['purchase_payment/add/(:num)'] = 'page/purchase_payment/add_with_purchase/$1';
 $route['purchase_payment/(:num)'] = 'page/purchase_payment/detail/$1';
 $route['purchase_payment/edit/(:num)'] = 'page/purchase_payment/edit/$1';
 
 $route['selling_payment'] = 'page/selling_payment';
-$route['selling_payment/add/(:num)'] = 'page/selling_payment/add/$1';
+$route['selling_payment/add'] = 'page/selling_payment/add';
+$route['selling_payment/add/(:num)'] = 'page/selling_payment/add_with_selling/$1';
 $route['selling_payment/(:num)'] = 'page/selling_payment/detail/$1';
 $route['selling_payment/edit/(:num)'] = 'page/selling_payment/edit/$1';
 

@@ -1188,7 +1188,46 @@ const sellingController = ((SET, DT, UI) => {
 
             $('.dropify').dropify();
 
-            $('#contact_id').select2();
+            $('#contact_id').select2({
+                ajax: {
+                    url: `${SET.apiURL()}customers`,
+                    dataType: 'JSON',
+                    type: 'GET',
+                    headers: {
+                        "Authorization": "Bearer " + TOKEN,
+                        "Content-Type": "application/json",
+                    },
+                    data: function (params) {
+                        var query = {
+                            search: params.term,
+                            limit: 100,
+                            type: 'Customer'
+                        }
+
+                        return query;
+                    },
+                    processResults: function (data) {
+                        let filtered = [];
+
+                        data.results.map(v => {
+                            let obj = {
+                                id: v.id,
+                                text: v.contact_name,
+                                email: v.email,
+                                address: v.address
+                            }
+
+                            filtered.push(obj)
+                        })
+
+                        return {
+                            results: filtered
+                        };
+                    }
+
+                }
+            });
+
             $('.product_id').select2({
                 ajax: {
                     url: `${SET.apiURL()}products`,
@@ -1228,33 +1267,7 @@ const sellingController = ((SET, DT, UI) => {
                 }
             });
 
-            _fetchCustomer(TOKEN, data => {
-                let filtered = [];
-
-                data.filter(v => {
-                    let obj = {
-                        id: v.id,
-                        text: v.contact_name,
-                        email: v.email,
-                        address: v.address
-                    }
-
-                    filtered.push(obj)
-                })
-
-                $('#contact_id').select2({
-                    data: filtered
-                });
-
-
-                _onChangeCustomer()
-
-            }, error => {
-                $('#contact_id').select2({
-                    data: []
-                });
-            })
-
+            _onChangeCustomer()
             _addRow(TOKEN)
             _onChangeProduct()
             _removeRow()

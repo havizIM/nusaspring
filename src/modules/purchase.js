@@ -651,9 +651,7 @@ const purchaseController = ((SET, DT, UI) => {
             _calculateAll()
         })
     }
-
     
-
     const _calculateAll = () => {
         let sub_total = 0;
         let discount = 0;
@@ -1184,7 +1182,46 @@ const purchaseController = ((SET, DT, UI) => {
 
             $('.dropify').dropify();
 
-            $('#contact_id').select2();
+            $('#contact_id').select2({
+                ajax: {
+                    url: `${SET.apiURL()}suppliers`,
+                    dataType: 'JSON',
+                    type: 'GET',
+                    headers: {
+                        "Authorization": "Bearer " + TOKEN,
+                        "Content-Type": "application/json",
+                    },
+                    data: function (params) {
+                        var query = {
+                            search: params.term,
+                            limit: 100,
+                            type: 'Supplier'
+                        }
+
+                        return query;
+                    },
+                    processResults: function (data) {
+                        let filtered = [];
+
+                        data.results.map(v => {
+                            let obj = {
+                                id: v.id,
+                                text: v.contact_name,
+                                email: v.email,
+                                address: v.address
+                            }
+
+                            filtered.push(obj)
+                        })
+
+                        return {
+                            results: filtered
+                        };
+                    }
+
+                }
+            });
+            
             $('.product_id').select2({
                 ajax: {
                     url: `${SET.apiURL()}products`,
@@ -1224,34 +1261,7 @@ const purchaseController = ((SET, DT, UI) => {
                 }
             });
 
-            _fetchSupplier(TOKEN, data => {
-                let filtered = [];
-
-                data.filter(v => {
-                    let obj = {
-                        id: v.id,
-                        text: v.contact_name,
-                        email: v.email,
-                        address: v.address
-                    }
-
-                    filtered.push(obj)
-                })
-
-                $('#contact_id').select2({
-                    data: filtered
-                });
-
-
-                _onChangeSupplier()
-
-            }, error => {
-                $('#contact_id').select2({
-                    data: []
-                });
-            })
-
-
+            _onChangeSupplier()
             _addRow(TOKEN)
             _removeRow()
             _onChangeProduct()

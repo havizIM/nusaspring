@@ -200,6 +200,7 @@ const purchasePaymentUI = ((SET) => {
                                     </div>
                                 </div>
                                 <div class="form-group">
+                                    <input type="hidden" name="contact_id" id="contact_id" value="${data.contact.id}">
                                     <input type="hidden" name="purchase_id" id="purchase_id" value="${data.id}">
                                     <button class="btn btn-info btn-block" type="submit">Save</button>
                                     <a href="#/purchase/${data.id}" class="btn btn-secondary btn-outline btn-block">Cancel</a>
@@ -385,6 +386,52 @@ const purchasePaymentController = ((SET, DT, UI) => {
         });
     }
 
+    const _onChangeContact = TOKEN => {
+        $('#contact_id').on('select2:select', function (e) {
+            let data = e.params.data
+
+            $('#purchase_id').select2({
+                ajax: {
+                    url: `${SET.apiURL()}purchases`,
+                    dataType: 'JSON',
+                    type: 'GET',
+                    headers: {
+                        "Authorization": "Bearer " + TOKEN,
+                        "Content-Type": "application/json",
+                    },
+                    data: function (params) {
+                        var query = {
+                            search: params.term,
+                            limit: 100,
+                            supplier: data.id
+                        }
+
+                        return query;
+                    },
+                    processResults: function (data) {
+                        let filtered = [];
+
+                        data.results.map(v => {
+                            let obj = {
+                                id: v.id,
+                                text: v.purchase_number,
+                            }
+
+                            filtered.push(obj)
+                        })
+
+                        return {
+                            results: filtered
+                        };
+                    }
+                }
+            })
+
+            $("#purchase_id").val('').trigger('change');
+            $('#purchase_id').removeAttr('disabled')
+        });
+    }
+
     return {
         data: TOKEN => {
             const table = $('#t_payments').DataTable({
@@ -475,13 +522,13 @@ const purchasePaymentController = ((SET, DT, UI) => {
                             },
                             titleAttr: 'Refresh'
                         },
-                        // {
-                        //     text: '<i class="fa fa-plus"></i>',
-                        //     action: function (e, dt, node, config) {
-                        //         location.hash = '#/supplier_return/add'
-                        //     },
-                        //     titleAttr: 'Add'
-                        // },
+                        {
+                            text: '<i class="fa fa-plus"></i>',
+                            action: function (e, dt, node, config) {
+                                location.hash = '#/purchase_payment/add'
+                            },
+                            titleAttr: 'Add'
+                        },
                         {
                             text: '<i class="fa fa-search"></i>',
                             action: function (e, dt, node, config) {
@@ -585,11 +632,59 @@ const purchasePaymentController = ((SET, DT, UI) => {
                 location.hash = '#/purchase_payment'
             })
         },
-        add: (TOKEN, id) => {
+        addWithPurchase: (TOKEN, id) => {
             _fetchPurchase(TOKEN, id, data => {
                 _addObserver(TOKEN, data)
                 UI.renderFormAdd(data)
             })
+        },
+        add: TOKEN => {
+            $('.dropify').dropify()
+
+            $('#contact_id').select2({
+                ajax: {
+                    url: `${SET.apiURL()}suppliers`,
+                    dataType: 'JSON',
+                    type: 'GET',
+                    headers: {
+                        "Authorization": "Bearer " + TOKEN,
+                        "Content-Type": "application/json",
+                    },
+                    data: function (params) {
+                        var query = {
+                            search: params.term,
+                            limit: 100,
+                            type: 'Supplier'
+                        }
+
+                        return query;
+                    },
+                    processResults: function (data) {
+                        let filtered = [];
+
+                        data.results.map(v => {
+                            let obj = {
+                                id: v.id,
+                                text: v.contact_name,
+                                email: v.email,
+                                address: v.address
+                            }
+
+                            filtered.push(obj)
+                        })
+
+                        return {
+                            results: filtered
+                        };
+                    }
+
+                }
+            })
+
+            $('#purchase_id').select2()
+
+            _onChangeContact(TOKEN)
+            _submitAdd(TOKEN)
         }
     }
 })(settingController, dtController, purchasePaymentUI)

@@ -26,10 +26,15 @@ class Selling_return extends CI_Controller {
 		$this->load->view(strtolower($this->roles).'/selling_return/detail', $data);
     }
     
-	public function add($id)
+	public function add()
+	{
+		$this->load->view(strtolower($this->roles).'/selling_return/add');
+	}
+	
+	public function add_with_selling($id)
 	{
 		$data['id'] = $id;
-		$this->load->view(strtolower($this->roles).'/selling_return/add', $data);
+		$this->load->view(strtolower($this->roles).'/selling_return/add_with_selling', $data);
     }
     
 	public function edit($id)
