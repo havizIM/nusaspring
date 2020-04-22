@@ -166,10 +166,44 @@ const dtController = (() => {
         })
     }
 
+    const _resetFilterRange = table => {
+        $('#btn_reset_range').on('click', function () {
+            $('.range-data').each(function () {
+                $(this).val('')
+            })
+
+            table.draw()
+        })
+    }
+
     return {
         dtFilter: table => {
             _filterEvent(table);
             _resetFilter(table);
+        },
+        dtFilterRange: (table, index) => {
+            $('#form_range').on('submit', function (e) {
+                e.preventDefault()
+
+                $.fn.dataTable.ext.search.push(
+                    function (settings, data, dataIndex) {
+                        let min = $('#start_date').val();
+                        let max = $('#end_date').val();
+                        let startDate = new Date(data[index]);
+
+                        if (min == '' && max == '') return true;
+                        if (min == '' && startDate <= new Date(max)) return true;
+                        if (max == '' && startDate >= new Date(min)) return true;
+                        if (startDate <= new Date(max) && startDate >= new Date(min)) return true;
+                        return false;
+                    }
+                );
+
+                $('#modal_range').modal('hide')
+                table.draw()
+
+                _resetFilterRange(table)
+            })
         },
         dtLanguage: () => {
             return {

@@ -1073,18 +1073,25 @@ const sellingController = ((SET, DT, UI) => {
                             titleAttr: 'Refresh'
                         },
                         {
-                            text: '<i class="fa fa-plus"></i>',
-                            action: function (e, dt, node, config) {
-                                location.hash = '#/selling/add'
-                            },
-                            titleAttr: 'Add'
-                        },
-                        {
                             text: '<i class="fa fa-search"></i>',
                             action: function (e, dt, node, config) {
                                 $('#modal_search').modal('show')
                             },
                             titleAttr: 'Search'
+                        },
+                        {
+                            text: '<i class="fa fa-calendar"></i>',
+                            action: function (e, dt, node, config) {
+                                $('#modal_range').modal('show')
+                            },
+                            titleAttr: 'Search Range'
+                        },
+                        {
+                            text: '<i class="fa fa-plus"></i>',
+                            action: function (e, dt, node, config) {
+                                location.hash = '#/selling/add'
+                            },
+                            titleAttr: 'Add'
                         },
                     ]
                 },
@@ -1188,6 +1195,7 @@ const sellingController = ((SET, DT, UI) => {
             })
 
             DT.dtFilter(table)
+            DT.dtFilterRange(table, 2)
 
             _openDelete('#t_sellings')
             _submitDelete(TOKEN, data => {

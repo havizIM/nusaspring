@@ -98,10 +98,6 @@
                         <input id="col-1-filter" type="text" class="form-control filter-data" data-column="1" placeholder="Search Customer">
                     </div>
                     <div class="form-group">
-                        <label for="col-2-filter">Date</label>
-                        <input id="col-2-filter" type="text" class="form-control filter-data" data-column="2" placeholder="Search Date">
-                    </div>
-                    <div class="form-group">
                         <label for="col-3-filter">Status</label>
                         <input id="col-3-filter" type="text" class="form-control filter-data" data-column="3" placeholder="Search Date">
                     </div>
@@ -117,6 +113,35 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-danger waves-effect" data-dismiss="modal">Close</button>
                     <button type="button" class="btn btn-warning waves-effect" id="btn_reset">Reset</button>
+                    <button type="submit" class="btn btn-info waves-effect waves-light">Search</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<form id="form_range" data-id="2">
+    <div id="modal_range" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Filter Range Selling</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="start_date">Start Date</label>
+                        <input id="start_date" type="date" class="form-control range-data" data-column="2" placeholder="Search Start Date">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="end_date">End Date</label>
+                        <input id="end_date" type="date" class="form-control range-data" data-column="2" placeholder="Search End Date">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger waves-effect" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-warning waves-effect" id="btn_reset_range">Reset</button>
                     <button type="submit" class="btn btn-info waves-effect waves-light">Search</button>
                 </div>
             </div>

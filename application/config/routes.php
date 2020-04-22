@@ -118,3 +118,16 @@ $route['selling_payment/add/(:num)'] = 'page/selling_payment/add_with_selling/$1
 $route['selling_payment/(:num)'] = 'page/selling_payment/detail/$1';
 $route['selling_payment/edit/(:num)'] = 'page/selling_payment/edit/$1';
 
+$route['stock_opname'] = 'page/stock_opname';
+$route['stock_opname/add'] = 'page/stock_opname/add';
+$route['stock_opname/(:num)'] = 'page/stock_opname/detail/$1';
+$route['stock_opname/edit/(:num)'] = 'page/stock_opname/edit/$1';
+
+$route['cost'] = 'page/cost';
+$route['cost/add'] = 'page/cost/add';
+$route['cost/(:num)'] = 'page/cost/detail/$1';
+$route['cost/edit/(:num)'] = 'page/cost/edit/$1';
+
+
+$route['stock_card'] = 'page/stock_card';
+

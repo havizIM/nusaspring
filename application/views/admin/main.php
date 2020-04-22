@@ -159,11 +159,11 @@
                         </li>
                         <li class="sidebar-item"> <a class="sidebar-link has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"><i class="mdi mdi-notification-clear-all"></i><span class="hide-menu">Report</span></a>
                             <ul aria-expanded="false" class="collapse first-level">
-                                <li class="sidebar-item"><a href="#/report/stock_card" class="sidebar-link"><i class="mdi mdi-adjust"></i><span class="hide-menu"> Stock Card</span></a></li>
-                                <li class="sidebar-item"><a href="#/report/stock_opname" class="sidebar-link"><i class="mdi mdi-adjust"></i><span class="hide-menu"> Stock Opname</span></a></li>
+                                <li class="sidebar-item"><a href="#/stock_card" class="sidebar-link"><i class="mdi mdi-adjust"></i><span class="hide-menu"> Stock Card</span></a></li>
+                                <li class="sidebar-item"><a href="#/stock_opname" class="sidebar-link"><i class="mdi mdi-adjust"></i><span class="hide-menu"> Stock Opname</span></a></li>
                             </ul>
                         </li>
-                        
+                        <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link" href="#/cost" aria-expanded="false"><i class="fas fa-dollar-sign"></i><span class="hide-menu">Cost</span></a></li>
                         <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link" href="#/task" aria-expanded="false"><i class="mdi mdi-clipboard-text"></i><span class="hide-menu">Task</span></a></li>
                         <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link" href="#/reminder" aria-expanded="false"><i class="mdi mdi-calendar"></i><span class="hide-menu">Reminder</span></a></li>
                     </ul>
