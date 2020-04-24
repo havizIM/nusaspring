@@ -74,6 +74,11 @@
                                 </tr>
                             </thead>
                             <tbody></tbody>
+                            <tfoot>
+                                <tr>
+                                    <th colspan="7" style="text-align:right" id="table_sum">Total:</th>
+                                </tr>
+                            </tfoot>
                         </table>
                     </div>
                 </div>

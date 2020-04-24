@@ -69,12 +69,12 @@
                                         </div>
                                     </div>
                                     <div class="col-md-12 mb-3">
-                                        <div class="form-group text-right">
+                                        <!-- <div class="form-group text-right">
                                             <div class="custom-control custom-checkbox">
-                                                <input type="checkbox" class="custom-control-input check_all_ppn" id="check_all_ppn">
-                                                <label class="custom-control-label" for="check_all_ppn">PPN for All</label>
+                                                <input type="checkbox" class="custom-control-input include_ppn" id="include_ppn">
+                                                <label class="custom-control-label" for="include_ppn">Price Include PPN</label>
                                             </div>
-                                        </div>
+                                        </div> -->
                                         <div class="table-responsive">
                                             <table class="table" id="t_add_products" style="overflow-x: scroll;">
                                                 <thead>

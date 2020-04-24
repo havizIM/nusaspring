@@ -68,12 +68,12 @@ $(function() {
 
         $('.sidebar-link').each(function(){
             if($(this).hasClass('has-arrow')){
-                $('a[href="' + hash + '"]').addClass('active');
-                $('a[href="' + hash + '"]').parent().parent().parent().addClass('selected');
-                $('a[href="' + hash + '"]').parent().parent().prev().addClass('active');
+                $('.sidebar-link[href="' + hash + '"]').addClass('active');
+                $('.sidebar-link[href="' + hash + '"]').parent().parent().parent().addClass('selected');
+                $('.sidebar-link[href="' + hash + '"]').parent().parent().prev().addClass('active');
             } else {
-                $('a[href="' + hash + '"]').addClass('active');
-                $('a[href="' + hash + '"]').closest('li').addClass('selected');
+                $('.sidebar-link[href="' + hash + '"]').addClass('active');
+                $('.sidebar-link[href="' + hash + '"]').closest('li').addClass('selected');
             }
         })
     })

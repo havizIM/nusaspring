@@ -1,4 +1,4 @@
-const adjustmentUI = ((SET) => {
+const stockOpnameUI = ((SET) => {
     const _filterNull = text => {
         if (text === null) {
             return ''
@@ -24,7 +24,7 @@ const adjustmentUI = ((SET) => {
 
         renderEdit: data => {
             let category = ['Qty Awal', 'Transfer In', 'Transfer Out', 'Other'];
-            
+
             let html = `
                 <div class="row">
                     <div class="col-md-12">
@@ -68,7 +68,7 @@ const adjustmentUI = ((SET) => {
                                                     <th style="width: 30%;">Product</th>
                                                     <th style="width: 20%;">Unit Price</th>
                                                     <th style="width: 20%;">Qty</th>
-                                                    <th style="width: 20%;">Total</th>
+                                                    <th style="width: 20%;">Unit</th>
                                                     <th style="width: 10%;">
                                                         <button class="btn btn-info btn-md" type="button" id="btn_add_row"><i class="fa fa-plus"></i></button>
                                                     </th>
@@ -76,56 +76,36 @@ const adjustmentUI = ((SET) => {
                                             </thead>
                                             <tbody id="coba">
                                                 ${data.products.map((v, index) => {
-                                                    count += 1
+                count += 1
 
-                                                    return `
-
+                return `
                                                         <tr id="row_${count}">
                                                             <td>
-                                                                <select name="product_id[${count}]" id="product_id_${count}" data-id="${count}" class="form-control product_id select2_${v.product_id}" data-sid="${v.product_id}" data-sname="${v.description}" data-sunit="${v.unit}" data-sprice="${v.unit_price}" required>
+                                                                <select name="product_id[${count}]" id="product_id_${count}" data-id="${count}" class="form-control product_id select2_${v.product_id}" required>
                                                                     <option value="" disabled="" selected="">-- Choose Product --</option>
                                                                 </select>
                                                                 <input type="hidden" name="description[${count}]" id="description_${count}" data-id="${count}" value="${v.description}">
                                                             </td>
                                                             <td>
-                                                                <div class="input-group mb-3">
-                                                                    <div class="input-group-prepend">
-                                                                        <span class="input-group-text" id="basic-addon1">Rp. </span>
-                                                                    </div>
-                                                                <input type="number" min="0" name="unit_price[${count}]" id="unit_price_${count}" data-id="${count}" value="${v.unit_price}" class="form-control unit_price">
-                                                                </div>
+                                                                <input type="number" name="unit_price[${count}]" id="unit_price_${count}" data-id="${count}" class="form-control"  value="${v.unit_price}" readonly>
                                                             </td>
                                                             <td>
-                                                                <div class="input-group mb-3">
-                                                                        <input type="number" name="qty[${count}]" id="qty_${count}" data-id="${count}" value="${v.qty}" class="form-control qty" required>
-                                                                        <div class="input-group-prepend">
-                                                                            <input type="hidden" name="unit[${count}]" id="unit_${count}" data-id="${count}" value="${v.unit}" class="form-control" readonly>
-                                                                            <span class="input-group-text" id="unit_text_${count}" data-id="${count}">${v.unit}</span>
-                                                                        </div>
-                                                                    </div>
+                                                                <input type="number" name="qty[${count}]" id="qty_${count}" data-id="${count}" class="form-control" value="${v.qty}" required>
                                                             </td>
                                                             <td>
-                                                                <div class="input-group mb-3">
-                                                                    <div class="input-group-prepend">
-                                                                        <span class="input-group-text" id="basic-addon1">Rp. </span>
-                                                                    </div>
-                                                                    <input type="number" min="0" name="total[${count}]" id="total_${count}" data-id="${count}" class="form-control total" value="${parseFloat(v.unit_price) * parseFloat(v.qty)}">
-                                                                </div>
+                                                                <input type="text" name="unit[${count}]" id="unit_${count}" data-id="${count}" class="form-control" value="${v.unit}" readonly>
                                                             </td>
                                                             <td>
-                                                                <button class="btn btn-danger btn-md btn-remove" type="button" data-id="${count}" data-remove="true"><i class="fa fa-times"></i></button>
+                                                                <button class="btn btn-danger btn-md btn-remove" type="button" id="btn_remove_row_${count}" data-id="${count}" data-remove="true"><i class="fa fa-times"></i></button>
                                                             </td>
                                                         </tr>
                                                     `
-                                                }).join('')}
+            }).join('')}
                                             </tbody>
                                         </table>
                                     </div>
                                 </div>
-                                <div class="col-md-12 text-right">
-                                    <h4>Grand Total : <b id="grand_total">Rp. 0</b></h4>
-                                </div>
-                                <div class="col-md-12 mt-5">
+                                <div class="col-md-12">
                                     <div class="form-group text-right">
                                         <input type="hidden" name="_method" id="_method" value="put">
                                         <a class="btn btn-md btn-danger" href="#/adjustment">Cancel</a>
@@ -142,7 +122,7 @@ const adjustmentUI = ((SET) => {
         },
 
         renderDetail: data => {
-            let no = 1; 
+            let no = 1;
 
             let html = `
 
@@ -156,7 +136,9 @@ const adjustmentUI = ((SET) => {
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="card card-body printableArea">
-                                    <h3><b>ADJUSTMENT</b> <span class="pull-right">#${data.reference_number}</span></h3>
+                                    <h3>
+                                        <b>STOCK OPNAME</b> <span class="pull-right">#${data.so_number}</span>
+                                    </h3>
                                     <hr>
                                     <div class="row">
                                         <table class="w-100">
@@ -172,38 +154,44 @@ const adjustmentUI = ((SET) => {
                                                 </td>
                                                 <td class="w-50 text-right">
                                                     <address>
-                                                        <h3>Details,</h3>
-                                                        <h4 class="font-bold">Category: ${data.category},</h4>
                                                         <p class="m-t-30"><b><i class="fa fa-calendar"></i> Date :</b> ${data.date}</p>
-                                                        <p><b><i class="mdi mdi-album"></i> Reference No :</b> ${_replaceNull(data.reference_number)}</p>
+                                                        <p><b><i class="mdi mdi-album"></i> Stock Opname No :</b> ${_replaceNull(data.so_number)}</p>
                                                     </address>
                                                 </td>
                                             </tr>
                                         </table>
                                         <div class="col-md-12">
-                                            <div class="table-responsive mt-5" style="clear: both;">
+                                            <div class="table-responsive mt-5" style="clear: both; font-size: 12px;">
                                                 <table class="table table-hover">
                                                     <thead>
                                                         <tr>
                                                             <th class="text-center">#</th>
-                                                            <th>Description</th>
-                                                            <th class="text-right">Quantity</th>
-                                                            <th class="text-right">Unit Price</th>
-                                                            <th class="text-right">Total</th>
+                                                            <th>Product</th>
+                                                            <th class="text-right">System Qty</th>
+                                                            <th class="text-right">System Total</th>
+                                                            <th class="text-right">Actual Qty</th>
+                                                            <th class="text-right">Actual Total</th>
+                                                            <th class="text-right">Qty Difference</th>
+                                                            <th class="text-right">Total Difference</th>
+                                                            <th class="text-right">Note</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
                                                         ${data.products.map(v => {
-                                                            return `
+                return `
                                                                 <tr>
                                                                     <td class="text-center">${no++}</td>
                                                                     <td><a href="#/product/${v.product_id}">${v.description}</a></td>
-                                                                    <td class="text-right">${v.qty} ${v.unit}</td>
-                                                                    <td class="text-right"> Rp. ${SET.realCurrency(v.unit_price)} </td>
-                                                                    <td class="text-right"> Rp. ${SET.realCurrency(v.total)} </td>
+                                                                    <td class="text-right">${v.system_qty} ${v.unit}</td>
+                                                                    <td class="text-right"> Rp. ${SET.realCurrency(v.system_total)} </td>
+                                                                    <td class="text-right">${v.actual_qty} ${v.unit}</td>
+                                                                    <td class="text-right"> Rp. ${SET.realCurrency(v.actual_total)} </td>
+                                                                    <td class="text-right">${parseFloat(v.actual_qty - v.system_qty)} ${v.unit}</td>
+                                                                    <td class="text-right"> Rp. ${SET.realCurrency(parseFloat(v.actual_total - v.system_total))} </td>
+                                                                    <td class="text-right">${SET.replaceNull(v.note)} </td>
                                                                 </tr>
                                                             `
-                                                        }).join('')}
+            }).join('')}
                                                     </tbody>
                                                 </table>
                                             </div>
@@ -213,23 +201,28 @@ const adjustmentUI = ((SET) => {
                                             <table class="w-100">
                                                 <tr>
                                                     <td class="w-50">
-                                                        <i>* ${SET.replaceNull(data.memo)}</i>
+                                                        <i>* ${_replaceNull(data.message)}</i>
                                                     </td>
                                                     <td class="w-50">
                                                         <div class="m-t-30 text-right">
-                                                            <h3><b>Grand Total :</b> Rp. ${SET.realCurrency(data.products.reduce((a, b) => a + b.total, 0))}</h3>
+                                                            <p>Actual Qty : <b>Rp. ${SET.realCurrency(data.total_actual_qty)}</b></p>
+                                                            <p>System Qty : <b>Rp. ${SET.realCurrency(data.total_system_qty)}</b></p>
+                                                            <hr>
+                                                            <p><h4>Qty Difference : <b>Rp. ${SET.realCurrency(parseFloat(data.total_actual_qty - data.total_system_qty))}</b></h4></p>
+                                                        </div>
+                                                        <div class="m-t-40 text-right">
+                                                            <p>Actual Amount : <b>Rp. ${SET.realCurrency(data.total_actual_amount)}</b></p>
+                                                            <p>System Amount : <b>Rp. ${SET.realCurrency(data.total_system_amount)}</b></p>
+                                                            <hr>
+                                                            <p><h4>Amount Difference : <b>Rp. ${SET.realCurrency(parseFloat(data.total_actual_amount - data.total_system_amount))}</b></h4></p>
+                                                        </div>
+                                                        <div class="m-t-40 text-right">
+                                                            <p><h4>Shrinkage : <b>${SET.realCurrency(parseFloat(((data.total_actual_amount - data.total_system_amount) / data.total_system_amount) * 100))} %</b></h4></p>
                                                         </div>
                                                     </td>
                                                 </tr>
                                             </table>
                                         </div>
-                                    </div>
-                                </div>
-                                <div class="card-body">
-                                    <div class="text-right">
-                                        <a class="btn btn-success" href="#/adjustment/edit/${data.id}"><i class="fa fa-edit"></i> Edit </a>
-                                        <button class="btn btn-danger btn-delete" data-id="${data.id}" data-name="${data.category}" type="button"><i class="fa fa-times"></i> Delete </button>
-                                        <button id="print" class="btn btn-default btn-outline" type="button"> <span><i class="fa fa-print"></i> Print</span> </button>
                                     </div>
                                 </div>
                             </div>
@@ -239,12 +232,10 @@ const adjustmentUI = ((SET) => {
                         ${data.attachment === null ? `
                             <h3>Tidak ada Attachment</h3>
                         ` : `
-                            <embed class="w-100" src="${SET.apiURL()}adjustments/file/${data.attachment}">
+                            <embed class="w-100" src="${SET.apiURL()}stock_opnames/file/${data.attachment}">
                         `}
                     </div>
                 </div>
-
-                
             `
 
             $('#main_content').html(html)
@@ -271,35 +262,42 @@ const adjustmentUI = ((SET) => {
                             <div class="input-group-prepend">
                                 <span class="input-group-text" id="basic-addon1">Rp. </span>
                             </div>
-                        <input type="number" min="0" value="0" name="unit_price[${count}]" id="unit_price_${count}" data-id="${count}" class="form-control unit_price">
+                            <input type="number"  min="0" value="0" name="unit_price[${count}]" id="unit_price_${count}" data-id="${count}" class="form-control unit_price">
                         </div>
                     </td>
                     <td>
                         <div class="input-group mb-3">
-                                <input type="number" value="0" name="qty[${count}]" id="qty_${count}" data-id="${count}" class="form-control qty" required>
-                                <div class="input-group-prepend">
-                                    <input type="hidden" name="unit[${count}]" id="unit_${count}" data-id="${count}" class="form-control" readonly>
-                                    <span class="input-group-text" id="unit_text_${count}" data-id="${count}">-</span>
-                                </div>
+                            <input type="number"  min="0" value="0" name="actual_qty[${count}]" id="actual_qty_${count}" data-id="${count}" class="form-control actual_qty" required>
+                            <div class="input-group-prepend">
+                                <input type="hidden" name="unit[${count}]" id="unit_${count}" data-id="${count}" class="form-control">
+                                <span class="input-group-text" id="unit_text_${count}" data-id="${count}">-</span>
                             </div>
+                        </div>
                     </td>
                     <td>
                         <div class="input-group mb-3">
                             <div class="input-group-prepend">
                                 <span class="input-group-text" id="basic-addon1">Rp. </span>
                             </div>
-                            <input type="number" min="0" value="0" name="total[${count}]" id="total_${count}" data-id="${count}" class="form-control total">
+                            <input type="number" min="0" value="0" name="actual_total[${count}]" id="actual_total_${count}" data-id="${count}" class="form-control actual_total">
                         </div>
                     </td>
                     <td>
-                        <button class="btn btn-danger btn-md btn-remove" type="button" id="btn_remove_row" data-id="${count}" data-remove="true"><i class="fa fa-times"></i></button>
+                        <div class="form-group">
+                            <textarea name="note[0]" id="note_0" data-id="0" rows="1" class="form-control"></textarea>
+                        </div>
+                    </td>
+                    <td>
+                        <input type="hidden" name="system_qty[${count}]" id="system_qty_${count}" data-id="${count}" class="system_qty" value="0">
+                        <input type="hidden" name="system_total[${count}]" id="system_total_${count}" data-id="${count}" class="system_total" value="0">
+                        <button class="btn btn-danger btn-md btn-remove" type="button" data-id="${count}" data-remove="true"><i class="fa fa-times"></i></button>
                     </td>
                 </tr>
             `
 
             $('#t_add_products tbody').append(html)
 
-            $('#product_id_'+count).select2({
+            $('#product_id_' + count).select2({
                 ajax: {
                     url: `${SET.apiURL()}products`,
                     dataType: 'JSON',
@@ -324,7 +322,8 @@ const adjustmentUI = ((SET) => {
                                 id: v.id,
                                 text: v.product_name,
                                 price: v.purchase_price,
-                                unit: v.unit === null ? null : v.unit.unit_name
+                                unit: v.unit === null ? null : v.unit.unit_name,
+                                stock: parseFloat(v.sum_adjustment) + parseFloat(v.sum_purchase) + parseFloat(v.sum_purchase_return) + parseFloat(v.sum_selling) + parseFloat(v.sum_selling_return)
                             }
 
                             filtered.push(obj)
@@ -335,7 +334,7 @@ const adjustmentUI = ((SET) => {
                         };
                     }
                 }
-            });
+            })
 
             $('#product_id_' + count).on('select2:open', () => {
                 $(".select2-results:not(:has(a))").prepend('<a href="javascript:void(0)" class="btn_add_product" style="padding: 6px;height: 20px;display: inline-table;">Create new item</a>');
@@ -344,23 +343,23 @@ const adjustmentUI = ((SET) => {
     }
 })(settingController)
 
-const adjustmentController = ((SET, DT, UI) => {
+const stockOpnameController = ((SET, DT, UI) => {
 
     /* -------------------- ADD ACTION ----------------- */
     const _addRow = TOKEN => {
-        $('#btn_add_row').click(function(){
+        $('.btn_add_row').click(function () {
             UI.renderRow(TOKEN)
         })
     }
 
     const _removeRow = () => {
-        $('#t_add_products').on('click', '.btn-remove', function(){
+        $('#t_add_products').on('click', '.btn-remove', function () {
             let id = $(this).data('id')
             let remove = $(this).data('remove')
 
-            if(remove === true && id){
+            if (remove === true && id) {
                 $('#row_' + id).remove();
-                _getTotal()
+                _calculateAll()
             }
         })
     }
@@ -369,57 +368,84 @@ const adjustmentController = ((SET, DT, UI) => {
         $('#t_add_products').on('select2:select', '.product_id', function (e) {
             let data = e.params.data
             let id = $(this).data('id')
-            let qty = $('#qty_0').val()
-            
+
             $(`#description_${id}`).val(data.text)
             $(`#unit_price_${id}`).val(data.price).trigger('keyup')
             $(`#unit_${id}`).val(data.unit)
             $(`#unit_text_${id}`).text(data.unit)
-            $(`#total_${id}`).text(parseFloat(data.price) * parseFloat(qty)).trigger('keyup')
+            
+            let system_total = data.price * data.stock;
+            $(`#system_qty_${id}`).val(data.stock)
+            $(`#system_total_${id}`).val(system_total)
+
+            _calculateAll()
+        });
+    }
+
+    const _onKeyupUnitPrice = () => {
+        $('#t_add_products').on('keyup', '.unit_price', function () {
+            let id = $(this).data('id')
+            let thisVal = $(this).val()
+            
+            let actual_qty = $('#actual_qty_' + id).val()
+            let system_qty = $('#system_qty_' + id).val()
+            let actual_total = parseFloat(thisVal) * parseFloat(actual_qty)
+            let system_total = parseFloat(thisVal) * parseFloat(system_qty)
+
+            $('#actual_total_' + id).val(actual_total)
+            $('#system_total_' + id).val(system_total)
+
+            _calculateAll()
         });
     }
 
     const _onKeyupQty = () => {
-        $('#t_add_products').on('keyup', '.qty', function () {
+        $('#t_add_products').on('keyup', '.actual_qty', function () {
             let id = $(this).data('id')
-            let qty = $(this).val()
-            let unit_price = $('#unit_price_'+id).val()
+            let thisVal = $(this).val()
+            let unit_price = $('#unit_price_' + id).val()
+            let actual_total = parseFloat(unit_price) * parseFloat(thisVal)
 
-            $(`#total_${id}`).val(parseFloat(unit_price) * parseFloat(qty)).trigger('keyup')
+            $('#actual_total_' + id).val(actual_total)
+
+            _calculateAll()
         });
     }
 
-    const _onUnitPrice = () => {
-        $('#t_add_products').on('keyup', '.unit_price', function () {
-            let id = $(this).data('id')
-            let unit_price = $(this).val()
-            let qty = $('#qty_' + id).val()
-
-            $(`#total_${id}`).val(parseFloat(unit_price) * parseFloat(qty)).trigger('keyup')
-        });
+    const _onKeyupTotal = () => {
+        $('#t_add_products').on('keyup', '.actual_total', function (event, state) {
+            _calculateAll()
+        })
     }
 
-    const _onTotalKeyup = () => {
-        $('#t_add_products').on('keyup', '.total', function () {
-            let id = $(this).data('id')
+    const _calculateAll = () => {
+        let sum_actual_qty = 0
+        let sum_actual_total = 0
 
-            _getTotal()
-        });
-    }
-
-    const _getTotal = () => {
-        let grand_total = 0;
-
-        $('.total').each(function () {
+        $('.actual_qty').each(function () {
             let total = $(this).val();
 
             if (total !== '') {
-                grand_total += parseFloat(total)
+                sum_actual_qty += parseFloat(total)
             }
-
         })
 
-        $('#grand_total').text(`Rp. ${SET.realCurrency(grand_total)}`)
+        $('.actual_total').each(function () {
+            let total = $(this).val();
+
+            if (total !== '') {
+                sum_actual_total += parseFloat(total)
+            }
+        })
+
+        $('#sum_actual_qty').val(sum_actual_qty).trigger('input')
+        $('#sum_actual_qty_text').text(`${SET.realCurrency(sum_actual_qty)}`)
+
+        $('#sum_actual_total').val(sum_actual_total).trigger('input')
+        $('#sum_actual_total_text').text(`Rp. ${SET.realCurrency(sum_actual_total)}`)
+
+
+
     }
 
     const _submitAdd = TOKEN => {
@@ -433,12 +459,12 @@ const adjustmentController = ((SET, DT, UI) => {
                 error.insertAfter(element)
             },
             rules: {
-                category: 'required',
+                so_number: 'required',
                 date: 'required',
             },
             submitHandler: form => {
                 $.ajax({
-                    url: `${SET.apiURL()}adjustments`,
+                    url: `${SET.apiURL()}stock_opnames`,
                     type: 'POST',
                     dataType: 'JSON',
                     data: new FormData(form),
@@ -451,7 +477,7 @@ const adjustmentController = ((SET, DT, UI) => {
                     },
                     success: res => {
                         toastr.success(res.message, 'Success', { "progressBar": true, "closeButton": true, "positionClass": 'toast-bottom-right' });
-                        location.hash = `#/adjustment/${res.results.id}`
+                        location.hash = `#/stock_opname/${res.results.id}`
                     },
                     error: ({ responseJSON }) => {
                         toastr.error(responseJSON.message, 'Failed', { "progressBar": true, "closeButton": true, "positionClass": 'toast-bottom-right' });
@@ -488,7 +514,7 @@ const adjustmentController = ((SET, DT, UI) => {
                 toastr.error('Data cannot be proccessed', 'Failed', { "progressBar": true, "closeButton": true, "positionClass": 'toast-bottom-right' });
             } else {
                 $.ajax({
-                    url: `${SET.apiURL()}adjustments/${id}`,
+                    url: `${SET.apiURL()}stock_opnames/${id}`,
                     type: 'DELETE',
                     dataType: 'JSON',
                     beforeSend: xhr => {
@@ -511,6 +537,26 @@ const adjustmentController = ((SET, DT, UI) => {
     }
 
     /* -------------------- FETCH DATA ACTION ----------------- */
+    const _fetchSupplier = (TOKEN, success, error) => {
+        $.ajax({
+            url: `${SET.apiURL()}suppliers`,
+            type: 'GET',
+            dataType: 'JSON',
+            beforeSend: xhr => {
+                xhr.setRequestHeader("Authorization", "Bearer " + TOKEN)
+            },
+            success: res => {
+                success(res.results)
+            },
+            error: ({ responseJSON }) => {
+                error(responseJSON)
+            },
+            complete: () => {
+
+            }
+        })
+    }
+
     const _fetchProduct = (TOKEN, success, error) => {
         $.ajax({
             url: `${SET.apiURL()}products`,
@@ -543,78 +589,31 @@ const adjustmentController = ((SET, DT, UI) => {
 
                 $('.dropify').dropify();
 
-                $('.product_id').each(function (v) {
-                    let id = $(this).data('id');
+                _fetchProduct(TOKEN, data => {
+                    let filtered = [];
 
-                    let data = {
-                        id: $(this).data('sid'),
-                        text: $(this).data('sname'),
-                        price: $(this).data('sprice'),
-                        unit: $(this).data('sunit')
-                    }
-
-                    $(this).select2({
-                        ajax: {
-                            url: `${SET.apiURL()}products`,
-                            dataType: 'JSON',
-                            type: 'GET',
-                            headers: {
-                                "Authorization": "Bearer " + TOKEN,
-                                "Content-Type": "application/json",
-                            },
-                            data: function (params) {
-                                var query = {
-                                    search: params.term,
-                                    limit: 100
-                                }
-
-                                return query;
-                            },
-                            processResults: function (data) {
-                                let filtered = [];
-
-                                data.results.map(v => {
-                                    let obj = {
-                                        id: v.id,
-                                        text: v.product_name,
-                                        price: v.purchase_price,
-                                        unit: v.unit === null ? null : v.unit.unit_name
-                                    }
-
-                                    filtered.push(obj)
-                                })
-
-                                return {
-                                    results: filtered
-                                };
-                            }
+                    data.filter(v => {
+                        let obj = {
+                            id: v.id,
+                            text: v.product_name,
+                            price: v.purchase_price,
+                            unit: v.unit === null ? null : v.unit.unit_name
                         }
+
+                        filtered.push(obj)
                     })
 
-                    let option = new Option(data.text, data.id, true, true);
-                    $(this).append(option).trigger('change');
+                    UI.renderSelect2(adjustment.products, filtered)
 
-                    // manually trigger the `select2:select` event
-                    $(this).trigger({
-                        type: 'select2:select',
-                        params: {
-                            data: data
-                        }
+                    _addRow(filtered)
+                    _onChangeProduct()
+                    _removeRow()
+
+                }, error => {
+                    $('.product_id').select2({
+                        data: []
                     });
-
-                    $(this).on('select2:open', () => {
-                        $(".select2-results:not(:has(a))").prepend('<a href="javascript:void(0)" class="btn_add_product" style="padding: 6px;height: 20px;display: inline-table;">Create new item</a>');
-                    })
-
                 })
-
-                _addRow(TOKEN)
-                _onChangeProduct()
-                _onKeyupQty()
-                _onUnitPrice()
-                _onTotalKeyup()
-                _getTotal()
-                _removeRow()
 
                 _submitEdit(TOKEN, id)
             }
@@ -673,9 +672,9 @@ const adjustmentController = ((SET, DT, UI) => {
     }
 
     /* -------------------- DETAIL ACTION ----------------- */
-    const _fetchAdjustment = (TOKEN, id, callback) => {
+    const _fetcStockOpname = (TOKEN, id, callback) => {
         $.ajax({
-            url: `${SET.apiURL()}adjustments/${id}`,
+            url: `${SET.apiURL()}stock_opnames/${id}`,
             type: 'GET',
             dataType: 'JSON',
             beforeSend: xhr => {
@@ -707,9 +706,10 @@ const adjustmentController = ((SET, DT, UI) => {
 
     return {
         data: TOKEN => {
-            console.log('Adjustment Controller is running...')
 
-            const table = $('#t_adjustment').DataTable({
+            console.log('Purchase Controller is running...')
+
+            const table = $('#t_stock_opnames').DataTable({
                 columnDefs: [
                     {
                         targets: [4],
@@ -752,8 +752,8 @@ const adjustmentController = ((SET, DT, UI) => {
                                     exportOptions: {
                                         columns: [0, 1, 2, 3]
                                     },
-                                    filename: 'DATA_ADJUSTMENT',
-                                    title: 'Data Adjustment',
+                                    filename: 'DATA_STOCK_OPNAME',
+                                    title: 'Data Stock Opname',
                                 },
                                 {
                                     extend: 'excelHtml5',
@@ -761,8 +761,8 @@ const adjustmentController = ((SET, DT, UI) => {
                                     exportOptions: {
                                         columns: [0, 1, 2, 3]
                                     },
-                                    filename: 'DATA_ADJUSTMENT',
-                                    title: 'Data Adjustment'
+                                    filename: 'DATA_STOCK_OPNAME',
+                                    title: 'Data Stock Opname'
                                 },
                                 {
                                     extend: 'csvHtml5',
@@ -770,8 +770,8 @@ const adjustmentController = ((SET, DT, UI) => {
                                     exportOptions: {
                                         columns: [0, 1, 2, 3]
                                     },
-                                    filename: 'DATA_ADJUSTMENT',
-                                    title: 'Data Adjustment'
+                                    filename: 'DATA_STOCK_OPNAME',
+                                    title: 'Data Stock Opname'
                                 },
                                 {
                                     extend: 'print',
@@ -779,8 +779,8 @@ const adjustmentController = ((SET, DT, UI) => {
                                     exportOptions: {
                                         columns: [0, 1, 2, 3]
                                     },
-                                    filename: 'DATA_ADJUSTMENT',
-                                    title: '<h4>Data Adjustment</h4>'
+                                    filename: 'DATA_STOCK_OPNAME',
+                                    title: '<h4>Data Stock Opname</h4>'
                                 },
                             ]
                         },
@@ -814,14 +814,14 @@ const adjustmentController = ((SET, DT, UI) => {
                         {
                             text: '<i class="fa fa-plus"></i>',
                             action: function (e, dt, node, config) {
-                                location.hash = '#/adjustment/add'
+                                location.hash = '#/stock_opname/add'
                             },
                             titleAttr: 'Add'
                         },
                     ]
                 },
                 ajax: {
-                    url: `${SET.apiURL()}adjustments`,
+                    url: `${SET.apiURL()}stock_opnames`,
                     type: 'GET',
                     dataType: 'JSON',
                     beforeSend: xhr => {
@@ -829,15 +829,16 @@ const adjustmentController = ((SET, DT, UI) => {
                         xhr.setRequestHeader("Authorization", "Bearer " + TOKEN)
                     },
                     dataSrc: res => {
-                        let qty_awal = res.results.filter(v => v.category === 'Qty Awal').length;
-                        let transfer_in = res.results.filter(v => v.category === 'Transfer In').length;
-                        let transfer_out = res.results.filter(v => v.category === 'Transfer Out').length;
-                        let other = res.results.filter(v => v.category === 'Other').length;
+                        let sum_actual_qty = res.results.reduce((a, b) => a + b.total_actual_qty, 0);
+                        let sum_system_qty = res.results.reduce((a, b) => a + b.total_system_qty, 0);
+                        let sum_actual_amount = res.results.reduce((a, b) => a + b.total_actual_amount, 0);
+                        let sum_system_amount = res.results.reduce((a, b) => a + b.total_system_amount, 0);
 
-                        $('#count_qty_awal').text(SET.positiveCurrency(qty_awal))
-                        $('#count_transfer_in').text(SET.positiveCurrency(transfer_in))
-                        $('#count_transfer_out').text(SET.positiveCurrency(transfer_out))
-                        $('#count_other').text(SET.positiveCurrency(other))
+                        let sum_qty = parseFloat(sum_actual_qty) - parseFloat(sum_system_qty)
+                        let sum_total = parseFloat(sum_actual_amount) - parseFloat(sum_system_amount)
+
+                        $('#sum_qty').text(SET.realCurrency(sum_qty))
+                        $('#sum_total').text(`Rp. ${SET.realCurrency(sum_total)}`)
 
                         return res.results
                     },
@@ -850,12 +851,23 @@ const adjustmentController = ((SET, DT, UI) => {
                         data: "id",
                         render: function (data, type, row) {
                             return `
-                                <a href="#/adjustment/${row.id}">${row.category}</a>
+                                <a href="#/stock_opname/${row.id}">${row.so_number}</a>
                             `;
                         }
                     },
                     {
-                        data: "reference_number"
+                        data: "status",
+                        render: function (data, type, row) {
+                            if(row.status === 'Proccess'){
+                                return `
+                                    <a class="text-warning">${row.status}</a>
+                                `;
+                            } else {
+                                return `
+                                    <a class="text-success">${row.status}</a>
+                                `;
+                            }
+                        }
                     },
                     {
                         data: "date"
@@ -863,29 +875,44 @@ const adjustmentController = ((SET, DT, UI) => {
                     {
                         data: "grand_total",
                         render: function (data, type, row) {
-                            return `
-                                Rp. ${SET.realCurrency(row.grand_total)}
-                            `;
+                            let sum_qty = parseFloat(row.total_actual_qty) - parseFloat(row.total_system_qty)
+                            return `${sum_qty}`
                         }
                     },
                     {
-                        data: "memo"
+                        data: "grand_total",
+                        render: function (data, type, row) {
+                            let sum_total = parseFloat(row.total_actual_amount) - parseFloat(row.total_system_amount)
+                            return `Rp. ${SET.realCurrency(sum_total)}`
+                        }
+                    },
+                    {
+                        data: "memo",
+                        render: function (data, type, row) {
+                            return `${SET.realCurrency(parseFloat(((row.total_actual_amount - row.total_system_amount) / row.total_system_amount) * 100))} %`
+                        }
                     },
                     {
                         data: "id",
                         render: function (data, type, row) {
-                            return `
-                                <div class="btn-group">
-                                    <button type="button" class="btn btn-light dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        <i class="ti-settings"></i>
-                                    </button>
-                                    <div class="dropdown-menu animated flipInY" x-placement="bottom-start" style="position: absolute; transform: translate3d(-33px, 35px, 0px); top: 0px; left: 0px; will-change: transform;">
-                                        <a class="dropdown-item btn-delete" href="javascript:void(0)" id="btn_delete" data-id="${row.id}" data-name="${row.category}"><i class="fa fa-trash"></i> Delete</a>
-                                        <div class="dropdown-divider"></div>
-                                        <a class="dropdown-item" href="#/adjustment/edit/${row.id}"><i class="fa fa-edit"></i> Edit</a>
+                            if(row.status === 'Proccess'){
+                                return `
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-light dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <i class="ti-settings"></i>
+                                        </button>
+                                        <div class="dropdown-menu animated flipInY" x-placement="bottom-start" style="position: absolute; transform: translate3d(-33px, 35px, 0px); top: 0px; left: 0px; will-change: transform;">
+                                            <a class="dropdown-item btn-delete" href="javascript:void(0)" id="btn_delete" data-id="${row.id}" data-name="${row.so_number}"><i class="fa fa-trash"></i> Delete</a>
+                                            <div class="dropdown-divider"></div>
+                                            <a class="dropdown-item" href="#/stock_opname/edit/${row.id}"><i class="fa fa-edit"></i> Edit</a>
+                                            <div class="dropdown-divider"></div>
+                                            <a class="dropdown-item" href="javascript:void(0)" data-id="${row.id}" data-name="${row.so_number}"><i class="fa fa-check"></i> Validate</a>
+                                        </div>
                                     </div>
-                                </div>
-                            `;
+                                `;
+                            } else {
+                                return `<i class="fa fa-check"></i>`
+                            }
                         }
                     }
                 ],
@@ -894,14 +921,18 @@ const adjustmentController = ((SET, DT, UI) => {
                     let filtered = api.rows({ search: 'applied' }).data()
                     let data = api.rows().data()
 
-                    let filtered_sum_total = filtered.reduce((a, b) => a + b.grand_total, 0);
+                    let sum_actual_amount = data.reduce((a, b) => a + b.total_actual_amount, 0);
+                    let sum_system_amount = data.reduce((a, b) => a + b.total_system_amount, 0);
+                    let filtered_sum_actual_amount = filtered.reduce((a, b) => a + b.total_actual_amount, 0);
+                    let filtered_sum_system_amount = filtered.reduce((a, b) => a + b.total_system_amount, 0);
 
-                    let sum_total = data.reduce((a, b) => a + b.grand_total, 0);
+                    let sum_total = parseFloat(sum_actual_amount) - parseFloat(sum_system_amount)
+                    let filtered_sum_total = parseFloat(filtered_sum_actual_amount) - parseFloat(filtered_sum_system_amount)
 
                     $(api.column(1).footer()).html(
                         `<b>
-                            Filtered Total : Rp. ${SET.positiveCurrency(filtered_sum_total)} <br />
-                            Grand Total : Rp. ${SET.positiveCurrency(sum_total)}
+                            Filtered Total : Rp. ${SET.realCurrency(filtered_sum_total)} <br />
+                            Grand Total : Rp. ${SET.realCurrency(sum_total)}
                         </b>`
                     );
                 },
@@ -911,7 +942,7 @@ const adjustmentController = ((SET, DT, UI) => {
             DT.dtFilter(table)
             DT.dtFilterRange(table, 2)
 
-            _openDelete('#t_adjustment')
+            _openDelete('#t_stock_opnames')
             _submitDelete(TOKEN, data => {
                 table.ajax.reload()
                 $('#modal_delete').modal('hide')
@@ -923,6 +954,7 @@ const adjustmentController = ((SET, DT, UI) => {
             UI.resetCount()
 
             $('.dropify').dropify();
+
             $('.product_id').select2({
                 ajax: {
                     url: `${SET.apiURL()}products`,
@@ -948,7 +980,9 @@ const adjustmentController = ((SET, DT, UI) => {
                                 id: v.id,
                                 text: v.product_name,
                                 price: v.purchase_price,
-                                unit: v.unit === null ? null : v.unit.unit_name
+                                unit: v.unit === null ? null : v.unit.unit_name,
+                                stock: parseFloat(v.sum_adjustment) + parseFloat(v.sum_purchase) + parseFloat(v.sum_purchase_return) + parseFloat(v.sum_selling) + parseFloat(v.sum_selling_return)
+
                             }
 
                             filtered.push(obj)
@@ -958,27 +992,24 @@ const adjustmentController = ((SET, DT, UI) => {
                             results: filtered
                         };
                     }
+
                 }
             });
+
+            $('#contact_id').on('select2:open', () => {
+                $(".select2-results:not(:has(a))").prepend('<a href="javascript:void(0)" class="btn_add_contact" style="padding: 6px;height: 20px;display: inline-table;">Create new item</a>');
+            })
 
             $('.product_id').on('select2:open', () => {
                 $(".select2-results:not(:has(a))").prepend('<a href="javascript:void(0)" class="btn_add_product" style="padding: 6px;height: 20px;display: inline-table;">Create new item</a>');
             })
 
-                
-
-            // }, error => {
-            //     $('.product_id').select2({
-            //         data: []
-            //     });
-            // })
-
             _addRow(TOKEN)
-            _onChangeProduct()
-            _onKeyupQty()
-            _onUnitPrice()
-            _onTotalKeyup()
             _removeRow()
+            _onChangeProduct()
+            _onKeyupUnitPrice()
+            _onKeyupQty()
+            _onKeyupTotal()
 
             _submitAdd(TOKEN)
 
@@ -996,17 +1027,17 @@ const adjustmentController = ((SET, DT, UI) => {
         detail: (TOKEN, id) => {
             console.log('Detail Adjustment Controller is running...')
 
-            _fetchAdjustment(TOKEN, id, data => {
+            _fetcStockOpname(TOKEN, id, data => {
                 UI.renderDetail(data)
             })
 
             _printAll()
             _openDelete('#detail_container')
             _submitDelete(TOKEN, data => {
-                location.hash = '#/adjustment'
+                location.hash = '#/stock_opname'
             })
         }
     }
-})(settingController, dtController, adjustmentUI)
+})(settingController, dtController, stockOpnameUI)
 
-export default adjustmentController
+export default stockOpnameController

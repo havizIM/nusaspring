@@ -1181,6 +1181,29 @@ const purchaseController = ((SET, DT, UI) => {
                         }
                     }
                 ],
+                footerCallback: function () {
+                    let api = this.api()
+                    let filtered = api.rows({ search: 'applied' }).data()
+                    let data = api.rows().data()
+
+                    let filtered_sum_total = filtered.reduce((a, b) => a + b.grand_total, 0);
+                    let filtered_sum_ppn = filtered.reduce((a, b) => a + b.total_ppn, 0);
+                    let filtered_sum_discount = filtered.reduce((a, b) => a + SET.replaceNullToZero(b.total_discount), 0);
+
+                    let sum_total = data.reduce((a, b) => a + b.grand_total, 0);
+                    let sum_ppn = data.reduce((a, b) => a + b.total_ppn, 0);
+                    let sum_discount = data.reduce((a, b) => a + SET.replaceNullToZero(b.total_discount), 0);
+
+                    let filtered_grand_total = parseFloat(filtered_sum_total) + parseFloat(filtered_sum_ppn) + parseFloat(filtered_sum_discount)
+                    let grand_total = parseFloat(sum_total) + parseFloat(sum_ppn) + parseFloat(sum_discount)
+
+                    $(api.column(1).footer()).html(
+                        `<b>
+                            Filtered Total : Rp. ${SET.positiveCurrency(filtered_grand_total)} <br />
+                            Grand Total : Rp. ${SET.positiveCurrency(grand_total)}
+                        </b>`
+                    );
+                },
                 order: [[2, "desc"]]
             })
 

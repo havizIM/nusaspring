@@ -8,7 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="">
-    <link rel="icon" type="image/png" sizes="16x16" href="<?= base_url() ?>assets/images/favicon.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="<?= base_url() ?>assets/images/logo-black.png">
     <title>Nusa Spring | Login</title>
     
 	<link href="https://fonts.googleapis.com/css?family=Roboto:400,300,100,500,700,900" rel="stylesheet" type="text/css">
@@ -38,8 +38,8 @@
             <div class="auth-box on-sidebar">
                 <div id="loginform">
                     <div class="logo">
-                        <span class="db"><img src="<?= base_url() ?>assets/images/logo-icon.png" alt="logo" /></span>
-                        <h5 class="font-medium m-b-20">Sign In to Adminstrator</h5>
+                        <span class="db"><img src="<?= base_url() ?>assets/images/logo-black.png" alt="logo" /></span>
+                        <h5 class="font-medium m-t-10 m-b-20">Sign In to Adminstrator</h5>
                     </div>
 
                     <div class="row">

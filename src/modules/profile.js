@@ -57,6 +57,8 @@ const profileController = ((SET, UI) => {
             success: ({ results }) => {
                 $('#profile_name').text(results.name)
                 $('#profile_roles').text(results.roles)
+                $('#profile_phone').text(results.phone)
+                $('#profile_address').text(results.address)
                 $('#profile_email').text(results.email)
 
                 if(results.logs.length === 0){

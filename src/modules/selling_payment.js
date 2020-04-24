@@ -616,6 +616,22 @@ const sellingPaymentController = ((SET, DT, UI) => {
                         }
                     }
                 ],
+                footerCallback: function () {
+                    let api = this.api()
+                    let filtered = api.rows({ search: 'applied' }).data()
+                    let data = api.rows().data()
+
+                    let filtered_sum_total = filtered.reduce((a, b) => a + b.amount, 0);
+
+                    let sum_total = data.reduce((a, b) => a + b.amount, 0);
+
+                    $(api.column(1).footer()).html(
+                        `<b>
+                            Filtered Total : Rp. ${SET.positiveCurrency(filtered_sum_total)} <br />
+                            Grand Total : Rp. ${SET.positiveCurrency(sum_total)}
+                        </b>`
+                    );
+                },
                 order: [[2, "desc"]]
             })
 

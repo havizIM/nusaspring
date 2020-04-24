@@ -1,19 +1,4 @@
-const purchaseReturnUI = ((SET) => {
-    const _filterNull = text => {
-        if (text === null) {
-            return ''
-        } else {
-            return text;
-        }
-    }
-
-    const _replaceNull = text => {
-        if (text === null) {
-            return '-'
-        } else {
-            return text;
-        }
-    }
+const costUI = ((SET) => {
 
     const _getMaxQty = (returns, id) => {
         let max = 0
@@ -49,7 +34,7 @@ const purchaseReturnUI = ((SET) => {
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="card card-body printableArea">
-                                    <h3><b>PURCHASE RETURN</b> <span class="pull-right">#${data.return_number}</span></h3>
+                                    <h3><b>COST</b> <span class="pull-right">#${data.cost_number}</span></h3>
                                     <hr>
                                     <div class="row">
                                         <table class="w-100">
@@ -66,14 +51,10 @@ const purchaseReturnUI = ((SET) => {
                                                 <td class="w-50 text-right">
                                                     <address>
                                                         <h3>To</h3>
-                                                        <h4 class="font-bold"><a href="#/supplier/${data.contact.id}">${data.contact.contact_name}</a></h4>
-                                                        <p class="text-muted m-l-30">${data.purchase !== null ? `${SET.replaceNull(data.purchase.address)}` : `${SET.replaceNull(data.contact.address)}`},
-                                                        <br> ${data.purchase !== null ? `${SET.replaceNull(data.purchase.email)}` : `${SET.replaceNull(data.contact.email)}`}</p>
+                                                        <h4 class="font-bold">${SET.replaceNull(data.to)}</h4>
 
                                                         <p class="m-t-30"><b><i class="fa fa-calendar"></i> Date :</b> ${data.date}</p>
-                                                        <p><b><i class="mdi mdi-album"></i> Return No :</b> ${_replaceNull(data.return_number)}</p>
-                                                        <p><b><i class="mdi mdi-animation"></i> Purchase No :</b> ${data.purchase !== null ? `<a href="#/purchase/${data.purchase.id}">${_replaceNull(data.purchase.purchase_number)}</a>` : 'Pembelian'}</p>
-                                                        <p><b><i class="mdi mdi-animation"></i> Reference No :</b> ${_replaceNull(data.reference_number)}</p>
+                                                        <p><b><i class="mdi mdi-album"></i> Cost No :</b> ${SET.replaceNull(data.cost_number)}</p>
                                                     </address>
                                                 </td>
                                             </tr>
@@ -85,20 +66,16 @@ const purchaseReturnUI = ((SET) => {
                                                         <tr>
                                                             <th class="text-center">#</th>
                                                             <th>Description</th>
-                                                            <th class="text-right">Quantity</th>
-                                                            <th class="text-right">Unit Price</th>
-                                                            <th class="text-right">Total</th>
+                                                            <th class="text-right">Amount</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        ${data.products.map(v => {
+                                                        ${data.details.map(v => {
                 return `
                                                                 <tr>
                                                                     <td class="text-center">${no++}</td>
-                                                                    <td><a href="#/product/${v.product_id}">${v.description}</a></td>
-                                                                    <td class="text-right">${Math.abs(v.qty)} ${v.unit}</td>
-                                                                    <td class="text-right"> Rp. ${SET.positiveCurrency(v.unit_price)} </td>
-                                                                    <td class="text-right"> Rp. ${SET.positiveCurrency(v.total)} </td>
+                                                                    <td>${v.description}</td>
+                                                                    <td class="text-right"> Rp. ${SET.positiveCurrency(v.amount)} </td>
                                                                 </tr>
                                                             `
             }).join('')}
@@ -111,7 +88,7 @@ const purchaseReturnUI = ((SET) => {
                                             <table class="w-100">
                                                 <tr>
                                                     <td class="w-50">
-                                                        <i>* ${_replaceNull(data.memo)}</i>
+                                                        <i>* ${SET.replaceNull(data.memo)}</i>
                                                     </td>
                                                     <td class="w-50">
                                                         <div class="m-t-30 text-right">
@@ -130,8 +107,8 @@ const purchaseReturnUI = ((SET) => {
                                 </div>
                                 <div class="card-body">
                                     <div class="text-right">
-                                        <a class="btn btn-success" href="#/purchase_return/edit/${data.id}"><i class="fa fa-edit"></i> Edit </a>
-                                        <button class="btn btn-danger btn-delete" data-id="${data.id}" data-name="${data.selling_number}" type="button"><i class="fa fa-times"></i> Delete </button>
+                                        <a class="btn btn-success" href="#/cost/edit/${data.id}"><i class="fa fa-edit"></i> Edit </a>
+                                        <button class="btn btn-danger btn-delete" data-id="${data.id}" data-name="${data.cost_number}" type="button"><i class="fa fa-times"></i> Delete </button>
                                         <button id="print" class="btn btn-default btn-outline" type="button"> <span><i class="fa fa-print"></i> Print</span> </button>
                                     </div>
                                 </div>
@@ -142,7 +119,7 @@ const purchaseReturnUI = ((SET) => {
                         ${data.attachment === null ? `
                             <h3>Tidak ada Attachment</h3>
                         ` : `
-                            <embed class="w-100" src="${SET.apiURL()}purchase_returns/file/${data.attachment}">
+                            <embed class="w-100" src="${SET.apiURL()}costs/file/${data.attachment}">
                         `}
                     </div>
                 </div>
@@ -217,8 +194,8 @@ const purchaseReturnUI = ((SET) => {
                                                     </thead>
                                                     <tbody id="coba">
                                                         ${data.products.map(v => {
-                                                            count += 1
-                                                            return `
+                count += 1
+                return `
                                                                 <tr id="row_${count}">
                                                                     <td>
                                                                         ${v.description}
@@ -268,7 +245,7 @@ const purchaseReturnUI = ((SET) => {
                                                                     </td>
                                                                 </tr>
                                                             `
-                                                        }).join('')}
+            }).join('')}
                                                     </tbody>
                                                 </table>
                                             </div>
@@ -352,33 +329,21 @@ const purchaseReturnUI = ((SET) => {
             $('#main_content').html(html)
         },
 
-        renderRow: TOKEN => {
+        renderRow: () => {
 
             count += 1
 
             let html = `
                 <tr id="row_${count}">
                     <td>
-                        <select name="product_id[${count}]" id="product_id_${count}" data-id="${count}" class="form-control product_id" required>
-                            <option value="" disabled="" selected="">-- Choose Product --</option>
-                        </select>
-                        <input type="hidden" name="description[${count}]" id="description_${count}" data-id="${count}">
+                        <textarea name="description[${count}]" id="description_${count}" data-id="${count}" class="form-control" rows="1" required></textarea>
                     </td>
                     <td>
                         <div class="input-group mb-3">
                             <div class="input-group-prepend">
                                 <span class="input-group-text" id="basic-addon1">Rp. </span>
                             </div>
-                            <input type="number"  min="0" value="0" name="unit_price[${count}]" id="unit_price_${count}" data-id="${count}" class="form-control unit_price">
-                        </div>
-                    </td>
-                    <td>
-                        <div class="input-group mb-3">
-                            <input type="number"  min="0" value="0" name="qty[${count}]" id="qty_${count}" data-id="${count}" class="form-control qty" required>
-                            <div class="input-group-prepend">
-                                <input type="hidden" name="unit[${count}]" id="unit_${count}" data-id="${count}" class="form-control">
-                                <span class="input-group-text" id="unit_text_${count}" data-id="${count}">-</span>
-                            </div>
+                            <input type="number" min="0" value="0" name="amount[${count}]" id="amount_${count}" data-id="${count}" class="form-control amount">
                         </div>
                     </td>
                     <td>
@@ -407,67 +372,18 @@ const purchaseReturnUI = ((SET) => {
                         </div>
                     </td>
                     <td>
-                        <div class="input-group mb-3">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text" id="basic-addon1">Rp. </span>
-                            </div>
-                            <input type="number" min="0" value="0" name="total[${count}]" id="total_${count}" data-id="${count}" class="form-control total">
-                        </div>
-                    </td>
-                    <td>
-                        <button class="btn btn-danger btn-md btn-remove" type="button" data-id="${count}" data-remove="true"><i class="fa fa-times"></i></button>
+                        <button class="btn btn-danger btn-md btn-remove btn_remove_row" type="button" id="" data-id="${count}" data-remove="true"><i class="fa fa-times"></i></button>
                     </td>
                 </tr>
             `
 
             $('#t_add_products tbody').append(html)
 
-            $('#product_id_' + count).select2({
-                ajax: {
-                    url: `${SET.apiURL()}products`,
-                    dataType: 'JSON',
-                    type: 'GET',
-                    headers: {
-                        "Authorization": "Bearer " + TOKEN,
-                        "Content-Type": "application/json",
-                    },
-                    data: function (params) {
-                        var query = {
-                            search: params.term,
-                            limit: 100
-                        }
-
-                        return query;
-                    },
-                    processResults: function (data) {
-                        let filtered = [];
-
-                        data.results.map(v => {
-                            let obj = {
-                                id: v.id,
-                                text: v.product_name,
-                                price: v.purchase_price,
-                                unit: v.unit === null ? null : v.unit.unit_name
-                            }
-
-                            filtered.push(obj)
-                        })
-
-                        return {
-                            results: filtered
-                        };
-                    }
-                }
-            })
-
-            $('#product_id_' + count).on('select2:open', () => {
-                $(".select2-results:not(:has(a))").prepend('<a href="javascript:void(0)" class="btn_add_product" style="padding: 6px;height: 20px;display: inline-table;">Create new item</a>');
-            })
         }
     }
 })(settingController)
 
-const purchaseReturnController = ((SET, DT, UI) => {
+const costController = ((SET, DT, UI) => {
 
     /* -------------------- DELETE ACTION ----------------- */
     const _openDelete = parent => {
@@ -492,7 +408,7 @@ const purchaseReturnController = ((SET, DT, UI) => {
                 toastr.error('Data cannot be proccessed', 'Failed', { "progressBar": true, "closeButton": true, "positionClass": 'toast-bottom-right' });
             } else {
                 $.ajax({
-                    url: `${SET.apiURL()}purchase_returns/${id}`,
+                    url: `${SET.apiURL()}costs/${id}`,
                     type: 'DELETE',
                     dataType: 'JSON',
                     beforeSend: xhr => {
@@ -515,9 +431,9 @@ const purchaseReturnController = ((SET, DT, UI) => {
     }
 
 
-    const _addRow = TOKEN => {
+    const _addRow = () => {
         $('.btn_add_row').click(function () {
-            UI.renderRow(TOKEN)
+            UI.renderRow()
         })
     }
 
@@ -528,109 +444,24 @@ const purchaseReturnController = ((SET, DT, UI) => {
 
             if (remove === true && id) {
                 $('#row_' + id).remove();
-                _calculateAllReturn()
+                _calculateAll()
             }
         })
     }
 
-    const _onChangeSupplier = TOKEN => {
-        $('#contact_id').on('select2:select', function (e) {
-            let data = e.params.data
-
-            $('#purchase_id').select2({
-                ajax: {
-                    url: `${SET.apiURL()}purchases`,
-                    dataType: 'JSON',
-                    type: 'GET',
-                    headers: {
-                        "Authorization": "Bearer " + TOKEN,
-                        "Content-Type": "application/json",
-                    },
-                    data: function (params) {
-                        var query = {
-                            search: params.term,
-                            limit: 100,
-                            supplier: data.id
-                        }
-
-                        return query;
-                    },
-                    processResults: function (data) {
-                        let filtered = [];
-
-                        data.results.map(v => {
-                            let obj = {
-                                id: v.id,
-                                text: v.purchase_number,
-                            }
-
-                            filtered.push(obj)
-                        })
-
-                        return {
-                            results: filtered
-                        };
-                    }
-                }
-            })
-
-            $("#purchase_id").val('').trigger('change');
-            $('#purchase_id').removeAttr('disabled')
-        });
-    }
-
-    const _onChangeProduct = () => {
-        $('#t_add_products').on('select2:select', '.product_id', function (e) {
-            let data = e.params.data
-
-            let id = $(this).data('id')
-
-            $(`#description_${id}`).val(data.text)
-            $(`#unit_price_${id}`).val(data.price).trigger('keyup')
-            $(`#unit_${id}`).val(data.unit)
-            $(`#unit_text_${id}`).text(data.unit)
-
-            if ($('#ppn_' + id).is(':checked')) {
-                let qty = $('#qty_' + id).val()
-                let discount_amount = $('#discount_amount_' + id).val()
-                let total = (parseFloat(data.price) * parseFloat(qty)) - parseFloat(discount_amount)
-                let ppn_amount = (total * 10) / 100
-
-                $('#ppn_amount_' + id).val(ppn_amount)
-                $('#total_' + id).val(total)
-            } else {
-                $('#ppn_amount_' + id).val('0')
-            }
-
-            $('#discount_percent_' + id).trigger('keyup')
-
-            _calculateAllReturn()
-        });
-    }
-
     const _onChangePpn = () => {
-        $('#check_all_ppn').on('change', function () {
-            if ($(this).is(':checked')) {
-                $('.ppn').each(function () {
-                    $('.ppn').attr('checked', true).trigger('change');
-                })
-            } else {
-                $('.ppn').each(function () {
-                    $('.ppn').attr('checked', false).trigger('change');
-                })
-            }
-
-            _calculateAllReturn()
+        $('#include_ppn').on('click', function () {
+            _calculateAll()
         });
     }
 
-    const _onKeyupUnitPrice = () => {
-        $('#t_add_products').on('keyup', '.unit_price', function () {
+    const _onKeyupAmount = () => {
+        $('#t_add_products').on('keyup', '.amount', function () {
             let id = $(this).data('id')
             let thisVal = $(this).val()
-            let qty = $('#qty_' + id).val()
             let discount_amount = $('#discount_amount_' + id).val()
-            let total = (parseFloat(thisVal) * parseFloat(qty)) - parseFloat(discount_amount)
+
+            let total = parseFloat(thisVal) - parseFloat(discount_amount)
             let ppn_amount;
 
             if ($('#ppn_' + id).is(':checked')) {
@@ -640,35 +471,9 @@ const purchaseReturnController = ((SET, DT, UI) => {
             }
 
             $('#ppn_amount_' + id).val(ppn_amount)
-            $('#total_' + id).val(total)
-
             $('#discount_percent_' + id).trigger('keyup')
 
-            _calculateAllReturn()
-        });
-    }
-
-    const _onKeyupQtyReturn = () => {
-        $('#t_add_products').on('keyup', '.qty', function () {
-            let id = $(this).data('id')
-            let thisVal = $(this).val()
-            let unit_price = $('#unit_price_' + id).val()
-            let discount_amount = $('#discount_amount_' + id).val()
-            let total = (parseFloat(unit_price) * parseFloat(thisVal)) - parseFloat(discount_amount)
-            let ppn_amount;
-
-            if ($('#ppn_' + id).is(':checked')) {
-                ppn_amount = (total * 10) / 100
-            } else {
-                ppn_amount = 0
-            }
-
-            $('#ppn_amount_' + id).val(ppn_amount)
-            $('#total_' + id).val(parseFloat(unit_price) * parseFloat(thisVal))
-
-            $('#discount_percent_' + id).trigger('keyup')
-
-            _calculateAllReturn()
+            _calculateAll()
         });
     }
 
@@ -677,11 +482,9 @@ const purchaseReturnController = ((SET, DT, UI) => {
             let id = $(this).data('id')
             let thisVal = $(this).val()
 
-            let unit_price = $('#unit_price_' + id).val()
-            let qty = $('#qty_' + id).val()
-            let total = parseFloat(unit_price) * parseFloat(qty)
+            let amount = $('#amount_' + id).val()
 
-            let discount_amount = (parseFloat(total) * parseFloat(thisVal)) / 100
+            let discount_amount = (parseFloat(amount) * parseFloat(thisVal)) / 100
 
             $('#discount_amount_' + id).val(discount_amount).trigger('keyup')
         });
@@ -693,9 +496,8 @@ const purchaseReturnController = ((SET, DT, UI) => {
             let thisId = $(this).data('id')
             let ppn_amount;
 
-            let unit_price = $('#unit_price_' + thisId).val()
-            let qty = $('#qty_' + thisId).val()
-            let total = (parseFloat(unit_price) * parseFloat(qty)) - thisVal;
+            let amount = $('#amount_' + thisId).val()
+            let total = parseFloat(amount) - thisVal;
 
             if ($('#ppn_' + thisId).is(':checked')) {
                 ppn_amount = (total * 10) / 100
@@ -705,7 +507,7 @@ const purchaseReturnController = ((SET, DT, UI) => {
 
             $('#ppn_amount_' + thisId).val(ppn_amount)
 
-            _calculateAllReturn()
+            _calculateAll()
         })
     }
 
@@ -714,13 +516,11 @@ const purchaseReturnController = ((SET, DT, UI) => {
             let ppn_amount;
             let id = $(this).data('id');
 
-            let unit_price = $('#unit_price_' + id).val()
-            let qty = $('#qty_' + id).val()
+            let amount = $('#amount_' + id).val()
             let discount_amount = $('#discount_amount_' + id).val()
-            let total = (parseFloat(unit_price) * parseFloat(qty)) - parseFloat(discount_amount)
+            let total = parseFloat(amount) - parseFloat(discount_amount)
 
             if ($(this).is(':checked')) {
-                console.log(total)
                 ppn_amount = (total * 10) / 100
             } else {
                 ppn_amount = 0
@@ -728,26 +528,28 @@ const purchaseReturnController = ((SET, DT, UI) => {
 
             $('#ppn_amount_' + id).val(ppn_amount)
 
-            _calculateAllReturn()
+            _calculateAll()
         })
     }
 
-    const _onKeyupTotal = () => {
-        $('#t_add_products').on('keyup', '.total', function (event, state) {
-            _calculateAllReturn()
-        })
-    }
-
-    const _calculateAllReturn = () => {
+    const _calculateAll = () => {
         let sub_total = 0;
         let discount = 0;
         let total_ppn = 0;
+        let sub_total_deduction = 0;
 
-        $('.total').each(function () {
+        $('.amount').each(function () {
             let total = $(this).val();
 
-            if (total !== '') {
-                sub_total += parseFloat(total)
+            if ($('.include_ppn').is(':checked')) {
+                if(total !== ''){
+                    sub_total += parseFloat(total)
+                    sub_total_deduction += (parseFloat(total) * 10) / 100
+                }
+            } else {
+                if (total !== '') {
+                    sub_total += parseFloat(total)
+                }
             }
         })
 
@@ -768,7 +570,7 @@ const purchaseReturnController = ((SET, DT, UI) => {
         })
 
         $('#sub_total').val(sub_total).trigger('input')
-        $('#sub_total_text').text(`Rp. ${SET.realCurrency(sub_total)}`)
+        $('#sub_total_text').text(`Rp. ${SET.realCurrency(sub_total - sub_total_deduction)}`)
 
         $('#total_ppn').val(total_ppn).trigger('input')
         $('#ppn_text').text(`Rp. ${SET.realCurrency(total_ppn)}`)
@@ -776,7 +578,7 @@ const purchaseReturnController = ((SET, DT, UI) => {
         $('#all_discount').val(discount).trigger('input')
         $('#all_discount_text').text(`Rp. ${SET.realCurrency(discount)}`)
 
-        let total_dpp = parseFloat(sub_total) - parseFloat(discount);
+        let total_dpp = parseFloat(sub_total - sub_total_deduction) - parseFloat(discount);
         $('#total_dpp').val(total_dpp).trigger('input')
         $('#total_dpp_text').text(`Rp. ${SET.realCurrency(total_dpp)}`)
 
@@ -787,9 +589,9 @@ const purchaseReturnController = ((SET, DT, UI) => {
     }
 
     /* -------------------- DETAIL ACTION ----------------- */
-    const _fetchSupplierReturn = (TOKEN, id, callback) => {
+    const _fetchCost = (TOKEN, id, callback) => {
         $.ajax({
-            url: `${SET.apiURL()}purchase_returns/${id}`,
+            url: `${SET.apiURL()}costs/${id}`,
             type: 'GET',
             dataType: 'JSON',
             beforeSend: xhr => {
@@ -839,28 +641,6 @@ const purchaseReturnController = ((SET, DT, UI) => {
         })
     }
 
-    const _onKeyupQty = () => {
-        $('#t_add_products').on('keyup', '.qty', function () {
-            let id = $(this).data('id')
-            let thisVal = $(this).val()
-            let unit_price = $('#unit_price_' + id).val()
-            let discount_amount = $('#discount_amount_' + id).val()
-            let total = (parseFloat(unit_price) * parseFloat(thisVal)) - parseFloat(discount_amount)
-            let ppn_amount;
-
-            if ($('#ppn_' + id).val() === 'Y') {
-                ppn_amount = (total * 10) / 100
-            } else {
-                ppn_amount = 0
-            }
-
-            $('#ppn_amount_' + id).val(ppn_amount)
-            $('#total_return_' + id).val(parseFloat(unit_price) * parseFloat(thisVal))
-
-            _calculateAll()
-        });
-    }
-
     const _submitAdd = TOKEN => {
         $('#form_add').validate({
             errorClass: 'is-invalid',
@@ -872,13 +652,13 @@ const purchaseReturnController = ((SET, DT, UI) => {
                 error.insertAfter(element)
             },
             rules: {
-                contact_id: 'required',
-                return_number: 'required',
+                cost_number: 'required',
+                type: 'required',
                 date: 'required',
             },
             submitHandler: form => {
                 $.ajax({
-                    url: `${SET.apiURL()}purchase_returns`,
+                    url: `${SET.apiURL()}costs`,
                     type: 'POST',
                     dataType: 'JSON',
                     data: new FormData(form),
@@ -891,7 +671,7 @@ const purchaseReturnController = ((SET, DT, UI) => {
                     },
                     success: res => {
                         toastr.success(res.message, 'Success', { "progressBar": true, "closeButton": true, "positionClass": 'toast-bottom-right' });
-                        location.hash = `#/purchase_return/${res.results.id}`
+                        location.hash = `#/cost/${res.results.id}`
                     },
                     error: ({ responseJSON }) => {
                         toastr.error(responseJSON.message, 'Failed', { "progressBar": true, "closeButton": true, "positionClass": 'toast-bottom-right' });
@@ -904,88 +684,16 @@ const purchaseReturnController = ((SET, DT, UI) => {
         })
     }
 
-    const _calculateAll = () => {
-        let sub_total = 0;
-        let discount = 0;
-        let total_ppn = 0;
-
-        $('.total_return').each(function () {
-            let total = $(this).val();
-
-            if (total !== '') {
-                sub_total += parseFloat(total)
-            }
-        })
-
-        $('.discount_amount').each(function () {
-            let total = $(this).val();
-
-            if (total !== '') {
-                discount += parseFloat(total)
-            }
-        })
-
-        $('.ppn_amount').each(function () {
-            let total = $(this).val();
-
-            if (total !== '') {
-                total_ppn += parseFloat(total)
-            }
-        })
-
-        $('#sub_total').val(sub_total).trigger('input')
-        $('#sub_total_text').text(`Rp. ${SET.realCurrency(sub_total)}`)
-
-        $('#total_ppn').val(total_ppn).trigger('input')
-        $('#ppn_text').text(`Rp. ${SET.realCurrency(total_ppn)}`)
-
-        $('#all_discount').val(discount).trigger('input')
-        $('#all_discount_text').text(`Rp. ${SET.realCurrency(discount)}`)
-
-        let total_dpp = parseFloat(sub_total) - parseFloat(discount);
-        $('#total_dpp').val(total_dpp).trigger('input')
-        $('#total_dpp_text').text(`Rp. ${SET.realCurrency(total_dpp)}`)
-
-        let grand_total = parseFloat(total_dpp) + parseFloat(total_ppn)
-        $('#grand_total').val(grand_total).trigger('input')
-        $('#grand_total_text').text(`Rp. ${SET.realCurrency(grand_total)}`)
-    }
-
-    const _addObserver = (TOKEN) => {
-
-        MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
-
-        let container = document.querySelector("#main_content")
-
-        let observer = new MutationObserver(function (mutations, observer) {
-            if (container.contains($('#form_add')[0])) {
-                $('.dropify').dropify();
-
-                _onKeyupQty()
-                _submitAdd(TOKEN)
-            }
-
-
-            observer.disconnect();
-        });
-
-        observer.observe(container, {
-            subtree: true,
-            attributes: true,
-            childList: true,
-        });
-    }
-
     return {
         data: TOKEN => {
-            const table = $('#t_returns').DataTable({
+            const table = $('#t_costs').DataTable({
                 columnDefs: [
                     {
-                        targets: [4],
+                        targets: [5],
                         orderable: false
                     },
                     {
-                        targets: [4],
+                        targets: [5],
                         searchable: false
                     }
                 ],
@@ -1021,8 +729,8 @@ const purchaseReturnController = ((SET, DT, UI) => {
                                     exportOptions: {
                                         columns: [0, 1, 2, 3]
                                     },
-                                    filename: 'DATA_SUPPLIER_RETURN',
-                                    title: 'Data Supplier Return',
+                                    filename: 'DATA_COST',
+                                    title: 'Data Cost',
                                 },
                                 {
                                     extend: 'excelHtml5',
@@ -1030,8 +738,8 @@ const purchaseReturnController = ((SET, DT, UI) => {
                                     exportOptions: {
                                         columns: [0, 1, 2, 3]
                                     },
-                                    filename: 'DATA_SUPPLIER_RETURN',
-                                    title: 'Data Supplier Return'
+                                    filename: 'DATA_COST',
+                                    title: 'Data Cost'
                                 },
                                 {
                                     extend: 'csvHtml5',
@@ -1039,8 +747,8 @@ const purchaseReturnController = ((SET, DT, UI) => {
                                     exportOptions: {
                                         columns: [0, 1, 2, 3]
                                     },
-                                    filename: 'DATA_SUPPLIER_RETURN',
-                                    title: 'Data Supplier Return'
+                                    filename: 'DATA_COST',
+                                    title: 'Data Cost'
                                 },
                                 {
                                     extend: 'print',
@@ -1048,8 +756,8 @@ const purchaseReturnController = ((SET, DT, UI) => {
                                     exportOptions: {
                                         columns: [0, 1, 2, 3]
                                     },
-                                    filename: 'DATA_SUPPLIER_RETURN',
-                                    title: '<h4>Data Supplier Return</h4>'
+                                    filename: 'DATA_COST',
+                                    title: '<h4>Data Cost</h4>'
                                 },
                             ]
                         },
@@ -1082,14 +790,14 @@ const purchaseReturnController = ((SET, DT, UI) => {
                         {
                             text: '<i class="fa fa-plus"></i>',
                             action: function (e, dt, node, config) {
-                                location.hash = '#/purchase_return/add'
+                                location.hash = '#/cost/add'
                             },
                             titleAttr: 'Add'
                         },
                     ]
                 },
                 ajax: {
-                    url: `${SET.apiURL()}purchase_returns`,
+                    url: `${SET.apiURL()}costs`,
                     type: 'GET',
                     dataType: 'JSON',
                     beforeSend: xhr => {
@@ -1097,14 +805,14 @@ const purchaseReturnController = ((SET, DT, UI) => {
                         xhr.setRequestHeader("Authorization", "Bearer " + TOKEN)
                     },
                     dataSrc: res => {
-                        let sum_supp_returns = res.results.reduce((a, b) => a + b.grand_total, 0);
+                        let sum_cost = res.results.reduce((a, b) => a + b.grand_total, 0);
                         let sum_ppn = res.results.reduce((a, b) => a + b.total_ppn, 0);
                         let sum_discount = res.results.reduce((a, b) => a + b.total_discount, 0);
 
-                        let sum_total = parseInt((sum_supp_returns + sum_ppn) + sum_discount)
+                        let sum_total = parseInt((sum_cost + sum_ppn) + sum_discount)
 
-                        $('#count_supp_returns').text(SET.positiveCurrency(res.results.length))
-                        $('#sum_supp_returns').text(`Rp. ${SET.positiveCurrency(sum_total)}`)
+                        $('#count_cost').text(SET.positiveCurrency(res.results.length))
+                        $('#sum_cost').text(`Rp. ${SET.positiveCurrency(sum_cost)}`)
 
                         return res.results
                     },
@@ -1117,21 +825,18 @@ const purchaseReturnController = ((SET, DT, UI) => {
                         data: "id",
                         render: function (data, type, row) {
                             return `
-                                <a href="#/purchase_return/${row.id}">${row.return_number}</a>
+                                <a href="#/cost/${row.id}">${row.cost_number}</a>
                             `;
                         }
                     },
                     {
-                        data: "contact",
-                        render: function (data, type, row) {
-                            return `
-                                <a href="#/supplier/${row.contact.id}">${row.contact.contact_name}</a>
-                                ${row.purchase !== null ? `<div><small><a href="#/purchase/${row.purchase.id}">${row.purchase.purchase_number}</a></small></div>` : '<div>Pembelian</div>'}
-                            `;
-                        }
+                        data: "to",
                     },
                     {
-                        data: "date"
+                        data: "date",
+                    },
+                    {
+                        data: "type",
                     },
                     {
                         data: "grand_total",
@@ -1144,9 +849,6 @@ const purchaseReturnController = ((SET, DT, UI) => {
                         }
                     },
                     {
-                        data: "memo"
-                    },
-                    {
                         data: "id",
                         render: function (data, type, row) {
                             return `
@@ -1155,9 +857,9 @@ const purchaseReturnController = ((SET, DT, UI) => {
                                         <i class="ti-settings"></i>
                                     </button>
                                     <div class="dropdown-menu animated flipInY" x-placement="bottom-start" style="position: absolute; transform: translate3d(-33px, 35px, 0px); top: 0px; left: 0px; will-change: transform;">
-                                        <a class="dropdown-item btn-delete" href="javascript:void(0)" id="btn_delete" data-id="${row.id}" data-name="${row.return_number}"><i class="fa fa-trash"></i> Delete</a>
+                                        <a class="dropdown-item btn-delete" href="javascript:void(0)" id="btn_delete" data-id="${row.id}" data-name="${row.cost_number}"><i class="fa fa-trash"></i> Delete</a>
                                         <div class="dropdown-divider"></div>
-                                        <a class="dropdown-item" href="#/purchase_return/edit/${row.id}"><i class="fa fa-edit"></i> Edit</a>
+                                        <a class="dropdown-item" href="#/cost/edit/${row.id}"><i class="fa fa-edit"></i> Edit</a>
                                     </div>
                                 </div>
                             `;
@@ -1193,7 +895,7 @@ const purchaseReturnController = ((SET, DT, UI) => {
             DT.dtFilter(table)
             DT.dtFilterRange(table, 2)
 
-            _openDelete('#t_returns')
+            _openDelete('#t_costs')
             _submitDelete(TOKEN, data => {
                 table.ajax.reload()
                 $('#modal_delete').modal('hide')
@@ -1202,14 +904,14 @@ const purchaseReturnController = ((SET, DT, UI) => {
         detail: (TOKEN, id) => {
             console.log('Detail Adjustment Controller is running...')
 
-            _fetchSupplierReturn(TOKEN, id, data => {
+            _fetchCost(TOKEN, id, data => {
                 UI.renderDetail(data)
             })
 
             _printAll()
             _openDelete('#detail_container')
             _submitDelete(TOKEN, data => {
-                location.hash = '#/supplier_return'
+                location.hash = '#/cost'
             })
         },
         addWithPurchase: (TOKEN, id) => {
@@ -1227,111 +929,18 @@ const purchaseReturnController = ((SET, DT, UI) => {
 
             $('.dropify').dropify();
 
-            $('#contact_id').select2({
-                ajax: {
-                    url: `${SET.apiURL()}suppliers`,
-                    dataType: 'JSON',
-                    type: 'GET',
-                    headers: {
-                        "Authorization": "Bearer " + TOKEN,
-                        "Content-Type": "application/json",
-                    },
-                    data: function (params) {
-                        var query = {
-                            search: params.term,
-                            limit: 100,
-                            type: 'Supplier'
-                        }
-
-                        return query;
-                    },
-                    processResults: function (data) {
-                        let filtered = [];
-
-                        data.results.map(v => {
-                            let obj = {
-                                id: v.id,
-                                text: v.contact_name,
-                                email: v.email,
-                                address: v.address
-                            }
-
-                            filtered.push(obj)
-                        })
-
-                        return {
-                            results: filtered
-                        };
-                    }
-
-                }
-            });
-
-            $('#purchase_id').select2()
-
-            $('.product_id').select2({
-                ajax: {
-                    url: `${SET.apiURL()}products`,
-                    dataType: 'JSON',
-                    type: 'GET',
-                    headers: {
-                        "Authorization": "Bearer " + TOKEN,
-                        "Content-Type": "application/json",
-                    },
-                    data: function (params) {
-                        var query = {
-                            search: params.term,
-                            limit: 100
-                        }
-
-                        return query;
-                    },
-                    processResults: function (data) {
-                        let filtered = [];
-
-                        data.results.map(v => {
-                            let obj = {
-                                id: v.id,
-                                text: v.product_name,
-                                price: v.purchase_price,
-                                unit: v.unit === null ? null : v.unit.unit_name
-                            }
-
-                            filtered.push(obj)
-                        })
-
-                        return {
-                            results: filtered
-                        };
-                    }
-
-                }
-            });
-
-            $('#contact_id').on('select2:open', () => {
-                $(".select2-results:not(:has(a))").prepend('<a href="javascript:void(0)" class="btn_add_contact" style="padding: 6px;height: 20px;display: inline-table;">Create new item</a>');
-            })
-
-            $('.product_id').on('select2:open', () => {
-                $(".select2-results:not(:has(a))").prepend('<a href="javascript:void(0)" class="btn_add_product" style="padding: 6px;height: 20px;display: inline-table;">Create new item</a>');
-            })
-
-            _onChangeSupplier(TOKEN)
-            _addRow(TOKEN)
+            _addRow()
             _removeRow()
-            _onChangeProduct()
             _onChangePpn()
-            _onKeyupUnitPrice()
-            _onKeyupQtyReturn()
+            _onKeyupAmount()
             _onPercentKeyup()
             _onKeyupDiscount()
             _onPpnCheck()
-            _onKeyupTotal()
 
             _submitAdd(TOKEN)
 
         },
     }
-})(settingController, dtController, purchaseReturnUI)
+})(settingController, dtController, costUI)
 
-export default purchaseReturnController
+export default costController

@@ -21,6 +21,12 @@
     <link rel="stylesheet" type="text/css" href="<?= base_url() ?>assets/libs/select2/dist/css/select2.min.css">
     <link rel="stylesheet" type="text/css" href="<?= base_url() ?>assets/libs/bootstrap-switch/dist/css/bootstrap3/bootstrap-switch.min.css">
     <link href="<?= base_url() ?>dist/css/style.min.css" rel="stylesheet">
+
+    <style>
+        .dataTables_scrollHeadInner, .table{
+            width:100%!important
+         };
+    </style>
 </head>
 
 <body>

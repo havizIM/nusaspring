@@ -1,7 +1,7 @@
 <div class="page-breadcrumb">
     <div class="row">
         <div class="col-5 align-self-center">
-            <h4 class="page-title">Detail Cost</h4>
+            <h4 class="page-title">Detail Stock Opaname</h4>
         </div>
         <div class="col-7 align-self-center">
             <div class="d-flex align-items-center justify-content-end">
@@ -11,7 +11,7 @@
                             <a href="#/dashboard">Dashboard</a>
                         </li>
                         <li class="breadcrumb-item">
-                            <a href="#/cost">Cost</a>
+                            <a href="#/stock_opname">Stock Opname</a>
                         </li>
                         <li class="breadcrumb-item active" aria-current="page"><?= $id ?></li>
                     </ol>
@@ -43,7 +43,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">Delete Cost</h4>
+                    <h4 class="modal-title">Delete Stock Opname</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                 </div>
                 <div class="modal-body">
@@ -66,6 +66,6 @@
 </footer>
 
 <script type="module">
-    import costController from '<?= base_url() ?>src/modules/cost.js';
-    costController.detail('<?= $this->session->userdata('api_token') ?>', <?= $id ?>)
+    import stockOpnameController from '<?= base_url() ?>src/modules/stock_opname.js';
+    stockOpnameController.detail('<?= $this->session->userdata('api_token') ?>', <?= $id ?>)
 </script>

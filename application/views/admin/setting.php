@@ -35,10 +35,10 @@
                     <h6 id="profile_email">...</h6>
                     
                     <small class="text-muted p-t-30 db">Phone</small>
-                    <h6>087880729929 / 081280999733</h6>
+                    <h6 id="profile_phone">...</h6>
 
                     <small class="text-muted p-t-30 db">Address</small>
-                    <h6>Jl. Tiga Berlian Blok Karizma No.41, Mekarsari, Cimanggis, Depok, Jawa Barat 16452, Indonesia,</h6>
+                    <h6 id="profile_address">...</h6>
                 </div>
             </div>
         </div>

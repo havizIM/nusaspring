@@ -1,7 +1,7 @@
 <div class="page-breadcrumb">
     <div class="row">
         <div class="col-5 align-self-center">
-            <h4 class="page-title">Add Purchase Return</h4>
+            <h4 class="page-title">Add Stock Opname</h4>
         </div>
         <div class="col-7 align-self-center">
             <div class="d-flex align-items-center justify-content-end">
@@ -11,7 +11,7 @@
                             <a href="#/dashboard">Dashboard</a>
                         </li>
                         <li class="breadcrumb-item">
-                            <a href="#/purchase_return">Purchase Return</a>
+                            <a href="#/stock_opname">Stock Opname</a>
                         </li>
                         <li class="breadcrumb-item active" aria-current="page">Add</li>
                     </ol>
@@ -33,34 +33,14 @@
                             <form id="form_add">
                                 <div class="row">
                                     <div class="col-md-8">
-                                            <div class="form-group">
-                                                <label for="phone">Supplier</label>
-                                                <select class="form-control" id="contact_id" name="contact_id">
-                                                    <option value="" disabled="" selected="">-- Choose Supplier --</option>
-                                                </select>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="phone">Purchase</label>
-                                                <select class="form-control" id="purchase_id" name="purchase_id" disabled="">
-                                                    <option value="" disabled="" selected="">-- Choose Purchase --</option>
-                                                </select>
-                                            </div>
-                                            <div class="form-group row">
-                                                <div class="col-md-6">
-                                                    <label for="fax">Return No</label>
-                                                    <input type="text" class="form-control" name="return_number" id="return_number">
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <label for="fax">Reference No</label>
-                                                    <input type="text" class="form-control" name="reference_number" id="reference_number">
-                                                </div>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="fax">Date</label>
-                                                <input type="date" class="form-control" name="date" id="date">
-                                            </div>
-                                            
-                                            
+                                        <div class="form-group">
+                                            <label for="fax">Stock Opname No</label>
+                                            <input type="text" class="form-control" name="so_number" id="so_number">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="fax">Date</label>
+                                            <input type="date" class="form-control" name="date" id="date">
+                                        </div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
@@ -69,12 +49,6 @@
                                         </div>
                                     </div>
                                     <div class="col-md-12 mb-3">
-                                        <!-- <div class="form-group text-right">
-                                            <div class="custom-control custom-checkbox">
-                                                <input type="checkbox" class="custom-control-input include_ppn" id="include_ppn">
-                                                <label class="custom-control-label" for="include_ppn">Price Include PPN</label>
-                                            </div>
-                                        </div> -->
                                         <div class="table-responsive">
                                             <table class="table" id="t_add_products" style="overflow-x: scroll;">
                                                 <thead>
@@ -82,10 +56,8 @@
                                                         <th style="min-width: 350px;">Product</th>
                                                         <th style="min-width: 200px;">Unit Price</th>
                                                         <th style="min-width: 150px;">Qty</th>
-                                                        <th style="min-width: 150px;">Disc (%)</th>
-                                                        <th style="min-width: 200px;">Disc (Rp.)</th>
-                                                        <th>PPN</th>
                                                         <th style="min-width: 200px;">Total</th>
+                                                        <th style="min-width: 200px;">Note</th>
                                                         <th>
                                                             <button class="btn btn-info btn-md btn_add_row" type="button" id="btn_add_row"><i class="fa fa-plus"></i></button>
                                                         </th>
@@ -109,7 +81,7 @@
                                                         </td>
                                                         <td>
                                                             <div class="input-group mb-3">
-                                                                <input type="number"  min="0" value="0" name="qty[0]" id="qty_0" data-id="0" class="form-control qty" required>
+                                                                <input type="number"  min="0" value="0" name="actual_qty[0]" id="actual_qty_0" data-id="0" class="form-control actual_qty" required>
                                                                 <div class="input-group-prepend">
                                                                     <input type="hidden" name="unit[0]" id="unit_0" data-id="0" class="form-control">
                                                                     <span class="input-group-text" id="unit_text_0" data-id="0">-</span>
@@ -118,38 +90,20 @@
                                                         </td>
                                                         <td>
                                                             <div class="input-group mb-3">
-                                                                <input type="number"  min="0" value="0" name="discount_percent[0]" id="discount_percent_0" data-id="0" class="form-control discount_percent">
-                                                                <div class="input-group-prepend">
-                                                                    <span class="input-group-text" id="basic-addon1">%</span>
-                                                                </div>
-                                                            </div>
-                                                        </td>
-                                                        <td>
-                                                            <div class="input-group mb-3">
                                                                 <div class="input-group-prepend">
                                                                     <span class="input-group-text" id="basic-addon1">Rp. </span>
                                                                 </div>
-                                                                <input type="number"  min="0" value="0" name="discount_amount[0]" id="discount_amount_0" data-id="0" class="form-control discount_amount">
+                                                                <input type="number" min="0" value="0" name="actual_total[0]" id="actual_total_0" data-id="0" class="form-control actual_total">
                                                             </div>
                                                         </td>
                                                         <td>
-                                                            <div class="text-center">
-                                                                <div class="custom-control custom-checkbox">
-                                                                    <input type="checkbox" class="custom-control-input ppn" id="ppn_0" name="ppn[0]" data-id="0">
-                                                                    <label class="custom-control-label" for="ppn_0"></label>
-                                                                </div>
-                                                                <input type="hidden" value="0" data-id="0" id="ppn_amount_0" name="ppn_amount[0]" class="ppn_amount">
+                                                            <div class="form-group">
+                                                                <textarea name="note[0]" id="note_0" data-id="0" rows="1" class="form-control"></textarea>
                                                             </div>
                                                         </td>
                                                         <td>
-                                                            <div class="input-group mb-3">
-                                                                <div class="input-group-prepend">
-                                                                    <span class="input-group-text" id="basic-addon1">Rp. </span>
-                                                                </div>
-                                                                <input type="number" min="0" value="0" name="total[0]" id="total_0" data-id="0" class="form-control total">
-                                                            </div>
-                                                        </td>
-                                                        <td>
+                                                            <input type="hidden" name="system_qty[0]" id="system_qty_0" data-id="0" class="system_qty" value="0">
+                                                            <input type="hidden" name="system_total[0]" id="system_total_0" data-id="0" class="system_total" value="0">
                                                             <!-- <button class="btn btn-danger btn-md" type="button" id="btn_remove_row" data-id="0" data-remove="false"><i class="fa fa-times"></i></button> -->
                                                         </td>
                                                     </tr>
@@ -177,51 +131,21 @@
                                     <div class="col-md-6">
                                         <div class="row">
                                             <div class="col-md-4 text-right">
-                                                <h4>Sub Total</h4>
+                                                <h4>Total Actual Qty</h4>
                                             </div>
                                             <div class="col-md-8 text-right">
-                                                <h4 id="sub_total_text">Rp. 0</h4>
-                                                <input type="hidden" value="0" class="form-control" name="sub_total" id="sub_total">
-                                            </div>
-                                        </div>
-
-                                        <div class="row">
-                                            <div class="col-md-4 text-right">
-                                                <h4>Discount</h4>
-                                            </div>
-                                            <div class="col-md-8 text-right">
-                                                <h4 id="all_discount_text">Rp. 0</h4>
-                                                <input type="hidden" value="0" class="form-control" name="all_discount" id="all_discount">
-                                            </div>
-                                        </div>
-
-                                        <div class="row">
-                                            <div class="col-md-4 text-right">
-                                                <h4>Total</h4>
-                                            </div>
-                                            <div class="col-md-8 text-right">
-                                                <h4 id="total_dpp_text">Rp. 0</h4>
-                                                <input type="hidden" value="0" class="form-control" name="total_dpp" id="total_dpp">
-                                            </div>
-                                        </div>
-
-                                        <div class="row">
-                                            <div class="col-md-4 text-right">
-                                                <h4>PPN (10%)</h4>
-                                            </div>
-                                            <div class="col-md-8 text-right">
-                                                <h4 id="ppn_text">Rp. 0</h4>
-                                                <input type="hidden" value="0" class="form-control" name="total_ppn" id="total_ppn">
+                                                <h4 id="sum_actual_qty_text">Rp. 0</h4>
+                                                <input type="hidden" value="0" class="form-control" name="sum_actual_qty" id="sum_actual_qty">
                                             </div>
                                         </div>
 
                                         <div class="row mt-3">
                                             <div class="col-md-4 text-right">
-                                                <h3><b>Grand Total</b></h3>
+                                                <h3><b>Total Actual Amount</b></h3>
                                             </div>
                                             <div class="col-md-8 text-right">
-                                                <b><h3 id="grand_total_text">Rp. 0</h3></b>
-                                                <input type="hidden" value="0" class="form-control" name="grand_total" id="grand_total">
+                                                <b><h3 id="sum_actual_total_text">Rp. 0</h3></b>
+                                                <input type="hidden" value="0" class="form-control" name="sum_actual_total" id="sum_actual_total">
                                             </div>
                                         </div>
 
@@ -248,6 +172,6 @@
 </footer>
 
 <script type="module">
-    import purchaseReturnController from '<?= base_url() ?>src/modules/purchase_return.js';
-    purchaseReturnController.add('<?= $this->session->userdata('api_token') ?>')
+    import stockOpnameController from '<?= base_url() ?>src/modules/stock_opname.js';
+    stockOpnameController.add('<?= $this->session->userdata('api_token') ?>')
 </script>

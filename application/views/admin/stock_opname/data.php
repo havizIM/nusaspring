@@ -1,7 +1,7 @@
 <div class="page-breadcrumb">
     <div class="row">
         <div class="col-5 align-self-center">
-            <h4 class="page-title">Adjustment</h4>
+            <h4 class="page-title">Stock Opname</h4>
         </div>
         <div class="col-7 align-self-center">
             <div class="d-flex align-items-center justify-content-end">
@@ -10,7 +10,7 @@
                         <li class="breadcrumb-item">
                             <a href="#/dashboard">Dashboard</a>
                         </li>
-                        <li class="breadcrumb-item active" aria-current="page">Adjustment</li>
+                        <li class="breadcrumb-item active" aria-current="page">Stock Opname</li>
                     </ol>
                 </nav>
             </div>
@@ -21,64 +21,34 @@
 <div class="container-fluid">
     <div class="row">
 
-        <div class="col-md-3">
-            <div class="card bg-info">
+        <div class="col-md-6">
+            <div class="card">
                 <div class="card-body">
-                    <div class="d-flex no-block align-items-center">
-                        <div class="text-white">
-                            <h2 id="count_qty_awal">0</h2>
-                            <h6>Qty Awal</h6>
+                    <div class="d-flex flex-row">
+                        <div class="round align-self-center round-info"><i class="ti-receipt"></i></div>
+                        <div class="m-l-10 align-self-center">
+                            <h4 class="m-b-0">Qty Difference</h4>
+                            <span class="text-muted">Stock Opname</span>
                         </div>
-                        <div class="ml-auto">
-                            <span class="text-white display-6"><i class="ti-notepad"></i></span>
+                        <div class="ml-auto align-self-center">
+                            <h2 class="font-medium m-b-0" id="sum_qty">0</h2>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="col-md-3">
-            <div class="card bg-success">
+        <div class="col-md-6">
+            <div class="card">
                 <div class="card-body">
-                    <div class="d-flex no-block align-items-center">
-                        <div class="text-white">
-                            <h2 id="count_transfer_in">0</h2>
-                            <h6>Transfer In</h6>
+                    <div class="d-flex flex-row">
+                        <div class="round align-self-center round-success"><i class="ti-wallet"></i></div>
+                        <div class="m-l-10 align-self-center">
+                            <h4 class="m-b-0">Summary Difference</h4>
+                            <span class="text-muted">Stock Opname</span>
                         </div>
-                        <div class="ml-auto">
-                            <span class="text-white display-6"><i class="ti-notepad"></i></span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-3">
-            <div class="card bg-danger">
-                <div class="card-body">
-                    <div class="d-flex no-block align-items-center">
-                        <div class="text-white">
-                            <h2 id="count_transfer_out">0</h2>
-                            <h6>Transfer Out</h6>
-                        </div>
-                        <div class="ml-auto">
-                            <span class="text-white display-6"><i class="ti-notepad"></i></span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-3">
-            <div class="card bg-primary">
-                <div class="card-body">
-                    <div class="d-flex no-block align-items-center">
-                        <div class="text-white">
-                            <h2 id="count_other">0</h2>
-                            <h6>Other</h6>
-                        </div>
-                        <div class="ml-auto">
-                            <span class="text-white display-6"><i class="ti-notepad"></i></span>
+                        <div class="ml-auto align-self-center">
+                            <h2 class="font-medium m-b-0" id="sum_total">0</h2>
                         </div>
                     </div>
                 </div>
@@ -89,22 +59,22 @@
             <div class="card">
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table class="table" id="t_adjustment" style="width: 100%">
+                        <table class="table" id="t_stock_opnames" style="width: 100%">
                             <thead>
                                 <tr>
-                                    <th>Category</th>
-                                    <th>Reference No</th>
+                                    <th>Stock Opname No</th>
+                                    <th>Status</th>
                                     <th>Date</th>
-                                    <th>Amount</th>
-                                    <th>Memo</th>
+                                    <th>Qty Difference</th>
+                                    <th>Summary Difference</th>
+                                    <th>Shrinkage</th>
                                     <th>Settings</th>
                                 </tr>
                             </thead>
                             <tbody></tbody>
-                            
                             <tfoot>
                                 <tr>
-                                    <th colspan="6" style="text-align:right" id="table_sum">Total:</th>
+                                    <th colspan="7" style="text-align:right" id="table_sum">Total:</th>
                                 </tr>
                             </tfoot>
                         </table>
@@ -120,21 +90,21 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">Filter Adjustment</h4>
+                    <h4 class="modal-title">Filter Stock Opname</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                 </div>
                 <div class="modal-body">
                     <div class="form-group">
-                        <label for="col-0-filter">Category</label>
-                        <input id="col-0-filter" type="text" class="form-control filter-data" data-column="0" placeholder="Search Category">
+                        <label for="col-0-filter">Stock Opname No</label>
+                        <input id="col-0-filter" type="text" class="form-control filter-data" data-column="0" placeholder="Search SO No">
                     </div>
                     <div class="form-group">
-                        <label for="col-1-filter">Reference No</label>
-                        <input id="col-1-filter" type="text" class="form-control filter-data" data-column="1" placeholder="Search Reference No">
+                        <label for="col-1-filter">Status</label>
+                        <input id="col-1-filter" type="text" class="form-control filter-data" data-column="1" placeholder="Search Status">
                     </div>
                     <div class="form-group">
-                        <label for="col-3-filter">Memo</label>
-                        <input id="col-3-filter" type="text" class="form-control filter-data" data-column="3" placeholder="Search Memo">
+                        <label for="col-5-filter">Shrinkage</label>
+                        <input id="col-5-filter" type="text" class="form-control filter-data" data-column="5" placeholder="Search Shrinkage">
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -152,7 +122,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">Filter Range Purchase</h4>
+                    <h4 class="modal-title">Filter Range Stock Opname</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                 </div>
                 <div class="modal-body">
@@ -181,7 +151,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">Delete Adjustment</h4>
+                    <h4 class="modal-title">Delete Stock Opname</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                 </div>
                 <div class="modal-body">
@@ -204,6 +174,6 @@
 </footer>
 
 <script type="module">
-    import adjustmentController from '<?= base_url() ?>src/modules/adjustment.js';
-    adjustmentController.data('<?= $this->session->userdata('api_token') ?>')
+    import stockOpnameController from '<?= base_url() ?>src/modules/stock_opname.js';
+    stockOpnameController.data('<?= $this->session->userdata('api_token') ?>')
 </script>
