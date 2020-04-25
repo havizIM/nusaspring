@@ -219,7 +219,7 @@ const sellingPaymentUI = ((SET) => {
     }
 })(settingController)
 
-const sellingPaymentController = ((SET, DT, UI) => {
+const sellingPaymentController = ((SET, DT, UI, LU) => {
 
     /* -------------------- DELETE ACTION ----------------- */
     const _openDelete = parent => {
@@ -708,13 +708,16 @@ const sellingPaymentController = ((SET, DT, UI) => {
             $('#selling_id').select2()
 
             $('#contact_id').on('select2:open', () => {
-                $(".select2-results:not(:has(a))").prepend('<a href="javascript:void(0)" class="btn_add_contact" style="padding: 6px;height: 20px;display: inline-table;">Create new item</a>');
+                $(".select2-results:not(:has(a))").prepend('<a href="javascript:void(0)" class="select2_add_customer" style="padding: 6px;height: 20px;display: inline-table;">Create new item</a>');
             })
+
+
+            LU.lookupCustomer(TOKEN)
 
             _onChangeContact(TOKEN)
             _submitAdd(TOKEN)
         }
     }
-})(settingController, dtController, sellingPaymentUI)
+})(settingController, dtController, sellingPaymentUI, lookupController)
 
 export default sellingPaymentController

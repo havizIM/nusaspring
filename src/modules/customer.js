@@ -733,18 +733,18 @@ const customerController = ((SET, DT, UI) => {
                             titleAttr: 'Refresh'
                         },
                         {
-                            text: '<i class="fa fa-plus"></i>',
-                            action: function (e, dt, node, config) {
-                                location.hash = '#/customer/add'
-                            },
-                            titleAttr: 'Add'
-                        },
-                        {
                             text: '<i class="fa fa-search"></i>',
                             action: function (e, dt, node, config) {
                                 $('#modal_search').modal('show')
                             },
                             titleAttr: 'Search'
+                        },
+                        {
+                            text: '<i class="fa fa-plus"></i>',
+                            action: function (e, dt, node, config) {
+                                location.hash = '#/customer/add'
+                            },
+                            titleAttr: 'Add'
                         },
                     ]
                 },

@@ -266,7 +266,7 @@ const sellingReturnUI = ((SET) => {
             });
 
             $('#product_id_' + count).on('select2:open', () => {
-                $(".select2-results:not(:has(a))").prepend('<a href="javascript:void(0)" class="btn_add_product" style="padding: 6px;height: 20px;display: inline-table;">Create new item</a>');
+                $(".select2-results:not(:has(a))").prepend('<a href="javascript:void(0)" class="select2_add_product" data-id="'+count+'" style="padding: 6px;height: 20px;display: inline-table;">Create new item</a>');
             })
         },
 
@@ -471,7 +471,7 @@ const sellingReturnUI = ((SET) => {
     }
 })(settingController)
 
-const sellingReturnController = ((SET, DT, UI) => {
+const sellingReturnController = ((SET, DT, UI, LU) => {
 
     /* -------------------- DELETE ACTION ----------------- */
     const _openDelete = parent => {
@@ -1278,7 +1278,7 @@ const sellingReturnController = ((SET, DT, UI) => {
 
             $('#selling_id').select2()
 
-            $('.product_id').select2({
+            $('#product_id_0').select2({
                 ajax: {
                     url: `${SET.apiURL()}products`,
                     dataType: 'JSON',
@@ -1318,12 +1318,15 @@ const sellingReturnController = ((SET, DT, UI) => {
             });
 
             $('#contact_id').on('select2:open', () => {
-                $(".select2-results:not(:has(a))").prepend('<a href="javascript:void(0)" class="btn_add_contact" style="padding: 6px;height: 20px;display: inline-table;">Create new item</a>');
+                $(".select2-results:not(:has(a))").prepend('<a href="javascript:void(0)" class="select2_add_customer" style="padding: 6px;height: 20px;display: inline-table;">Create new item</a>');
             })
 
-            $('.product_id').on('select2:open', () => {
-                $(".select2-results:not(:has(a))").prepend('<a href="javascript:void(0)" class="btn_add_product" style="padding: 6px;height: 20px;display: inline-table;">Create new item</a>');
+            $('#product_id_0').on('select2:open', () => {
+                $(".select2-results:not(:has(a))").prepend('<a href="javascript:void(0)" class="select2_add_product" data-id="0" style="padding: 6px;height: 20px;display: inline-table;">Create new item</a>');
             })
+
+            LU.lookupProduct(TOKEN, 'selling')
+            LU.lookupCustomer(TOKEN)
 
             _onChangeCustomer(TOKEN)
             _addRow(TOKEN)
@@ -1341,6 +1344,6 @@ const sellingReturnController = ((SET, DT, UI) => {
 
         },
     }
-})(settingController, dtController, sellingReturnUI)
+})(settingController, dtController, sellingReturnUI, lookupController)
 
 export default sellingReturnController

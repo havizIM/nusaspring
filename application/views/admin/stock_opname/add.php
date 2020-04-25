@@ -35,7 +35,7 @@
                                     <div class="col-md-8">
                                         <div class="form-group">
                                             <label for="fax">Stock Opname No</label>
-                                            <input type="text" class="form-control" name="so_number" id="so_number">
+                                            <input type="text" readonly placeholder="[ AUTO ]" value="[ AUTO ]" class="form-control" name="so_number" id="so_number">
                                         </div>
                                         <div class="form-group">
                                             <label for="fax">Date</label>

@@ -35,7 +35,7 @@
                                     <div class="col-md-8">
                                         <div class="form-group">
                                             <label for="fax">Cost No</label>
-                                            <input type="text" class="form-control" name="cost_number" id="cost_number">
+                                            <input type="text" readonly placeholder="[ AUTO ]" value="[ AUTO ]" class="form-control" name="cost_number" id="cost_number">
                                         </div>
                                         <div class="form-group row">
                                             <div class="col-md-6">

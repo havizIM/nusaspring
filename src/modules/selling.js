@@ -476,13 +476,13 @@ const sellingUI = ((SET) => {
             });
 
             $('#product_id_' + count).on('select2:open', () => {
-                $(".select2-results:not(:has(a))").prepend('<a href="javascript:void(0)" class="btn_add_product" style="padding: 6px;height: 20px;display: inline-table;">Create new item</a>');
+                $(".select2-results:not(:has(a))").prepend('<a href="javascript:void(0)" class="select2_add_product" data-id="'+count+'" style="padding: 6px;height: 20px;display: inline-table;">Create new item</a>');
             })
         }
     }
 })(settingController)
 
-const sellingController = ((SET, DT, UI) => {
+const sellingController = ((SET, DT, UI, LU) => {
 
     /* -------------------- ADD ACTION ----------------- */
     const _addRow = TOKEN => {
@@ -1273,7 +1273,7 @@ const sellingController = ((SET, DT, UI) => {
                 }
             });
 
-            $('.product_id').select2({
+            $('#product_id_0').select2({
                 ajax: {
                     url: `${SET.apiURL()}products`,
                     dataType: 'JSON',
@@ -1313,12 +1313,16 @@ const sellingController = ((SET, DT, UI) => {
             });
 
             $('#contact_id').on('select2:open', () => {
-                $(".select2-results:not(:has(a))").prepend('<a href="javascript:void(0)" class="btn_add_contact" style="padding: 6px;height: 20px;display: inline-table;">Create new item</a>');
+                $(".select2-results:not(:has(a))").prepend('<a href="javascript:void(0)" class="select2_add_customer" style="padding: 6px;height: 20px;display: inline-table;">Create new item</a>');
             })
 
-            $('.product_id').on('select2:open', () => {
-                $(".select2-results:not(:has(a))").prepend('<a href="javascript:void(0)" class="btn_add_product" style="padding: 6px;height: 20px;display: inline-table;">Create new item</a>');
+            $('#product_id_0').on('select2:open', () => {
+                $(".select2-results:not(:has(a))").prepend('<a href="javascript:void(0)" class="select2_add_product" data-id="0" style="padding: 6px;height: 20px;display: inline-table;">Create new item</a>');
             })
+
+
+            LU.lookupProduct(TOKEN, 'selling')
+            LU.lookupCustomer(TOKEN)
 
             _onChangeCustomer()
             _addRow(TOKEN)
@@ -1359,6 +1363,6 @@ const sellingController = ((SET, DT, UI) => {
             })
         }
     }
-})(settingController, dtController, sellingUI)
+})(settingController, dtController, sellingUI, lookupController)
 
 export default sellingController

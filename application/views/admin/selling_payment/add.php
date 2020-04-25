@@ -51,7 +51,7 @@
                                     <div class="col-md-8">
                                         <div class="form-group">
                                             <label>Payment No.</label>
-                                            <input type="text" name="payment_number" id="payment_number" class="form-control">
+                                            <input type="text" readonly placeholder="[ AUTO ]" value="[ AUTO ]" name="payment_number" id="payment_number" class="form-control">
                                         </div>
                                         
                                         <div class="form-group">
@@ -111,6 +111,38 @@
         </div>
     </div>
 </div>
+
+
+<form id="form_add_customer">
+    <div id="modal_add_customer" class="modal fade" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Add Customer</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="contact_name">Name</label>
+                        <input type="text" class="form-control" id="lu_contact_name" name="contact_name">
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Phone</label>
+                        <input type="text" class="form-control" id="lu_phone" name="phone">
+                    </div>
+                    <div class="form-group">
+                        <label for="address">Address</label>
+                        <textarea class="form-control" id="lu_address" name="address" rows="3"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger waves-effect" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-info waves-effect waves-light">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
 
 <footer class="footer text-center">
     All Rights Reserved by UD. Nusa Spring. Designed and Developed by

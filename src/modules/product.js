@@ -822,8 +822,17 @@ const productController = ((SET, DT, UI) => {
                                 results: filtered
                             };
                         },
-                        allowClear: true
+                    },
+                    language: {
+                        noResults: function (term) {
+                            let search = $('#category_id')
+                                .data("select2")
+                                .$dropdown.find("input").val();
 
+                            let no_results = $(`<a href="javascript:void(0);" class="select2_add_category" data-name="${search}">Create new item: <b>${search}</b></a>`)
+
+                            return no_results;
+                        },
                     }
                 });
 
@@ -860,10 +869,22 @@ const productController = ((SET, DT, UI) => {
                                 results: filtered
                             };
                         },
-                        allowClear: true
+                    },
+                    language: {
+                        noResults: function (term) {
+                            let search = $('#unit_id')
+                                .data("select2")
+                                .$dropdown.find("input").val();
 
+                            let no_results = $(`<a href="javascript:void(0);" class="select2_add_unit" data-name="${search}">Create new item: <b>${search}</b></a>`)
+
+                            return no_results;
+                        },
                     }
                 });
+
+                _addCategory(TOKEN)
+                _addUnit(TOKEN)
 
                 if(detail.category !== null){
                     let option = new Option(detail.category.category_name, detail.unit.id, true, true);
@@ -890,15 +911,7 @@ const productController = ((SET, DT, UI) => {
                         }
                     });
                 }
-
-                $('#unit_id').on('select2:open', () => {
-                    $(".select2-results:not(:has(a))").prepend('<a href="javascript:void(0)" id="btn_add_unit" style="padding: 6px;height: 20px;display: inline-table;">Create new item</a>');
-                })
-
-                $('#category_id').on('select2:open', () => {
-                    $(".select2-results:not(:has(a))").prepend('<a href="javascript:void(0)" id="btn_add_category" style="padding: 6px;height: 20px;display: inline-table;">Create new item</a>');
-                })
-
+                
                 _submitEdit(TOKEN, id)
             }
 
@@ -951,6 +964,86 @@ const productController = ((SET, DT, UI) => {
                     }
                 })
             }
+        })
+    }
+
+    const _addCategory = TOKEN => {
+        $(document).on('click', '.select2_add_category', function () {
+            let name = $(this).data('name')
+
+            $.ajax({
+                url: `${SET.apiURL()}categories`,
+                type: 'POST',
+                dataType: 'JSON',
+                data: {
+                    category_name: name
+                },
+                beforeSend: xhr => {
+                    xhr.setRequestHeader("Authorization", "Bearer " + TOKEN)
+                },
+                success: res => {
+                    $("#category_id").select2("close");
+
+                    let option = new Option(res.results.category_name, res.results.id, true, true);
+                    $('#category_id').append(option).trigger('change');
+
+                    // manually trigger the `select2:select` event
+                    $('#category_id').trigger({
+                        type: 'select2:select',
+                        params: {
+                            data: {
+                                id: res.results.id,
+                                text: res.results.category_name
+                            }
+                        }
+                    });
+
+                    toastr.success(res.message, 'Success', { "progressBar": true, "closeButton": true, "positionClass": 'toast-bottom-right' });
+                },
+                error: ({ responseJSON }) => {
+                    toastr.error(responseJSON.message, 'Failed', { "progressBar": true, "closeButton": true, "positionClass": 'toast-bottom-right' });
+                }
+            })
+        })
+    }
+
+    const _addUnit = TOKEN => {
+        $(document).on('click', '.select2_add_unit', function(){
+            let name = $(this).data('name')
+
+            $.ajax({
+                url: `${SET.apiURL()}units`,
+                type: 'POST',
+                dataType: 'JSON',
+                data: {
+                    unit_name: name
+                },
+                beforeSend: xhr => {
+                    xhr.setRequestHeader("Authorization", "Bearer " + TOKEN)
+                },
+                success: res => {
+                    $("#unit_id").select2("close");
+
+                    let option = new Option(res.results.unit_name, res.results.id, true, true);
+                    $('#unit_id').append(option).trigger('change');
+
+                    // manually trigger the `select2:select` event
+                    $('#unit_id').trigger({
+                        type: 'select2:select',
+                        params: {
+                            data: {
+                                id: res.results.id,
+                                text: res.results.unit_name
+                            }
+                        }
+                    });
+
+                    toastr.success(res.message, 'Success', { "progressBar": true, "closeButton": true, "positionClass": 'toast-bottom-right' });
+                },
+                error: ({ responseJSON }) => {
+                    toastr.error(responseJSON.message, 'Failed', { "progressBar": true, "closeButton": true, "positionClass": 'toast-bottom-right' });
+                }
+            })
         })
     }
 
@@ -1047,18 +1140,18 @@ const productController = ((SET, DT, UI) => {
                             titleAttr: 'Refresh'
                         },
                         {
-                            text: '<i class="fa fa-plus"></i>',
-                            action: function (e, dt, node, config) {
-                                location.hash = '#/product/add'
-                            },
-                            titleAttr: 'Add'
-                        },
-                        {
                             text: '<i class="fa fa-search"></i>',
                             action: function (e, dt, node, config) {
                                 $('#modal_search').modal('show')
                             },
                             titleAttr: 'Search'
+                        },
+                        {
+                            text: '<i class="fa fa-plus"></i>',
+                            action: function (e, dt, node, config) {
+                                location.hash = '#/product/add'
+                            },
+                            titleAttr: 'Add'
                         },
                     ]
                 },
@@ -1186,8 +1279,18 @@ const productController = ((SET, DT, UI) => {
                             results: filtered
                         };
                     },
-                    allowClear: true
+                    cache: true
+                },
+                language: {
+                    noResults: function (term) {
+                        let search = $('#category_id')
+                            .data("select2")
+                            .$dropdown.find("input").val();
 
+                        let no_results = $(`<a href="javascript:void(0);" class="select2_add_category" data-name="${search}">Create new item: <b>${search}</b></a>`)
+
+                        return no_results;
+                    },
                 }
             });
 
@@ -1224,18 +1327,23 @@ const productController = ((SET, DT, UI) => {
                             results: filtered
                         };
                     },
-                    allowClear: true
+                    cache: true
+                },
+                language: {
+                    noResults: function (term) {
+                        let search = $('#unit_id')
+                            .data("select2")
+                            .$dropdown.find("input").val();
 
+                        let no_results = $(`<a href="javascript:void(0);" class="select2_add_unit" data-name="${search}">Create new item: <b>${search}</b></a>`)
+
+                        return no_results;
+                    },
                 }
             });
 
-            $('#unit_id').on('select2:open', () => {
-                $(".select2-results:not(:has(a))").prepend('<a href="javascript:void(0)" id="btn_add_unit" style="padding: 6px;height: 20px;display: inline-table;">Create new item</a>');
-            })
-
-            $('#category_id').on('select2:open', () => {
-                $(".select2-results:not(:has(a))").prepend('<a href="javascript:void(0)" id="btn_add_category" style="padding: 6px;height: 20px;display: inline-table;">Create new item</a>');
-            })
+            _addCategory(TOKEN)
+            _addUnit(TOKEN)
 
             _submitAdd(TOKEN)
         },

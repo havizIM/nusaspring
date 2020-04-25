@@ -268,3 +268,407 @@ const dtController = (() => {
         }
     }
 })()
+
+const lookupController = ((SET) => {
+
+    const _openAddProduct = (callback) => {
+        $(document).on('click', '.select2_add_product', function () {
+            let id = $(this).data('id')
+
+            $('#form_add_product')[0].reset()
+            $('#modal_add_product').modal('show')
+            $('#product_id_' + id).select2('close')
+
+            callback(id)
+        })
+    }
+
+    const _openAddCustomer = (callback) => {
+        $(document).on('click', '.select2_add_customer', function () {
+            $('#form_add_customer')[0].reset()
+            $('#modal_add_customer').modal('show')
+            $('#contact_id').select2('close')
+            callback()
+        })
+    }
+
+    const _openAddSupplier = (callback) => {
+        $(document).on('click', '.select2_add_supplier', function () {
+            $('#form_add_supplier')[0].reset()
+            $('#modal_add_supplier').modal('show')
+            $('#contact_id').select2('close')
+            callback()
+        })
+    }
+
+    const _submitAddProduct = (TOKEN, type, id) => {
+        $('#form_add_product').validate({
+            errorClass: 'is-invalid',
+            successClass: 'is-valid',
+            validClass: 'is-valid',
+            errorElement: 'div',
+            errorPlacement: function (error, element) {
+                error.addClass('invalid-feedback');
+                error.insertAfter(element)
+            },
+            rules: {
+                product_name: 'required',
+            },
+            submitHandler: form => {
+                $.ajax({
+                    url: `${SET.apiURL()}products`,
+                    type: 'POST',
+                    dataType: 'JSON',
+                    data: new FormData(form),
+                    contentType: false,
+                    processData: false,
+                    beforeSend: xhr => {
+                        xhr.setRequestHeader("Authorization", "Bearer " + TOKEN)
+
+                        SET.contentLoader('.modal-content')
+                    },
+                    success: res => {
+                        toastr.success(res.message, 'Success', { "progressBar": true, "closeButton": true, "positionClass": 'toast-bottom-right' });
+                        
+                        let option = new Option(res.results.product_name, res.results.id, true, true);
+                        $('#product_id_'+id).append(option).trigger('change');
+
+                        $('#product_id_' + id).trigger({
+                            type: 'select2:select',
+                            params: {
+                                data: {
+                                    id: res.results.id,
+                                    text: res.results.product_name,
+                                    price: type === 'purchase' ? res.results.purchase_price : res.results.selling_price,
+                                    unit: res.results.unit === null ? null : res.results.unit.unit_name
+                                }
+                            }
+                        });
+
+                        
+                        $('#modal_add_product').modal('hide')
+                    },
+                    error: ({ responseJSON }) => {
+                        toastr.error(responseJSON.message, 'Failed', { "progressBar": true, "closeButton": true, "positionClass": 'toast-bottom-right' });
+                    },
+                    complete: () => {
+                        SET.closeSelectedElement('.modal-content')
+                    }
+                })
+            }
+        })
+    }
+    
+    const _submitAddCustomer = (TOKEN, id) => {
+        $('#form_add_customer').validate({
+            errorClass: 'is-invalid',
+            successClass: 'is-valid',
+            validClass: 'is-valid',
+            errorElement: 'div',
+            errorPlacement: function (error, element) {
+                error.addClass('invalid-feedback');
+                error.insertAfter(element)
+            },
+            rules: {
+                contact_name: 'required',
+                phone: 'required',
+                address: 'required'
+            },
+            submitHandler: form => {
+                $.ajax({
+                    url: `${SET.apiURL()}customers`,
+                    type: 'POST',
+                    dataType: 'JSON',
+                    data: $(form).serialize(),
+                    beforeSend: xhr => {
+                        xhr.setRequestHeader("Authorization", "Bearer " + TOKEN)
+
+                        SET.contentLoader('.modal-content')
+                    },
+                    success: res => {
+                        toastr.success(res.message, 'Success', { "progressBar": true, "closeButton": true, "positionClass": 'toast-bottom-right' });
+                        
+                        let option = new Option(res.results.contact_name, res.results.id, true, true);
+                        $('#contact_id').append(option).trigger('change');
+
+                        $('#contact_id').trigger({
+                            type: 'select2:select',
+                            params: {
+                                data: {
+                                    id: res.results.id,
+                                    text: res.results.contact_name,
+                                    email: res.results.email,
+                                    address: res.results.address,
+                                }
+                            }
+                        });
+
+                        $('#modal_add_customer').modal('hide')
+                    },
+                    error: ({ responseJSON }) => {
+                        toastr.error(responseJSON.message, 'Failed', { "progressBar": true, "closeButton": true, "positionClass": 'toast-bottom-right' });
+                    },
+                    complete: () => {
+                        SET.closeSelectedElement('.modal-content')
+                    }
+                })
+            }
+        })
+    }
+
+    const _submitAddSupplier = TOKEN => {
+        $('#form_add_supplier').validate({
+            errorClass: 'is-invalid',
+            successClass: 'is-valid',
+            validClass: 'is-valid',
+            errorElement: 'div',
+            errorPlacement: function (error, element) {
+                error.addClass('invalid-feedback');
+                error.insertAfter(element)
+            },
+            rules: {
+                contact_name: 'required',
+                phone: 'required',
+                address: 'required'
+            },
+            submitHandler: form => {
+                $.ajax({
+                    url: `${SET.apiURL()}suppliers`,
+                    type: 'POST',
+                    dataType: 'JSON',
+                    data: $(form).serialize(),
+                    beforeSend: xhr => {
+                        xhr.setRequestHeader("Authorization", "Bearer " + TOKEN)
+
+                        SET.contentLoader('.modal-content')
+                    },
+                    success: res => {
+                        toastr.success(res.message, 'Success', { "progressBar": true, "closeButton": true, "positionClass": 'toast-bottom-right' });
+                        
+                        let option = new Option(res.results.contact_name, res.results.id, true, true);
+                        $('#contact_id').append(option).trigger('change');
+
+                        $('#contact_id').trigger({
+                            type: 'select2:select',
+                            params: {
+                                data: {
+                                    id: res.results.id,
+                                    text: res.results.contact_name,
+                                    email: res.results.email,
+                                    address: res.results.address,
+                                }
+                            }
+                        });
+
+                        $('#modal_add_supplier').modal('hide')
+                    },
+                    error: ({ responseJSON }) => {
+                        toastr.error(responseJSON.message, 'Failed', { "progressBar": true, "closeButton": true, "positionClass": 'toast-bottom-right' });
+                    },
+                    complete: () => {
+                        SET.closeSelectedElement('.modal-content')
+                    }
+                })
+            }
+        })
+    }
+
+    const _addCategory = TOKEN => {
+        $(document).on('click', '.select2_add_category', function () {
+            let name = $(this).data('name')
+
+            $.ajax({
+                url: `${SET.apiURL()}categories`,
+                type: 'POST',
+                dataType: 'JSON',
+                data: {
+                    category_name: name
+                },
+                beforeSend: xhr => {
+                    xhr.setRequestHeader("Authorization", "Bearer " + TOKEN)
+                },
+                success: res => {
+                    $("#category_id").select2("close");
+
+                    let option = new Option(res.results.category_name, res.results.id, true, true);
+                    $('#category_id').append(option).trigger('change');
+
+                    // manually trigger the `select2:select` event
+                    $('#category_id').trigger({
+                        type: 'select2:select',
+                        params: {
+                            data: {
+                                id: res.results.id,
+                                text: res.results.category_name
+                            }
+                        }
+                    });
+
+                    toastr.success(res.message, 'Success', { "progressBar": true, "closeButton": true, "positionClass": 'toast-bottom-right' });
+                },
+                error: ({ responseJSON }) => {
+                    toastr.error(responseJSON.message, 'Failed', { "progressBar": true, "closeButton": true, "positionClass": 'toast-bottom-right' });
+                }
+            })
+        })
+    }
+
+    const _addUnit = TOKEN => {
+        $(document).on('click', '.select2_add_unit', function () {
+            let name = $(this).data('name')
+
+            $.ajax({
+                url: `${SET.apiURL()}units`,
+                type: 'POST',
+                dataType: 'JSON',
+                data: {
+                    unit_name: name
+                },
+                beforeSend: xhr => {
+                    xhr.setRequestHeader("Authorization", "Bearer " + TOKEN)
+                },
+                success: res => {
+                    $("#unit_id").select2("close");
+
+                    let option = new Option(res.results.unit_name, res.results.id, true, true);
+                    $('#unit_id').append(option).trigger('change');
+
+                    // manually trigger the `select2:select` event
+                    $('#unit_id').trigger({
+                        type: 'select2:select',
+                        params: {
+                            data: {
+                                id: res.results.id,
+                                text: res.results.unit_name
+                            }
+                        }
+                    });
+
+                    toastr.success(res.message, 'Success', { "progressBar": true, "closeButton": true, "positionClass": 'toast-bottom-right' });
+                },
+                error: ({ responseJSON }) => {
+                    toastr.error(responseJSON.message, 'Failed', { "progressBar": true, "closeButton": true, "positionClass": 'toast-bottom-right' });
+                }
+            })
+        })
+    }
+
+    return {
+        lookupProduct: (TOKEN, type) => {
+            _openAddProduct(id => {
+                $('#category_id').select2({
+                    dropdownParent: $('#modal_add_product'),
+                    ajax: {
+                        url: `${SET.apiURL()}categories`,
+                        dataType: 'JSON',
+                        type: 'GET',
+                        headers: {
+                            "Authorization": "Bearer " + TOKEN,
+                            "Content-Type": "application/json",
+                        },
+                        data: function (params) {
+                            var query = {
+                                search: params.term,
+                                limit: 100,
+                            }
+
+                            return query;
+                        },
+                        processResults: function (data) {
+                            let filtered = [];
+
+                            data.results.map(v => {
+                                let obj = {
+                                    id: v.id,
+                                    text: v.category_name
+                                }
+
+                                filtered.push(obj)
+                            })
+
+                            return {
+                                results: filtered
+                            };
+                        },
+                        cache: true
+                    },
+                    language: {
+                        noResults: function (term) {
+                            let search = $('#category_id')
+                                .data("select2")
+                                .$dropdown.find("input").val();
+
+                            let no_results = $(`<a href="javascript:void(0);" class="select2_add_category" data-name="${search}">Create new item: <b>${search}</b></a>`)
+
+                            return no_results;
+                        },
+                    }
+                });
+
+                $('#unit_id').select2({
+                    dropdownParent: $('#modal_add_product'),
+                    ajax: {
+                        url: `${SET.apiURL()}units`,
+                        dataType: 'JSON',
+                        type: 'GET',
+                        headers: {
+                            "Authorization": "Bearer " + TOKEN,
+                            "Content-Type": "application/json",
+                        },
+                        data: function (params) {
+                            var query = {
+                                search: params.term,
+                                limit: 100,
+                            }
+
+                            return query;
+                        },
+                        processResults: function (data) {
+                            let filtered = [];
+
+                            data.results.map(v => {
+                                let obj = {
+                                    id: v.id,
+                                    text: v.unit_name
+                                }
+
+                                filtered.push(obj)
+                            })
+
+                            return {
+                                results: filtered
+                            };
+                        },
+                        cache: true
+                    },
+                    language: {
+                        noResults: function (term) {
+                            let search = $('#unit_id')
+                                .data("select2")
+                                .$dropdown.find("input").val();
+
+                            let no_results = $(`<a href="javascript:void(0);" class="select2_add_unit" data-name="${search}">Create new item: <b>${search}</b></a>`)
+
+                            return no_results;
+                        },
+                    }
+                });
+
+                _addCategory(TOKEN)
+                _addUnit(TOKEN)
+
+                _submitAddProduct(TOKEN, type, id)
+            })
+        },
+        lookupCustomer: TOKEN => {
+            _openAddCustomer(() => {
+                _submitAddCustomer(TOKEN)
+            })
+        },
+        lookupSupplier: TOKEN => {
+            _openAddSupplier(() => {
+                _submitAddSupplier(TOKEN)
+            })
+        }
+    }
+})(settingController)

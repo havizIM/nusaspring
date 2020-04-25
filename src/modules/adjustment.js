@@ -42,7 +42,7 @@ const adjustmentUI = ((SET) => {
                                         </div>
                                         <div class="form-group">
                                             <label for="fax">Reference No</label>
-                                            <input type="text" class="form-control" name="reference_number" id="reference_number" value="${_replaceNull(data.reference_number)}">
+                                            <input type="text" class="form-control" readonly name="reference_number" id="reference_number" value="${_replaceNull(data.reference_number)}">
                                         </div>
                                         <div class="form-group">
                                             <label for="fax">Date</label>
@@ -338,13 +338,13 @@ const adjustmentUI = ((SET) => {
             });
 
             $('#product_id_' + count).on('select2:open', () => {
-                $(".select2-results:not(:has(a))").prepend('<a href="javascript:void(0)" class="btn_add_product" style="padding: 6px;height: 20px;display: inline-table;">Create new item</a>');
+                $(".select2-results:not(:has(a))").prepend('<a href="javascript:void(0)" class="select2_add_product" data-id="'+count+'" style="padding: 6px;height: 20px;display: inline-table;">Create new item</a>');
             })
         }
     }
 })(settingController)
 
-const adjustmentController = ((SET, DT, UI) => {
+const adjustmentController = ((SET, DT, UI, LU) => {
 
     /* -------------------- ADD ACTION ----------------- */
     const _addRow = TOKEN => {
@@ -544,7 +544,7 @@ const adjustmentController = ((SET, DT, UI) => {
                 $('.dropify').dropify();
 
                 $('.product_id').each(function (v) {
-                    let id = $(this).data('id');
+                    let myId = $(this).data('id');
 
                     let data = {
                         id: $(this).data('sid'),
@@ -603,10 +603,13 @@ const adjustmentController = ((SET, DT, UI) => {
                     });
 
                     $(this).on('select2:open', () => {
-                        $(".select2-results:not(:has(a))").prepend('<a href="javascript:void(0)" class="btn_add_product" style="padding: 6px;height: 20px;display: inline-table;">Create new item</a>');
+                        $(".select2-results:not(:has(a))").prepend('<a href="javascript:void(0)" class="select2_add_product" data-id="' + myId +'" style="padding: 6px;height: 20px;display: inline-table;">Create new item</a>');
                     })
 
                 })
+
+
+                LU.lookupProduct(TOKEN, 'purchase')
 
                 _addRow(TOKEN)
                 _onChangeProduct()
@@ -707,8 +710,6 @@ const adjustmentController = ((SET, DT, UI) => {
 
     return {
         data: TOKEN => {
-            console.log('Adjustment Controller is running...')
-
             const table = $('#t_adjustment').DataTable({
                 columnDefs: [
                     {
@@ -918,12 +919,11 @@ const adjustmentController = ((SET, DT, UI) => {
             })
         },
         add: TOKEN => {
-            console.log('Add Adjustment Controller is running...')
-
             UI.resetCount()
 
             $('.dropify').dropify();
-            $('.product_id').select2({
+
+            $('#product_id_0').select2({
                 ajax: {
                     url: `${SET.apiURL()}products`,
                     dataType: 'JSON',
@@ -961,17 +961,11 @@ const adjustmentController = ((SET, DT, UI) => {
                 }
             });
 
-            $('.product_id').on('select2:open', () => {
-                $(".select2-results:not(:has(a))").prepend('<a href="javascript:void(0)" class="btn_add_product" style="padding: 6px;height: 20px;display: inline-table;">Create new item</a>');
+            $('#product_id_0').on('select2:open', () => {
+                $(".select2-results:not(:has(a))").prepend('<a href="javascript:void(0)" class="select2_add_product" data-id="0" style="padding: 6px;height: 20px;display: inline-table;">Create new item</a>');
             })
 
-                
-
-            // }, error => {
-            //     $('.product_id').select2({
-            //         data: []
-            //     });
-            // })
+            LU.lookupProduct(TOKEN, 'purchase')
 
             _addRow(TOKEN)
             _onChangeProduct()
@@ -984,8 +978,6 @@ const adjustmentController = ((SET, DT, UI) => {
 
         },
         edit: (TOKEN, id) => {
-            console.log('Edit Customer Controller is running...')
-
             UI.resetCount()
 
             _fetchAdjustment(TOKEN, id, data => {
@@ -994,8 +986,6 @@ const adjustmentController = ((SET, DT, UI) => {
             })
         },
         detail: (TOKEN, id) => {
-            console.log('Detail Adjustment Controller is running...')
-
             _fetchAdjustment(TOKEN, id, data => {
                 UI.renderDetail(data)
             })
@@ -1007,6 +997,6 @@ const adjustmentController = ((SET, DT, UI) => {
             })
         }
     }
-})(settingController, dtController, adjustmentUI)
+})(settingController, dtController, adjustmentUI, lookupController)
 
 export default adjustmentController
