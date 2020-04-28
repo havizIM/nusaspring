@@ -13,7 +13,7 @@ const profileUI = ((SET) => {
                                 <div class="timeline-panel">
                                     <a href="${v.url}">
                                         <div class="timeline-heading">
-                                            <h4 class="timeline-title">${v.description} #${v.reference_id}</h4>
+                                            <h4 class="timeline-title">${v.description}</h4>
                                         </div>
                                         <div class="timeline-body">
                                             <p>${v.created_at}</p>
@@ -33,7 +33,7 @@ const profileUI = ((SET) => {
                 <div class="text-center">
                     <i class="fa far fa-list-alt fa-5x mb-3"></i>
                     <h1>Not Found</h1>
-                    <h4>Data tidak ditemukan...</h4>
+                    <h4>Data tidak ditemukan</h4>
                 </div>
             `
 
@@ -57,9 +57,9 @@ const profileController = ((SET, UI) => {
             success: ({ results }) => {
                 $('#profile_name').text(results.name)
                 $('#profile_roles').text(results.roles)
-                $('#profile_phone').text(results.phone)
-                $('#profile_address').text(results.address)
-                $('#profile_email').text(results.email)
+                $('#profile_phone').text(SET.replaceNull(results.phone))
+                $('#profile_address').text(SET.replaceNull(results.address))
+                $('#profile_email').text(SET.replaceNull(results.email))
 
                 if(results.logs.length === 0){
                     UI.renderNoData()

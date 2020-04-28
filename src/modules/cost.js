@@ -1,17 +1,4 @@
 const costUI = ((SET) => {
-
-    const _getMaxQty = (returns, id) => {
-        let max = 0
-
-        returns.map(v => {
-            v.products.filter(i => i.product_id === id).map(x => {
-                max += x.qty
-            })
-        })
-
-        return max;
-    }
-
     let count = 0
 
     return {
@@ -42,8 +29,8 @@ const costUI = ((SET) => {
                                                 <td class="w-50">
                                                     <address>
                                                         <img src="${SET.baseURL()}assets/images/logo-full-black.png" style="width: 50%" class="mb-3" />
-                                                        <p class="text-muted m-l-5">Jl. Tiga Berlian Blok Karizma No.41,
-                                                            <br/> Mekarsari, Cimanggis, Depok, Jawa Barat 16452, Indonesia,
+                                                        <p class="text-muted m-l-5">Jl. Radar Auri No.41,
+                                                            <br/> Cisalak Ps, Cimanggis, Depok, Jawa Barat 16452, Indonesia,
                                                             <br/> Hp. 087880729929 / 081280999733,
                                                             <br/> Telp/Fax. 021-29616935</p>
                                                     </address>
@@ -55,6 +42,7 @@ const costUI = ((SET) => {
 
                                                         <p class="m-t-30"><b><i class="fa fa-calendar"></i> Date :</b> ${data.date}</p>
                                                         <p><b><i class="mdi mdi-album"></i> Cost No :</b> ${SET.replaceNull(data.cost_number)}</p>
+                                                        <p><b><i class="ti-wallet"></i> Type payment :</b> ${SET.replaceNull(data.type)}</p>
                                                     </address>
                                                 </td>
                                             </tr>
@@ -130,205 +118,6 @@ const costUI = ((SET) => {
             $('#main_content').html(html)
         },
 
-        renderFormAdd: data => {
-
-            let html = `
-                <div class="card" id="add_container">
-                    <div class="card-body">
-
-                        <div class="row">
-                            <div class="col-md-12">
-                                <form id="form_add">
-                                    <div class="row">
-                                        <div class="col-md-4">
-                                            <div class="card">
-                                                <div class="card-body">
-                                                    <h5 class="card-title">Purchase Info</h5>
-                                                    <hr>
-                                                    <small>Total Price</small>
-                                                    <h2>Rp. ${SET.positiveCurrency((parseFloat(data.grand_total + data.total_ppn + data.total_discount)) + (parseFloat(data.total_return + data.total_ppn_return + data.total_return_discount)))}</h2>
-                                                    <hr>
-                                                    <h4><i class="ti-mobile"></i> <a href="#/purchase/${data.id}">${data.purchase_number}</a></h4>
-                                                    <small>${data.contact.contact_name}</small>
-                                                </div>
-                                            </div>
-                                            
-                                            <input type="hidden" name="purchase_id" id="purchase_id" value="${data.id}">
-                                            <input type="hidden" name="contact_id" id="contact_id" value="${data.contact.id}">
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                <label for="fax">Return No</label>
-                                                <input type="text" class="form-control" name="return_number" id="return_number">
-                                            </div>
-                                            <div class="form-group">
-                                                    <label for="fax">Reference No</label>
-                                                    <input type="text" class="form-control" name="reference_number" id="reference_number">
-                                                </div>
-                                            <div class="form-group">
-                                                <label for="fax">Date</label>
-                                                <input type="date" class="form-control" name="date" id="date">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                <label for="picture">Attachment</label>
-                                                <input type="file" class="dropify" name="attachment" id="attachment">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-12 mb-3">
-                                            <div class="table-responsive">
-                                                <table class="table" id="t_add_products" style="overflow-x: scroll;">
-                                                    <thead>
-                                                        <tr>
-                                                            <th style="min-width: 200px;">Product</th>
-                                                            <th style="min-width: 200px;">Unit Price</th>
-                                                            <th style="min-width: 150px;">Available Qty</th>
-                                                            <th style="min-width: 150px;">Qty Return</th>
-                                                            <th style="min-width: 150px;">Disc (%)</th>
-                                                            <th style="min-width: 200px;">Disc (Rp.)</th>
-                                                            <th>PPN</th>
-                                                            <th style="min-width: 200px;">Total</th>
-                                                            <th style="min-width: 200px;">Total Return</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody id="coba">
-                                                        ${data.products.map(v => {
-                count += 1
-                return `
-                                                                <tr id="row_${count}">
-                                                                    <td>
-                                                                        ${v.description}
-                                                                        <input type="hidden" data-id="${count}" class="product_id" id="product_id_${count}" name="product_id[${count}]" value="${v.product_id}">
-                                                                        <input type="hidden" data-id="${count}" class="description" id="description_${count}" name="description[${count}]" value="${v.description}">
-                                                                    </td>
-                                                                    <td>
-                                                                        Rp. ${SET.positiveCurrency(v.unit_price)}
-                                                                        <input type="hidden" data-id="${count}" class="unit_price" id="unit_price_${count}" name="unit_price[${count}]" value="${v.unit_price}">
-                                                                    </td>
-                                                                    <td>
-                                                                        ${parseFloat(v.qty + _getMaxQty(data.returns, v.product_id))}
-                                                                    </td>
-                                                                    <td>
-                                                                        <div class="input-group mb-3">
-                                                                            <input type="number"  data-id="${count}" min="0" value="0" max="${parseFloat(v.qty + _getMaxQty(data.returns, v.product_id))}" name="qty[${count}]" id="qty_${count}" data-id="${count}" class="form-control qty" required>
-                                                                            <div class="input-group-prepend">
-                                                                                <input type="hidden" data-id="${count}" name="unit[${count}]" id="unit_${count}" data-id="${count}" class="unit" value="${v.unit}">
-                                                                                <span class="input-group-text" id="unit_text_${count}" data-id="${count}">${v.unit}</span>
-                                                                            </div>
-                                                                        </div>
-                                                                    </td>
-                                                                    <td>
-                                                                        ${v.discount_percent} %
-                                                                        <input type="hidden" data-id="${count}" id="discount_percent_${count}" name="discount_percent[${count}]" value="${v.discount_percent}" class="discount_percent">
-                                                                    </td>
-                                                                    <td>
-                                                                       Rp. ${SET.positiveCurrency(v.discount_amount)}
-                                                                        <input type="hidden" data-id="${count}" id="discount_amount_${count}" name="discount_amount[${count}]" value="${v.discount_amount}" class="discount_amount">
-                                                                    </td>
-                                                                    <td>
-                                                                        ${v.ppn}
-                                                                        <input type="hidden" data-id="${count}" id="ppn_${count}" name="ppn[${count}]" value="${v.ppn}" class="ppn">
-                                                                        <input type="hidden" data-id="${count}" class="ppn_amount" id="ppn_amount_${count}" name="ppn_amount[${count}]" value="0">
-                                                                    </td>
-                                                                    <td>
-                                                                        Rp. ${SET.positiveCurrency(parseFloat(v.unit_price) * (parseFloat(v.qty + _getMaxQty(data.returns, v.product_id))))}
-                                                                        <input type="hidden" data-id="${count}" id="total_${count}" name="total[${count}]" value="${parseFloat(v.unit_price) * (parseFloat(v.qty + _getMaxQty(data.returns, v.product_id)))}" class="total">
-                                                                    </td>
-                                                                    <td>
-                                                                        <div class="input-group mb-3">
-                                                                            <div class="input-group-prepend">
-                                                                                <span class="input-group-text" id="basic-addon1">Rp. </span>
-                                                                            </div>
-                                                                            <input type="number" min="0" value="0" name="total_return[${count}]" id="total_return_${count}" data-id="${count}" class="form-control total_return">
-                                                                        </div>
-                                                                    </td>
-                                                                </tr>
-                                                            `
-            }).join('')}
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label for="memo">Memo</label>
-                                                <textarea class="form-control" id="memo" name="memo" rows="5"></textarea>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="memo">Message</label>
-                                                <textarea class="form-control" id="message" name="message" rows="5"></textarea>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="row">
-                                                <div class="col-md-4 text-right">
-                                                    <h4>Sub Total</h4>
-                                                </div>
-                                                <div class="col-md-8 text-right">
-                                                    <h4 id="sub_total_text">Rp. 0</h4>
-                                                    <input type="hidden" value="0" class="form-control" name="sub_total" id="sub_total">
-                                                </div>
-                                            </div>
-
-                                            <div class="row">
-                                                <div class="col-md-4 text-right">
-                                                    <h4>Discount</h4>
-                                                </div>
-                                                <div class="col-md-8 text-right">
-                                                    <h4 id="all_discount_text">Rp. 0</h4>
-                                                    <input type="hidden" value="0" class="form-control" name="all_discount" id="all_discount">
-                                                </div>
-                                            </div>
-
-                                            <div class="row">
-                                                <div class="col-md-4 text-right">
-                                                    <h4>Total</h4>
-                                                </div>
-                                                <div class="col-md-8 text-right">
-                                                    <h4 id="total_dpp_text">Rp. 0</h4>
-                                                    <input type="hidden" value="0" class="form-control" name="total_dpp" id="total_dpp">
-                                                </div>
-                                            </div>
-
-                                            <div class="row">
-                                                <div class="col-md-4 text-right">
-                                                    <h4>PPN (10%)</h4>
-                                                </div>
-                                                <div class="col-md-8 text-right">
-                                                    <h4 id="ppn_text">Rp. 0</h4>
-                                                    <input type="hidden" value="0" class="form-control" name="total_ppn" id="total_ppn">
-                                                </div>
-                                            </div>
-
-                                            <div class="row mt-3">
-                                                <div class="col-md-4 text-right">
-                                                    <h3><b>Grand Total</b></h3>
-                                                </div>
-                                                <div class="col-md-8 text-right">
-                                                    <b><h3 id="grand_total_text">Rp. 0</h3></b>
-                                                    <input type="hidden" value="0" class="form-control" name="grand_total" id="grand_total">
-                                                </div>
-                                            </div>
-
-                                        </div>
-                                        <div class="col-md-12 mt-3">
-                                            <div class="form-group text-right">
-                                                <a class="btn btn-md btn-danger" href="#/product">Cancel</a>
-                                                <button class="btn btn-md btn-info" type="submit">Save</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `
-
-            $('#main_content').html(html)
-        },
-
         renderRow: () => {
 
             count += 1
@@ -365,7 +154,7 @@ const costUI = ((SET) => {
                     <td>
                         <div class="text-center">
                             <div class="custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input ppn" id="ppn_${count}" name="ppn[${count}]" data-id="${count}">
+                                <input type="checkbox" class="custom-control-input ppn" id="ppn_${count}" name="ppn[${count}]" data-id="${count}" value="Y">
                                 <label class="custom-control-label" for="ppn_${count}"></label>
                             </div>
                             <input type="hidden" value="0" data-id="${count}" id="ppn_amount_${count}" name="ppn_amount[${count}]" class="ppn_amount">
@@ -379,6 +168,204 @@ const costUI = ((SET) => {
 
             $('#t_add_products tbody').append(html)
 
+        },
+
+        renderFormEdit: data => {
+            let type = ['Cash', 'Transfer', 'Cek/Giro', 'Kartu Kredit'];
+
+            let html = `
+                <div class="row">
+                    <div class="col-md-12">
+                        <form id="form_edit">
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <div class="form-group">
+                                        <label for="fax">Cost No</label>
+                                        <input type="text" readonly placeholder="[ AUTO ]" value="${data.cost_number}" class="form-control" name="cost_number" id="cost_number">
+                                    </div>
+                                    <div class="form-group row">
+                                        <div class="col-md-6">
+                                            <label for="fax">Date</label>
+                                            <input type="date" class="form-control" name="date" id="date" value="${data.date}">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label>Type</label>
+                                            <select name="type" id="type" class="form-control">
+                                                ${type.map(v => {
+                                                    return `<option value="${v}" ${v === data.type ? 'selected' : ''}>${v}</option>`
+                                                }).join('')}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="">To</label>
+                                        <textarea name="to" id="to" cols="30" rows="5" class="form-control">${SET.filterNull(data.to)}</textarea>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="picture">Attachment</label>
+                                        <input type="file" class="dropify" name="attachment" id="attachment" ${data.attachment === null ? '' : `data-default-file="${SET.apiURL()}costs/file/${data.attachment}`}">
+                                    </div>
+                                </div>
+                                <div class="col-md-12 mb-3">
+                                    <!-- <div class="form-group text-right">
+                                        <div class="custom-control custom-checkbox">
+                                            <input type="checkbox" class="custom-control-input include_ppn" id="include_ppn">
+                                            <label class="custom-control-label" for="include_ppn">Price Include PPN</label>
+                                        </div>
+                                    </div> -->
+                                    <div class="table-responsive">
+                                        <table class="table" id="t_add_products" style="overflow-x: scroll;">
+                                            <thead>
+                                                <tr>
+                                                    <th style="min-width: 350px;">Description</th>
+                                                    <th style="min-width: 200px;">Amount</th>
+                                                    <th style="min-width: 150px;">Disc (%)</th>
+                                                    <th style="min-width: 200px;">Disc (Rp.)</th>
+                                                    <th>PPN</th>
+                                                    <th>
+                                                        <button class="btn btn-info btn-md btn_add_row" type="button" id="btn_add_row"><i class="fa fa-plus"></i></button>
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="coba">
+                                                ${data.details.map(v => {
+
+                                                    count += 1
+                                                    let ppn_amount = parseFloat((v.amount + v.discount_amount) * 10 / 100)
+
+                                                    return `
+                                                        <tr id="row_${count}">
+                                                            <td>
+                                                                <textarea name="description[${count}]" id="description_${count}" data-id="${count}" class="form-control" rows="1" required>${v.description}</textarea>
+                                                            </td>
+                                                            <td>
+                                                                <div class="input-group mb-3">
+                                                                    <div class="input-group-prepend">
+                                                                        <span class="input-group-text" id="basic-addon1">Rp. </span>
+                                                                    </div>
+                                                                    <input type="number" min="0" value="${v.amount}" name="amount[${count}]" id="amount_${count}" data-id="${count}" class="form-control amount">
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <div class="input-group mb-3">
+                                                                    <input type="number"  min="0" value="${v.discount_percent}" name="discount_percent[${count}]" id="discount_percent_${count}" data-id="${count}" class="form-control discount_percent">
+                                                                    <div class="input-group-prepend">
+                                                                        <span class="input-group-text" id="basic-addon1">%</span>
+                                                                    </div>
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <div class="input-group mb-3">
+                                                                    <div class="input-group-prepend">
+                                                                        <span class="input-group-text" id="basic-addon1">Rp. </span>
+                                                                    </div>
+                                                                    <input type="number"  min="0" value="${SET.positiveNumber(v.discount_amount)}" name="discount_amount[${count}]" id="discount_amount_${count}" data-id="${count}" class="form-control discount_amount">
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <div class="text-center">
+                                                                    <div class="custom-control custom-checkbox">
+                                                                        <input type="checkbox" value="Y" class="custom-control-input ppn" id="ppn_${count}" name="ppn[${count}]" data-id="${count}" ${v.ppn === 'Y' ? 'checked' : ''}>
+                                                                        <label class="custom-control-label" for="ppn_${count}"></label>
+                                                                    </div>
+                                                                    <input type="hidden" value="${v.ppn === 'Y' ? ppn_amount : 0}" data-id="${count}" id="ppn_amount_${count}" name="ppn_amount[${count}]" class="ppn_amount">
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <button class="btn btn-danger btn-md btn-remove" type="button" data-id="${count}" data-remove="true"><i class="fa fa-times"></i></button>
+                                                            </td>
+                                                        </tr>
+                                                    `
+                                                }).join('')}
+                                            </tbody>
+                                            <tfoot>
+                                                <tr>
+                                                    <td colspan="8">
+                                                        <button class="btn btn-info btn-md btn_add_row" type="button" id="btn_add_row"><i class="fa fa-plus"></i> Add Details</button>
+                                                    </td>
+                                                </tr>
+                                            </tfoot>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="memo">Memo</label>
+                                        <textarea class="form-control" id="memo" name="memo" rows="5">${SET.filterNull(data.memo)}</textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="memo">Message</label>
+                                        <textarea class="form-control" id="message" name="message" rows="5">${SET.filterNull(data.message)}</textarea>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <div class="col-md-4 text-right">
+                                            <h4>Sub Total</h4>
+                                        </div>
+                                        <div class="col-md-8 text-right">
+                                            <h4 id="sub_total_text">Rp. 0</h4>
+                                            <input type="hidden" value="0" class="form-control" name="sub_total" id="sub_total">
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-4 text-right">
+                                            <h4>Discount</h4>
+                                        </div>
+                                        <div class="col-md-8 text-right">
+                                            <h4 id="all_discount_text">Rp. 0</h4>
+                                            <input type="hidden" value="0" class="form-control" name="all_discount" id="all_discount">
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-4 text-right">
+                                            <h4>Total</h4>
+                                        </div>
+                                        <div class="col-md-8 text-right">
+                                            <h4 id="total_dpp_text">Rp. 0</h4>
+                                            <input type="hidden" value="0" class="form-control" name="total_dpp" id="total_dpp">
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-4 text-right">
+                                            <h4>PPN (10%)</h4>
+                                        </div>
+                                        <div class="col-md-8 text-right">
+                                            <h4 id="ppn_text">Rp. 0</h4>
+                                            <input type="hidden" value="0" class="form-control" name="total_ppn" id="total_ppn">
+                                        </div>
+                                    </div>
+
+                                    <div class="row mt-3">
+                                        <div class="col-md-4 text-right">
+                                            <h3><b>Grand Total</b></h3>
+                                        </div>
+                                        <div class="col-md-8 text-right">
+                                            <b><h3 id="grand_total_text">Rp. 0</h3></b>
+                                            <input type="hidden" value="0" class="form-control" name="grand_total" id="grand_total">
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="col-md-12 mt-3">
+                                    <div class="form-group text-right">
+                                        <input type="hidden" name="_method" id="_method" value="put">
+                                        <a class="btn btn-md btn-danger" href="#/cost">Cancel</a>
+                                        <button class="btn btn-md btn-success" type="submit">Update</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            `
+
+            $('#main_content').html(html);
         }
     }
 })(settingController)
@@ -603,6 +590,14 @@ const costController = ((SET, DT, UI) => {
             error: ({ responseJSON }) => {
                 toastr.error(responseJSON.message, 'Failed', { "progressBar": true, "closeButton": true, "positionClass": 'toast-bottom-right' });
             },
+            statusCode: {
+                404: () => {
+                    $('#app_content').load(`${SET.baseURL()}data_not_found`)
+                },
+                401: () => {
+                    $('#app_content').load(`${SET.baseURL()}authenticated`)
+                }
+            },
             complete: () => {
 
             }
@@ -619,26 +614,6 @@ const costController = ((SET, DT, UI) => {
             };
             $("div.printableArea").printArea(options);
         });
-    }
-
-    const _fetchPurchase = (TOKEN, id, callback) => {
-        $.ajax({
-            url: `${SET.apiURL()}purchases/${id}`,
-            type: 'GET',
-            dataType: 'JSON',
-            beforeSend: xhr => {
-                xhr.setRequestHeader("Authorization", "Bearer " + TOKEN)
-            },
-            success: res => {
-                callback(res.results)
-            },
-            error: ({ responseJSON }) => {
-                toastr.error(responseJSON.message, 'Failed', { "progressBar": true, "closeButton": true, "positionClass": 'toast-bottom-right' });
-            },
-            complete: () => {
-
-            }
-        })
     }
 
     const _submitAdd = TOKEN => {
@@ -678,6 +653,81 @@ const costController = ((SET, DT, UI) => {
                     },
                     complete: () => {
                         SET.closeSelectedElement('#add_container')
+                    }
+                })
+            }
+        })
+    }
+
+    const _editObserver = (TOKEN, id, returns) => {
+        MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
+
+        let container = document.querySelector("#edit_container")
+
+        let observer = new MutationObserver(function (mutations, observer) {
+            if (container.contains($('#form_edit')[0])) {
+
+                $('.dropify').dropify();
+
+                _calculateAll()
+                _addRow()
+                _removeRow()
+                _onChangePpn()
+                _onKeyupAmount()
+                _onPercentKeyup()
+                _onKeyupDiscount()
+                _onPpnCheck()
+
+                _submitEdit(TOKEN, id)
+            }
+
+            observer.disconnect();
+        });
+
+        observer.observe(container, {
+            subtree: true,
+            attributes: true,
+            childList: true,
+        });
+    }
+
+    const _submitEdit = (TOKEN, id) => {
+        $('#form_edit').validate({
+            errorClass: 'is-invalid',
+            successClass: 'is-valid',
+            validClass: 'is-valid',
+            errorElement: 'div',
+            errorPlacement: function (error, element) {
+                error.addClass('invalid-feedback');
+                error.insertAfter(element)
+            },
+            rules: {
+                cost_number: 'required',
+                date: 'required',
+                type: 'required',
+            },
+            submitHandler: form => {
+                $.ajax({
+                    url: `${SET.apiURL()}costs/${id}`,
+                    type: 'POST',
+                    dataType: 'JSON',
+                    data: new FormData(form),
+                    contentType: false,
+                    processData: false,
+                    beforeSend: xhr => {
+                        xhr.setRequestHeader("Authorization", "Bearer " + TOKEN)
+                        console.log(form)
+                        SET.contentLoader('#edit_container')
+                    },
+                    success: res => {
+                        toastr.success(res.message, 'Success', { "progressBar": true, "closeButton": true, "positionClass": 'toast-bottom-right' });
+                        location.hash = `#/cost/${res.results.id}`
+                    },
+                    error: ({ responseJSON }) => {
+                        toastr.error(responseJSON.message, 'Failed', { "progressBar": true, "closeButton": true, "positionClass": 'toast-bottom-right' });
+                    },
+                    complete: () => {
+                        SET.closeSelectedElement('#edit_container')
                     }
                 })
             }
@@ -901,6 +951,7 @@ const costController = ((SET, DT, UI) => {
                 $('#modal_delete').modal('hide')
             })
         },
+
         detail: (TOKEN, id) => {
             console.log('Detail Adjustment Controller is running...')
 
@@ -914,14 +965,7 @@ const costController = ((SET, DT, UI) => {
                 location.hash = '#/cost'
             })
         },
-        addWithPurchase: (TOKEN, id) => {
-            UI.resetCount()
 
-            _fetchPurchase(TOKEN, id, data => {
-                _addObserver(TOKEN, data)
-                UI.renderFormAdd(data)
-            })
-        },
         add: TOKEN => {
             console.log('Add Adjustment Controller is running...')
 
@@ -940,6 +984,15 @@ const costController = ((SET, DT, UI) => {
             _submitAdd(TOKEN)
 
         },
+
+        edit: (TOKEN, id) => {
+            UI.resetCount();
+
+            _fetchCost(TOKEN, id, data => {
+                _editObserver(TOKEN, id, data)
+                UI.renderFormEdit(data)
+            })
+        }
     }
 })(settingController, dtController, costUI)
 

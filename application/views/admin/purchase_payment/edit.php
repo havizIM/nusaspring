@@ -25,17 +25,20 @@
 <div class="container-fluid">
     <div class="row">
 
-        <div class="col-12">
-            <div class="card" id="edit_container">
-                <div class="card-body" id="main_content">
-                    <div class="text-center">
-                        <i class="fa fa-spinner fa-spin fa-5x mb-3"></i>
-                        <h1>Loading</h1>
-                        <h4>Silahkan tunggu...</h4>
+        <div class="col-md-12" id="edit_container">
+            <div id="main_content">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="text-center">
+                            <i class="fa fa-spinner fa-spin fa-5x mb-3"></i>
+                            <h1>Loading</h1>
+                            <h4>Silahkan tunggu...</h4>
+                        </div>
                     </div>
                 </div>
-            </div>
+            </div>    
         </div>
+        
     </div>
 </div>
 

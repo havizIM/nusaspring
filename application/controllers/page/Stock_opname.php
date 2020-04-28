@@ -9,9 +9,9 @@ class Stock_opname extends CI_Controller {
         $this->load->library('session');
         $this->roles = $this->session->userdata('roles');
         
-        // if(!$this->session->has_userdata('logged_in')){
-        //     redirect('login');
-        // }
+        if(!$this->session->has_userdata('logged_in')){
+            redirect('unauthenticated');
+        }
 
     }
     

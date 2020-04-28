@@ -9,14 +9,15 @@ class Stock_card extends CI_Controller {
         $this->load->library('session');
         $this->roles = $this->session->userdata('roles');
         
-        // if(!$this->session->has_userdata('logged_in')){
-        //     redirect('login');
-        // }
+        if(!$this->session->has_userdata('logged_in')){
+            redirect('unauthenticated');
+        }
 
     }
     
 	public function index()
 	{
-		$this->load->view(strtolower($this->roles).'/stock_card/data');
+        redirect('maintenance');
+        // $this->load->view(strtolower($this->roles).'/stock_card/data');
     }
 }

@@ -281,10 +281,16 @@ const dashboardContoller = ((SET) => {
             })
 
             _fetchTopTen(TOKEN, top_10, data => {
-                if(data.length === 0){
 
+                let html = ''
+
+                if(data.length === 0){
+                    html = `
+                        <tr>
+                            <td colspan="3" class="text-center"><h4>Data Not Found</h4></td>
+                        </tr>
+                    `
                 } else {
-                    let html = ''
 
                     data.forEach(v => {
                         html += `
@@ -295,9 +301,9 @@ const dashboardContoller = ((SET) => {
                             </tr>
                         `
                     })
-
-                    $('#t_top_10 tbody').html(html)
                 }
+
+                $('#t_top_10 tbody').html(html)
             })
 
             _onChangeEvent(TOKEN, BUSSINESS_CHART)

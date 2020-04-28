@@ -116,7 +116,7 @@
                                                         <td>
                                                             <div class="text-center">
                                                                 <div class="custom-control custom-checkbox">
-                                                                    <input type="checkbox" class="custom-control-input ppn" id="ppn_0" name="ppn[0]" data-id="0">
+                                                                    <input type="checkbox" class="custom-control-input ppn" id="ppn_0" name="ppn[0]" data-id="0" value="Y">
                                                                     <label class="custom-control-label" for="ppn_0"></label>
                                                                 </div>
                                                                 <input type="hidden" value="0" data-id="0" id="ppn_amount_0" name="ppn_amount[0]" class="ppn_amount">

@@ -47,7 +47,7 @@ const mainController = ((SET, UI) => {
                 $('body').removeAttr('style')
             },
             error: function () {
-                $('#app_content').load(`${SET.baseURL()}not_found`);
+                $('#app_content').load(`${SET.baseURL()}page_not_found`);
             },
             complete: () => {
                 SET.closePageLoader()

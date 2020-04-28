@@ -138,7 +138,7 @@ const purchaseUI = ((SET) => {
                                                                     <div class="input-group-prepend">
                                                                         <span class="input-group-text" id="basic-addon1">Rp. </span>
                                                                     </div>
-                                                                    <input type="number"  min="0" value="0" value="${v.discount_amount}" name="discount_amount[${count}]" id="discount_amount_${count}" data-id="${count}" class="form-control discount_amount">
+                                                                    <input type="number"  min="0" value="0" value="${SET.positiveNumber(v.discount_amount)}" name="discount_amount[${count}]" id="discount_amount_${count}" data-id="${count}" class="form-control discount_amount">
                                                                 </div>
                                                             </td>
                                                             <td>
@@ -294,8 +294,8 @@ const purchaseUI = ((SET) => {
                                                 <td class="w-50">
                                                     <address>
                                                         <img src="${SET.baseURL()}assets/images/logo-full-black.png" style="width: 50%" class="mb-3" />
-                                                        <p class="text-muted m-l-5">Jl. Tiga Berlian Blok Karizma No.41,
-                                                            <br/> Mekarsari, Cimanggis, Depok, Jawa Barat 16452, Indonesia,
+                                                        <p class="text-muted m-l-5">Jl. Radar Auri No.41,
+                                                            <br/> Cisalak Ps, Cimanggis, Depok, Jawa Barat 16452, Indonesia,
                                                             <br/> Hp. 087880729929 / 081280999733,
                                                             <br/> Telp/Fax. 021-29616935</p>
                                                     </address>
@@ -541,7 +541,7 @@ const purchaseUI = ((SET) => {
                     <td>
                         <div class="text-center">
                             <div class="custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input ppn" id="ppn_${count}" name="ppn[${count}]" data-id="${count}">
+                                <input type="checkbox" class="custom-control-input ppn" id="ppn_${count}" name="ppn[${count}]" data-id="${count}" value="Y">
                                 <label class="custom-control-label" for="ppn_${count}"></label>
                             </div>
                             <input type="hidden" value="0" data-id="${count}" id="ppn_amount_${count}" name="ppn_amount[${count}]" class="ppn_amount">
@@ -997,7 +997,7 @@ const purchaseController = ((SET, DT, UI, LU) => {
                 let option = new Option(purchase.contact.contact_name, purchase.contact.id, true, true);
                 $('#contact_id').append(option).trigger('change');
 
-                // manually trigger the `select2:select` event
+                
                 $('#contact_id').trigger({
                     type: 'select2:select',
                     params: {
@@ -1009,10 +1009,6 @@ const purchaseController = ((SET, DT, UI, LU) => {
                         }
                     }
                 });
-
-                $('#contact_id').on('select2:open', () => {
-                    $(".select2-results:not(:has(a))").prepend('<a href="javascript:void(0)" class="select2_add_product" style="padding: 6px;height: 20px;display: inline-table;">Create new item</a>');
-                })
 
                 $('.product_id').each(function (v) {
                     let myId = $(this).data('id');
@@ -1118,7 +1114,8 @@ const purchaseController = ((SET, DT, UI, LU) => {
                 error.insertAfter(element)
             },
             rules: {
-                category: 'required',
+                contact_id: 'required',
+                purchase_number: 'required',
                 date: 'required',
             },
             submitHandler: form => {

@@ -23,8 +23,8 @@ const sellingPaymentUI = ((SET) => {
                                                 <td class="w-50">
                                                     <address>
                                                         <img src="${SET.baseURL()}assets/images/logo-full-black.png" style="width: 50%" class="mb-3" />
-                                                        <p class="text-muted m-l-5">Jl. Tiga Berlian Blok Karizma No.41,
-                                                            <br/> Mekarsari, Cimanggis, Depok, Jawa Barat 16452, Indonesia,
+                                                        <p class="text-muted m-l-5">Jl. Radar Auri No.41,
+                                                            <br/> Cisalak Ps, Cimanggis, Depok, Jawa Barat 16452, Indonesia,
                                                             <br/> Hp. 087880729929 / 081280999733,
                                                             <br/> Telp/Fax. 021-29616935</p>
                                                     </address>
@@ -33,11 +33,12 @@ const sellingPaymentUI = ((SET) => {
                                                     <address>
                                                         <h3>From</h3>
                                                         <h4 class="font-bold"><a href="#/customer/${data.contact.id}">${data.contact.contact_name}</a></h4>
-                                                        <p class="text-muted m-l-30">${SET.filterNull(data.selling.address)},
-                                                        <br> ${SET.filterNull(data.selling.email)}</p>
+                                                        <p class="text-muted m-l-30">${SET.filterNull(data.selling !== null ? data.selling.address : data.contact.address)},
+                                                        <br> ${SET.filterNull(data.selling !== null ? data.selling.email : data.contact.email)}</p>
 
                                                         <p class="m-t-30"><b><i class="fa fa-calendar"></i> Date :</b> ${data.date}</p>
                                                         <p><b><i class="mdi mdi-album"></i> Payment No :</b> ${SET.replaceNull(data.payment_number)}</p>
+                                                        <p><b><i class="ti-wallet"></i> Type payment :</b> ${SET.replaceNull(data.type)}</p>
                                                     </address>
                                                 </td>
                                             </tr>
@@ -104,6 +105,7 @@ const sellingPaymentUI = ((SET) => {
 
             $('#main_content').html(html)
         },
+
         renderFormAdd: data => {
             let bills = parseFloat(data.grand_total + data.total_ppn + data.total_discount + data.total_return + data.total_ppn_return + data.total_return_discount);
             let html;
@@ -215,6 +217,98 @@ const sellingPaymentUI = ((SET) => {
 
 
             $('#main_content').html(html)
+        },
+
+        renderFormEdit: data => {
+            let type = ['Cash', 'Transfer', 'Cek/Giro', 'Kartu Kredit'];
+
+            let html = `
+                <form id="form_edit">
+                    <div class="row">
+                        <div class="col-md-9 col-lg-9">
+                            <div class="card">
+                                <div class="card-header bg-success">
+                                    <h5 class="m-b-0 text-white">Form Payment</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="picture">Attachment</label>
+                                                <input type="file" class="dropify" name="attachment" id="attachment" ${data.attachment === null ? '' : `data-default-file="${SET.apiURL()}selling_payments/file/${data.attachment}`}">
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Date</label>
+                                                <input type="date" name="date" id="date" class="form-control" value="${data.date}">
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Memo</label>
+                                                <textarea name="memo" id="memo" class="form-control">${SET.filterNull(data.memo)}</textarea>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-8">
+                                            <div class="form-group">
+                                                <label>Payment No.</label>
+                                                <input type="text" readonly placeholder="[ AUTO ]" value="${data.payment_number}" name="payment_number" id="payment_number" class="form-control">
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label>Type</label>
+                                                <select name="type" id="type" class="form-control">
+                                                    ${type.map(v => {
+                                                        return `<option value="${v}" ${v === data.type ? 'selected' : ''}>${v}</option>`
+                                                    }).join('')}
+                                                </select>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label>Amount</label>
+                                                <div class="input-group mb-3">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text" id="basic-addon1">Rp. </span>
+                                                    </div>
+                                                    <input type="number"  min="0" value="${data.amount}" name="amount" id="amount" class="form-control amount">
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="form-group">
+                                                <label>Description</label>
+                                                <textarea name="description" id="description" class="form-control" rows="6">${SET.filterNull(data.description)}</textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3 col-lg-3">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="form-group">
+                                        <label>Customer</label>
+                                        <select class="form-control" id="contact_id" name="contact_id">
+                                            <option value="" disabled="" selected="">-- Choose Customer --</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Purchase</label>
+                                        <select class="form-control" id="selling_id" name="selling_id">
+                                            <option value="" disabled="" selected="">-- Choose Selling --</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <input type="hidden" name="_method" id="_method" value="put">
+                                <button class="btn btn-success btn-block" type="submit">Update</button>
+                                <a href="#/selling_payment" class="btn btn-secondary btn-outline btn-block">Cancel</a>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            `
+
+            $('#main_content').html(html);
         }
     }
 })(settingController)
@@ -433,6 +527,188 @@ const sellingPaymentController = ((SET, DT, UI, LU) => {
         });
     }
 
+    const _editObserver = (TOKEN, id, payments) => {
+        MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
+
+        let container = document.querySelector("#edit_container")
+
+        let observer = new MutationObserver(function (mutations, observer) {
+            if (container.contains($('#form_edit')[0])) {
+
+                $('.dropify').dropify();
+
+                $('#contact_id').select2({
+                    ajax: {
+                        url: `${SET.apiURL()}customers`,
+                        dataType: 'JSON',
+                        type: 'GET',
+                        headers: {
+                            "Authorization": "Bearer " + TOKEN,
+                            "Content-Type": "application/json",
+                        },
+                        data: function (params) {
+                            var query = {
+                                search: params.term,
+                                limit: 100,
+                                type: 'Customer'
+                            }
+
+                            return query;
+                        },
+                        processResults: function (data) {
+                            let filtered = [];
+
+                            data.results.map(v => {
+                                let obj = {
+                                    id: v.id,
+                                    text: v.contact_name,
+                                    email: v.email,
+                                    address: v.address
+                                }
+
+                                filtered.push(obj)
+                            })
+
+                            return {
+                                results: filtered
+                            };
+                        }
+
+                    }
+                });
+
+                $('#contact_id').on('select2:open', () => {
+                    $(".select2-results:not(:has(a))").prepend('<a href="javascript:void(0)" class="select2_add_customer" style="padding: 6px;height: 20px;display: inline-table;">Create new item</a>');
+                })
+
+                let option = new Option(payments.contact.contact_name, payments.contact.id, true, true);
+                $('#contact_id').append(option).trigger('change');
+
+                $('#contact_id').trigger({
+                    type: 'select2:select',
+                    params: {
+                        data: {
+                            id: payments.contact.id,
+                            text: payments.contact.contact_name,
+                            email: payments.contact.email,
+                            address: payments.contact.address
+                        }
+                    }
+                });
+
+                $('#selling_id').select2({
+                    ajax: {
+                        url: `${SET.apiURL()}sellings`,
+                        dataType: 'JSON',
+                        type: 'GET',
+                        headers: {
+                            "Authorization": "Bearer " + TOKEN,
+                            "Content-Type": "application/json",
+                        },
+                        data: function (params) {
+                            var query = {
+                                search: params.term,
+                                limit: 100,
+                                customer: payments.contact.id
+                            }
+
+                            return query;
+                        },
+                        processResults: function (data) {
+                            let filtered = [];
+
+                            data.results.map(v => {
+                                let obj = {
+                                    id: v.id,
+                                    text: v.selling_number,
+                                }
+
+                                filtered.push(obj)
+                            })
+
+                            return {
+                                results: filtered
+                            };
+                        }
+                    }
+                })
+
+                if (payments.selling !== null) {
+                    let option2 = new Option(payments.selling.selling_number, payments.selling.id, true, true);
+                    $('#selling_id').append(option2).trigger('change');
+
+                    $('#selling_id').trigger({
+                        type: 'select2:select',
+                        params: {
+                            data: {
+                                id: payments.selling.id,
+                                text: payments.selling.selling_number
+                            }
+                        }
+                    });
+                }
+
+                LU.lookupCustomer(TOKEN)
+
+                _onChangeContact(TOKEN)
+
+                _submitEdit(TOKEN, id)
+            }
+
+
+            observer.disconnect();
+        });
+
+        observer.observe(container, {
+            subtree: true,
+            attributes: true,
+            childList: true,
+        });
+    }
+
+    const _submitEdit = (TOKEN, id) => {
+        $('#form_edit').validate({
+            errorClass: 'is-invalid',
+            successClass: 'is-valid',
+            validClass: 'is-valid',
+            errorElement: 'div',
+            errorPlacement: function (error, element) {
+                error.addClass('invalid-feedback');
+                error.insertAfter(element)
+            },
+            rules: {
+                contact_id: 'required',
+                payment_number: 'required',
+                date: 'required',
+            },
+            submitHandler: form => {
+                $.ajax({
+                    url: `${SET.apiURL()}selling_payments/${id}`,
+                    type: 'POST',
+                    dataType: 'JSON',
+                    data: new FormData(form),
+                    contentType: false,
+                    processData: false,
+                    beforeSend: xhr => {
+                        xhr.setRequestHeader("Authorization", "Bearer " + TOKEN)
+                        console.log(form)
+                        SET.contentLoader('#edit_container')
+                    },
+                    success: res => {
+                        toastr.success(res.message, 'Success', { "progressBar": true, "closeButton": true, "positionClass": 'toast-bottom-right' });
+                        location.hash = `#/selling_payment/${res.results.id}`
+                    },
+                    error: ({ responseJSON }) => {
+                        toastr.error(responseJSON.message, 'Failed', { "progressBar": true, "closeButton": true, "positionClass": 'toast-bottom-right' });
+                    },
+                    complete: () => {
+                        SET.closeSelectedElement('#edit_container')
+                    }
+                })
+            }
+        })
+    }
+
     return {
         data: TOKEN => {
             const table = $('#t_payments').DataTable({
@@ -644,6 +920,7 @@ const sellingPaymentController = ((SET, DT, UI, LU) => {
                 $('#modal_delete').modal('hide')
             })
         },
+
         detail: (TOKEN, id) => {
             console.log('Detail Adjustment Controller is running...')
 
@@ -657,12 +934,14 @@ const sellingPaymentController = ((SET, DT, UI, LU) => {
                 location.hash = '#/selling_payment'
             })
         },
+
         addWithSelling: (TOKEN, id) => {
             _fetchSelling(TOKEN, id, data => {
                 _addObserver(TOKEN, data)
                 UI.renderFormAdd(data)
             })
         },
+
         add: TOKEN => {
             $('.dropify').dropify()
 
@@ -716,6 +995,13 @@ const sellingPaymentController = ((SET, DT, UI, LU) => {
 
             _onChangeContact(TOKEN)
             _submitAdd(TOKEN)
+        },
+
+        edit: (TOKEN, id) => {
+            _fetchSellingPayment(TOKEN, id, data => {
+                _editObserver(TOKEN, id, data);
+                UI.renderFormEdit(data)
+            })
         }
     }
 })(settingController, dtController, sellingPaymentUI, lookupController)

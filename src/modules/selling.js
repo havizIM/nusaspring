@@ -23,92 +23,222 @@ const sellingUI = ((SET) => {
         },
 
         renderEdit: data => {
-            let category = ['Qty Awal', 'Transfer In', 'Transfer Out', 'Other'];
-
             let html = `
                 <div class="row">
                     <div class="col-md-12">
                         <form id="form_edit">
                             <div class="row">
                                 <div class="col-md-8">
-                                        <div class="form-group">
-                                            <label for="phone">Category</label>
-                                            <select class="form-control" id="category" name="category">
-                                                <option value="" disabled="" selected="">-- Choose Category --</option>
-                                                ${category.map(v => `
-                                                    <option value="${v}" ${v === data.category ? 'selected' : ''}>${v}</option>
-                                                `).join('')}
-                                            </select>
+                                    <div class="form-group">
+                                        <label for="phone">Customer</label>
+                                        <select class="form-control" id="contact_id" name="contact_id">
+                                            <option value="" disabled="" selected="">-- Choose Customer --</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="fax">Email</label>
+                                        <input type="text" class="form-control" name="email" id="email" value="${SET.filterNull(data.email)}">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="fax">Address</label>
+                                        <textarea class="form-control" id="address" name="address" rows="3">${SET.filterNull(data.address)}</textarea>
+                                    </div>
+                                    <div class="form-group row">
+                                        <div class="col-md-6">
+                                            <label for="fax">Selling No</label>
+                                            <input type="text" class="form-control" readonly placeholder="[ AUTO ]" value="${data.selling_number}" name="selling_number" id="selling_number">
                                         </div>
-                                        <div class="form-group">
+                                        <div class="col-md-6">
                                             <label for="fax">Reference No</label>
-                                            <input type="text" class="form-control" name="reference_number" id="reference_number" value="${_replaceNull(data.reference_number)}">
+                                            <input type="text" class="form-control" name="reference_number" id="reference_number" value="${SET.filterNull(data.reference_number)}">
                                         </div>
-                                        <div class="form-group">
+                                    </div>
+                                    <div class="form-group row">
+                                        <div class="col-md-6">
                                             <label for="fax">Date</label>
-                                            <input type="date" class="form-control" name="date" id="date" value="${data.date}">
+                                            <input type="date" class="form-control" name="date" id="date" value="${SET.filterNull(data.date)}">
                                         </div>
-                                        <div class="form-group">
-                                            <label for="memo">Memo</label>
-                                            <textarea class="form-control" id="memo" name="memo">${_replaceNull(data.memo)}</textarea>
+                                        <div class="col-md-6">
+                                            <label for="fax">Due Date</label>
+                                            <input type="date" class="form-control" name="due_date" id="due_date" value="${SET.filterNull(data.due_date)}">
                                         </div>
-                                        
+                                    </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label for="picture">Attachment</label>
-                                        <input type="file" class="dropify" name="attachment" id="attachment" ${data.attachment === null ? '' : `data-default-file="${SET.apiURL()}adjustments/file/${data.attachment}`}">
+                                        <input type="file" class="dropify" name="attachment" id="attachment" ${data.attachment === null ? '' : `data-default-file="${SET.apiURL()}sellings/file/${data.attachment}`}">
                                     </div>
                                 </div>
-                                <div class="col-md-12">
+                                <div class="col-md-12 mb-3">
+                                    <!-- <div class="form-group text-right">
+                                        <div class="custom-control custom-checkbox">
+                                            <input type="checkbox" class="custom-control-input include_ppn" id="include_ppn">
+                                            <label class="custom-control-label" for="include_ppn">Price Include PPN</label>
+                                        </div>
+                                    </div> -->
                                     <div class="table-responsive">
-                                        <table class="table" id="t_add_products">
+                                        <table class="table" id="t_add_products" style="overflow-x: scroll;">
                                             <thead>
                                                 <tr>
-                                                    <th style="width: 30%;">Product</th>
-                                                    <th style="width: 20%;">Unit Price</th>
-                                                    <th style="width: 20%;">Qty</th>
-                                                    <th style="width: 20%;">Unit</th>
-                                                    <th style="width: 10%;">
-                                                        <button class="btn btn-info btn-md" type="button" id="btn_add_row"><i class="fa fa-plus"></i></button>
+                                                    <th style="min-width: 350px;">Product</th>
+                                                    <th style="min-width: 200px;">Unit Price</th>
+                                                    <th style="min-width: 150px;">Qty</th>
+                                                    <th style="min-width: 150px;">Disc (%)</th>
+                                                    <th style="min-width: 200px;">Disc (Rp.)</th>
+                                                    <th>PPN</th>
+                                                    <th style="min-width: 200px;">Total</th>
+                                                    <th>
+                                                        <button class="btn btn-info btn-md btn_add_row" type="button" id="btn_add_row"><i class="fa fa-plus"></i></button>
                                                     </th>
                                                 </tr>
                                             </thead>
                                             <tbody id="coba">
-                                                ${data.products.map((v, index) => {
-                count += 1
+                                                ${data.products.map(v => {
+                                                    count += 1
 
-                return `
+                                                    let ppn_amount = parseFloat(((v.unit_price * SET.positiveNumber(v.qty)) - v.discount_amount) * 10 / 100)
+                                                    return `
                                                         <tr id="row_${count}">
                                                             <td>
-                                                                <select name="product_id[${count}]" id="product_id_${count}" data-id="${count}" class="form-control product_id select2_${v.product_id}" required>
+                                                                <select name="product_id[${count}]" id="product_id_${count}" data-id="${count}" class="form-control product_id" data-sid="${v.product_id}" data-sname="${v.description}" data-sunit="${v.unit}" data-sprice="${v.unit_price}" required>
                                                                     <option value="" disabled="" selected="">-- Choose Product --</option>
                                                                 </select>
                                                                 <input type="hidden" name="description[${count}]" id="description_${count}" data-id="${count}" value="${v.description}">
                                                             </td>
                                                             <td>
-                                                                <input type="number" name="unit_price[${count}]" id="unit_price_${count}" data-id="${count}" class="form-control"  value="${v.unit_price}" readonly>
+                                                                <div class="input-group mb-3">
+                                                                    <div class="input-group-prepend">
+                                                                        <span class="input-group-text" id="basic-addon1">Rp. </span>
+                                                                    </div>
+                                                                    <input type="number"  min="0"  value="${v.unit_price}" name="unit_price[${count}]" id="unit_price_${count}" data-id="${count}" class="form-control unit_price">
+                                                                </div>
                                                             </td>
                                                             <td>
-                                                                <input type="number" name="qty[${count}]" id="qty_${count}" data-id="${count}" class="form-control" value="${v.qty}" required>
+                                                                <div class="input-group mb-3">
+                                                                    <input type="number"  min="0" value="${SET.positiveNumber(v.qty)}" name="qty[${count}]" id="qty_${count}" data-id="${count}" class="form-control qty" required>
+                                                                    <div class="input-group-prepend">
+                                                                        <input type="hidden" name="unit[${count}]" value="${v.unit}" id="unit_${count}" data-id="${count}" class="form-control">
+                                                                        <span class="input-group-text" id="unit_text_${count}" data-id="${count}">${v.unit}</span>
+                                                                    </div>
+                                                                </div>
                                                             </td>
                                                             <td>
-                                                                <input type="text" name="unit[${count}]" id="unit_${count}" data-id="${count}" class="form-control" value="${v.unit}" readonly>
+                                                                <div class="input-group mb-3">
+                                                                    <input type="number"  min="0" value="${v.discount_percent}" name="discount_percent[${count}]" id="discount_percent_${count}" data-id="${count}" class="form-control discount_percent">
+                                                                    <div class="input-group-prepend">
+                                                                        <span class="input-group-text" id="basic-addon1">%</span>
+                                                                    </div>
+                                                                </div>
                                                             </td>
                                                             <td>
-                                                                <button class="btn btn-danger btn-md btn-remove" type="button" id="btn_remove_row_${count}" data-id="${count}" data-remove="true"><i class="fa fa-times"></i></button>
+                                                                <div class="input-group mb-3">
+                                                                    <div class="input-group-prepend">
+                                                                        <span class="input-group-text" id="basic-addon1">Rp. </span>
+                                                                    </div>
+                                                                    <input type="number"  min="0" value="0" value="${v.discount_amount}" name="discount_amount[${count}]" id="discount_amount_${count}" data-id="${count}" class="form-control discount_amount">
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <div class="text-center">
+                                                                    <div class="custom-control custom-checkbox">
+                                                                        <input type="checkbox" class="custom-control-input ppn" value="Y" id="ppn_${count}" name="ppn[${count}]" data-id="${count}" ${v.ppn === 'Y' ? 'checked' : ''}>
+                                                                        <label class="custom-control-label" for="ppn_${count}"></label>
+                                                                    </div>
+                                                                    <input type="hidden" value="${v.ppn === 'Y' ? ppn_amount : 0}" data-id="${count}" id="ppn_amount_${count}" name="ppn_amount[${count}]" class="ppn_amount">
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <div class="input-group mb-3">
+                                                                    <div class="input-group-prepend">
+                                                                        <span class="input-group-text" id="basic-addon1">Rp. </span>
+                                                                    </div>
+                                                                    <input type="number" min="0" value="${SET.positiveNumber(v.total)}" name="total[${count}]" id="total_${count}" data-id="${count}" class="form-control total">
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <button class="btn btn-danger btn-md btn-remove" type="button" data-id="${count}" data-remove="true"><i class="fa fa-times"></i></button>
                                                             </td>
                                                         </tr>
                                                     `
-            }).join('')}
+                                                }).join('')}
                                             </tbody>
+                                            <tfoot>
+                                                <tr>
+                                                    <td colspan="8">
+                                                        <button class="btn btn-info btn-md btn_add_row" type="button" id="btn_add_row"><i class="fa fa-plus"></i> Add Product</button>
+                                                    </td>
+                                                </tr>
+                                            </tfoot>
                                         </table>
                                     </div>
                                 </div>
-                                <div class="col-md-12">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="memo">Memo</label>
+                                        <textarea class="form-control" id="memo" name="memo" rows="5">${SET.filterNull(data.memo)}</textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="memo">Message</label>
+                                        <textarea class="form-control" id="message" name="message" rows="5">${SET.filterNull(data.message)}</textarea>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <div class="col-md-4 text-right">
+                                            <h4>Sub Total</h4>
+                                        </div>
+                                        <div class="col-md-8 text-right">
+                                            <h4 id="sub_total_text">Rp. 0</h4>
+                                            <input type="hidden" value="0" class="form-control" name="sub_total" id="sub_total">
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-4 text-right">
+                                            <h4>Discount</h4>
+                                        </div>
+                                        <div class="col-md-8 text-right">
+                                            <h4 id="all_discount_text">Rp. 0</h4>
+                                            <input type="hidden" value="0" class="form-control" name="all_discount" id="all_discount">
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-4 text-right">
+                                            <h4>Total</h4>
+                                        </div>
+                                        <div class="col-md-8 text-right">
+                                            <h4 id="total_dpp_text">Rp. 0</h4>
+                                            <input type="hidden" value="0" class="form-control" name="total_dpp" id="total_dpp">
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-4 text-right">
+                                            <h4>PPN (10%)</h4>
+                                        </div>
+                                        <div class="col-md-8 text-right">
+                                            <h4 id="ppn_text">Rp. 0</h4>
+                                            <input type="hidden" value="0" class="form-control" name="total_ppn" id="total_ppn">
+                                        </div>
+                                    </div>
+
+                                    <div class="row mt-3">
+                                        <div class="col-md-4 text-right">
+                                            <h3><b>Grand Total</b></h3>
+                                        </div>
+                                        <div class="col-md-8 text-right">
+                                            <b><h3 id="grand_total_text">Rp. 0</h3></b>
+                                            <input type="hidden" value="0" class="form-control" name="grand_total" id="grand_total">
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="col-md-12 mt-3">
                                     <div class="form-group text-right">
                                         <input type="hidden" name="_method" id="_method" value="put">
-                                        <a class="btn btn-md btn-danger" href="#/adjustment">Cancel</a>
+                                        <a class="btn btn-md btn-danger" href="#/product">Cancel</a>
                                         <button class="btn btn-md btn-success" type="submit">Update</button>
                                     </div>
                                 </div>
@@ -117,7 +247,6 @@ const sellingUI = ((SET) => {
                     </div>
                 </div>
             `
-
             $('#main_content').html(html)
         },
 
@@ -168,8 +297,8 @@ const sellingUI = ((SET) => {
                                                 <td class="w-50">
                                                     <address>
                                                         <img src="${SET.baseURL()}assets/images/logo-full-black.png" style="width: 50%" class="mb-3" />
-                                                        <p class="text-muted m-l-5">Jl. Tiga Berlian Blok Karizma No.41,
-                                                            <br/> Mekarsari, Cimanggis, Depok, Jawa Barat 16452, Indonesia,
+                                                        <p class="text-muted m-l-5">Jl. Radar Auri No.41,
+                                                            <br/> Cisalak Ps, Cimanggis, Depok, Jawa Barat 16452, Indonesia,
                                                             <br/> Hp. 087880729929 / 081280999733,
                                                             <br/> Telp/Fax. 021-29616935</p>
                                                     </address>
@@ -415,7 +544,7 @@ const sellingUI = ((SET) => {
                     <td>
                         <div class="text-center">
                             <div class="custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input ppn" id="ppn_${count}" name="ppn[${count}]" data-id="${count}">
+                                <input type="checkbox" class="custom-control-input ppn" id="ppn_${count}" name="ppn[${count}]" data-id="${count}" value="Y">
                                 <label class="custom-control-label" for="ppn_${count}"></label>
                             </div>
                             <input type="hidden" value="0" data-id="${count}" id="ppn_amount_${count}" name="ppn_amount[${count}]" class="ppn_amount">
@@ -855,7 +984,7 @@ const sellingController = ((SET, DT, UI, LU) => {
 
 
     /* -------------------- EDIT ACTION ----------------- */
-    const _editObserver = (TOKEN, id, adjustment) => {
+    const _editObserver = (TOKEN, id, selling) => {
         MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
 
         let container = document.querySelector("#edit_container")
@@ -865,31 +994,147 @@ const sellingController = ((SET, DT, UI, LU) => {
 
                 $('.dropify').dropify();
 
-                _fetchProduct(TOKEN, data => {
-                    let filtered = [];
+                LU.lookupProduct(TOKEN, 'selling')
+                LU.lookupSupplier(TOKEN)
 
-                    data.filter(v => {
-                        let obj = {
-                            id: v.id,
-                            text: v.product_name,
-                            price: v.selling_price,
-                            unit: v.unit === null ? null : v.unit.unit_name
+                $('#contact_id').select2({
+                    ajax: {
+                        url: `${SET.apiURL()}customers`,
+                        dataType: 'JSON',
+                        type: 'GET',
+                        headers: {
+                            "Authorization": "Bearer " + TOKEN,
+                            "Content-Type": "application/json",
+                        },
+                        data: function (params) {
+                            var query = {
+                                search: params.term,
+                                limit: 100,
+                                type: 'Customer'
+                            }
+
+                            return query;
+                        },
+                        processResults: function (data) {
+                            let filtered = [];
+
+                            data.results.map(v => {
+                                let obj = {
+                                    id: v.id,
+                                    text: v.contact_name,
+                                    email: v.email,
+                                    address: v.address
+                                }
+
+                                filtered.push(obj)
+                            })
+
+                            return {
+                                results: filtered
+                            };
                         }
 
-                        filtered.push(obj)
+                    }
+                });
+
+                $('#contact_id').on('select2:open', () => {
+                    $(".select2-results:not(:has(a))").prepend('<a href="javascript:void(0)" class="select2_add_customer" style="padding: 6px;height: 20px;display: inline-table;">Create new item</a>');
+                })
+
+                let option = new Option(selling.contact.contact_name, selling.contact.id, true, true);
+                $('#contact_id').append(option).trigger('change');
+
+
+                $('#contact_id').trigger({
+                    type: 'select2:select',
+                    params: {
+                        data: {
+                            id: selling.contact.id,
+                            text: selling.contact.contact_name,
+                            email: selling.contact.email,
+                            address: selling.contact.address
+                        }
+                    }
+                });
+
+                $('.product_id').each(function (v) {
+                    let myId = $(this).data('id');
+
+                    let data = {
+                        id: $(this).data('sid'),
+                        text: $(this).data('sname'),
+                        price: $(this).data('sprice'),
+                        unit: $(this).data('sunit')
+                    }
+
+                    $(this).select2({
+                        ajax: {
+                            url: `${SET.apiURL()}products`,
+                            dataType: 'JSON',
+                            type: 'GET',
+                            headers: {
+                                "Authorization": "Bearer " + TOKEN,
+                                "Content-Type": "application/json",
+                            },
+                            data: function (params) {
+                                var query = {
+                                    search: params.term,
+                                    limit: 100
+                                }
+
+                                return query;
+                            },
+                            processResults: function (data) {
+                                let filtered = [];
+
+                                data.results.map(v => {
+                                    let obj = {
+                                        id: v.id,
+                                        text: v.product_name,
+                                        price: v.selling_price,
+                                        unit: v.unit === null ? null : v.unit.unit_name
+                                    }
+
+                                    filtered.push(obj)
+                                })
+
+                                return {
+                                    results: filtered
+                                };
+                            }
+                        }
                     })
 
-                    UI.renderSelect2(adjustment.products, filtered)
+                    let option = new Option(data.text, data.id, true, true);
+                    $(this).append(option).trigger('change');
 
-                    _addRow(filtered)
-                    _onChangeProduct()
-                    _removeRow()
-
-                }, error => {
-                    $('.product_id').select2({
-                        data: []
+                    // manually trigger the `select2:select` event
+                    $(this).trigger({
+                        type: 'select2:select',
+                        params: {
+                            data: data
+                        }
                     });
+
+                    $(this).on('select2:open', () => {
+                        $(".select2-results:not(:has(a))").prepend('<a href="javascript:void(0)" data-id="' + myId + '" class="select2_add_product" style="padding: 6px;height: 20px;display: inline-table;">Create new item</a>');
+                    })
+
                 })
+
+                _calculateAll()
+
+                _onChangeCustomer()
+                _addRow(TOKEN)
+                _removeRow()
+                _onChangeProduct()
+                _onChangePpn()
+                _onKeyupUnitPrice()
+                _onKeyupQty()
+                _onPercentKeyup()
+                _onKeyupDiscount()
+                _onPpnCheck()
+                _onKeyupTotal()
 
                 _submitEdit(TOKEN, id)
             }
@@ -916,12 +1161,13 @@ const sellingController = ((SET, DT, UI, LU) => {
                 error.insertAfter(element)
             },
             rules: {
-                category: 'required',
+                contact_id: 'required',
+                selling_number: 'required',
                 date: 'required',
             },
             submitHandler: form => {
                 $.ajax({
-                    url: `${SET.apiURL()}adjustments/${id}`,
+                    url: `${SET.apiURL()}sellings/${id}`,
                     type: 'POST',
                     dataType: 'JSON',
                     data: new FormData(form),
@@ -929,12 +1175,11 @@ const sellingController = ((SET, DT, UI, LU) => {
                     processData: false,
                     beforeSend: xhr => {
                         xhr.setRequestHeader("Authorization", "Bearer " + TOKEN)
-
                         SET.contentLoader('#edit_container')
                     },
                     success: res => {
                         toastr.success(res.message, 'Success', { "progressBar": true, "closeButton": true, "positionClass": 'toast-bottom-right' });
-                        location.hash = `#/adjustment/${res.results.id}`
+                        location.hash = `#/selling/${res.results.id}`
                     },
                     error: ({ responseJSON }) => {
                         toastr.error(responseJSON.message, 'Failed', { "progressBar": true, "closeButton": true, "positionClass": 'toast-bottom-right' });
@@ -1344,7 +1589,7 @@ const sellingController = ((SET, DT, UI, LU) => {
 
             UI.resetCount()
 
-            _fetchAdjustment(TOKEN, id, data => {
+            _fetchSelling(TOKEN, id, data => {
                 _editObserver(TOKEN, id, data)
                 UI.renderEdit(data)
             })

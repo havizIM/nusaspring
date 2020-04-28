@@ -57,8 +57,8 @@ const purchaseReturnUI = ((SET) => {
                                                 <td class="w-50">
                                                     <address>
                                                         <img src="${SET.baseURL()}assets/images/logo-full-black.png" style="width: 50%" class="mb-3" />
-                                                        <p class="text-muted m-l-5">Jl. Tiga Berlian Blok Karizma No.41,
-                                                            <br/> Mekarsari, Cimanggis, Depok, Jawa Barat 16452, Indonesia,
+                                                        <p class="text-muted m-l-5">Jl. Radar Auri No.41,
+                                                            <br/> Cisalak Ps, Cimanggis, Depok, Jawa Barat 16452, Indonesia,
                                                             <br/> Hp. 087880729929 / 081280999733,
                                                             <br/> Telp/Fax. 021-29616935</p>
                                                     </address>
@@ -131,7 +131,7 @@ const purchaseReturnUI = ((SET) => {
                                 <div class="card-body">
                                     <div class="text-right">
                                         <a class="btn btn-success" href="#/purchase_return/edit/${data.id}"><i class="fa fa-edit"></i> Edit </a>
-                                        <button class="btn btn-danger btn-delete" data-id="${data.id}" data-name="${data.selling_number}" type="button"><i class="fa fa-times"></i> Delete </button>
+                                        <button class="btn btn-danger btn-delete" data-id="${data.id}" data-name="${data.purchase_number}" type="button"><i class="fa fa-times"></i> Delete </button>
                                         <button id="print" class="btn btn-default btn-outline" type="button"> <span><i class="fa fa-print"></i> Print</span> </button>
                                     </div>
                                 </div>
@@ -400,7 +400,7 @@ const purchaseReturnUI = ((SET) => {
                     <td>
                         <div class="text-center">
                             <div class="custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input ppn" id="ppn_${count}" name="ppn[${count}]" data-id="${count}">
+                                <input type="checkbox" class="custom-control-input ppn" id="ppn_${count}" name="ppn[${count}]" data-id="${count}" value="Y">
                                 <label class="custom-control-label" for="ppn_${count}"></label>
                             </div>
                             <input type="hidden" value="0" data-id="${count}" id="ppn_amount_${count}" name="ppn_amount[${count}]" class="ppn_amount">
@@ -463,6 +463,229 @@ const purchaseReturnUI = ((SET) => {
             $('#product_id_' + count).on('select2:open', () => {
                 $(".select2-results:not(:has(a))").prepend('<a href="javascript:void(0)" class="select2_add_product" data-id="'+count+'" style="padding: 6px;height: 20px;display: inline-table;">Create new item</a>');
             })
+        },
+
+        renderFormEdit: data => {
+
+            let html = `
+                <div class="row">
+                    <div class="col-md-12">
+                        <form id="form_edit">
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <div class="form-group">
+                                        <label for="phone">Supplier</label>
+                                        <select class="form-control" id="contact_id" name="contact_id">
+                                            <option value="" disabled="" selected="">-- Choose Supplier --</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="phone">Purchase</label>
+                                        <select class="form-control" id="purchase_id" name="purchase_id">
+                                            <option value="" disabled="" selected="">-- Choose Purchase --</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group row">
+                                        <div class="col-md-6">
+                                            <label for="fax">Return No</label>
+                                            <input type="text" readonly placeholder="[ AUTO ]" value="${data.return_number}" class="form-control" name="return_number" id="return_number">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="fax">Reference No</label>
+                                            <input type="text" class="form-control" name="reference_number" id="reference_number" value="${SET.filterNull(data.reference_number)}">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="fax">Date</label>
+                                        <input type="date" class="form-control" name="date" id="date" value="${SET.filterNull(data.date)}">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="picture">Attachment</label>
+                                        <input type="file" class="dropify" name="attachment" id="attachment" ${data.attachment === null ? '' : `data-default-file="${SET.apiURL()}purchase_returns/file/${data.attachment}`}">
+                                    </div>
+                                </div>
+                                <div class="col-md-12 mb-3">
+                                    <!-- <div class="form-group text-right">
+                                        <div class="custom-control custom-checkbox">
+                                            <input type="checkbox" class="custom-control-input include_ppn" id="include_ppn">
+                                            <label class="custom-control-label" for="include_ppn">Price Include PPN</label>
+                                        </div>
+                                    </div> -->
+                                    <div class="table-responsive">
+                                        <table class="table" id="t_add_products" style="overflow-x: scroll;">
+                                            <thead>
+                                                <tr>
+                                                    <th style="min-width: 350px;">Product</th>
+                                                    <th style="min-width: 200px;">Unit Price</th>
+                                                    <th style="min-width: 150px;">Qty</th>
+                                                    <th style="min-width: 150px;">Disc (%)</th>
+                                                    <th style="min-width: 200px;">Disc (Rp.)</th>
+                                                    <th>PPN</th>
+                                                    <th style="min-width: 200px;">Total</th>
+                                                    <th>
+                                                        <button class="btn btn-info btn-md btn_add_row" type="button" id="btn_add_row"><i class="fa fa-plus"></i></button>
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="coba">
+                                                ${data.products.map(v => {
+
+                                                    count += 1
+                                                    let ppn_amount = parseFloat(((v.unit_price * v.qty) + v.discount_amount) * 10 / 100)
+
+                                                    return `
+                                                        <tr id="row_${count}">
+                                                            <td>
+                                                                <select name="product_id[${count}]" id="product_id_${count}" data-id="${count}" class="form-control product_id"  data-sid="${v.product_id}" data-sname="${v.description}" data-sunit="${v.unit}" data-sprice="${v.unit_price}" required>
+                                                                    <option value="" disabled="" selected="">-- Choose Product --</option>
+                                                                </select>
+                                                                <input type="hidden" value="${v.description}" name="description[${count}]" id="description_${count}" data-id="${count}">
+                                                            </td>
+                                                            <td>
+                                                                <div class="input-group mb-3">
+                                                                    <div class="input-group-prepend">
+                                                                        <span class="input-group-text" id="basic-addon1">Rp. </span>
+                                                                    </div>
+                                                                    <input type="number"  min="0" value="${v.unit_price}" name="unit_price[${count}]" id="unit_price_${count}" data-id="${count}" class="form-control unit_price">
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <div class="input-group mb-3">
+                                                                    <input type="number"  min="0" value="${SET.positiveNumber(v.qty)}" name="qty[${count}]" id="qty_${count}" data-id="${count}" class="form-control qty" required>
+                                                                    <div class="input-group-prepend">
+                                                                        <input type="hidden" value="${v.unit}" name="unit[${count}]" id="unit_${count}" data-id="${count}" class="form-control">
+                                                                        <span class="input-group-text" id="unit_text_${count}" data-id="${count}">${v.unit}</span>
+                                                                    </div>
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <div class="input-group mb-3">
+                                                                    <input type="number"  min="0" value="${v.discount_percent !== null ? v.discount_percent : 0}" name="discount_percent[${count}]" id="discount_percent_${count}" data-id="${count}" class="form-control discount_percent">
+                                                                    <div class="input-group-prepend">
+                                                                        <span class="input-group-text" id="basic-addon1">%</span>
+                                                                    </div>
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <div class="input-group mb-3">
+                                                                    <div class="input-group-prepend">
+                                                                        <span class="input-group-text" id="basic-addon1">Rp. </span>
+                                                                    </div>
+                                                                    <input type="number"  min="0" value="${SET.positiveNumber(v.discount_amount)}" name="discount_amount[${count}]" id="discount_amount_${count}" data-id="${count}" class="form-control discount_amount">
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <div class="text-center">
+                                                                    <div class="custom-control custom-checkbox">
+                                                                        <input type="checkbox" value="Y" class="custom-control-input ppn" id="ppn_${count}" name="ppn[${count}]" data-id="${count}" ${v.ppn === 'Y' ? 'checked' : ''}>
+                                                                        <label class="custom-control-label" for="ppn_${count}"></label>
+                                                                    </div>
+                                                                    <input type="hidden" value="${v.ppn === 'Y' ? SET.positiveNumber(ppn_amount) : 0}" data-id="${count}" id="ppn_amount_${count}" name="ppn_amount[${count}]" class="ppn_amount">
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <div class="input-group mb-3">
+                                                                    <div class="input-group-prepend">
+                                                                        <span class="input-group-text" id="basic-addon1">Rp. </span>
+                                                                    </div>
+                                                                    <input type="number" min="0" value="${SET.positiveNumber(v.total)}" name="total[${count}]" id="total_${count}" data-id="${count}" class="form-control total">
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <button class="btn btn-danger btn-md btn-remove" type="button" data-id="${count}" data-remove="true"><i class="fa fa-times"></i></button>
+                                                            </td>
+                                                        </tr>
+                                                    `
+                                                }).join('')}
+                                            </tbody>
+                                            <tfoot>
+                                                <tr>
+                                                    <td colspan="8">
+                                                        <button class="btn btn-info btn-md btn_add_row" type="button" id="btn_add_row"><i class="fa fa-plus"></i> Add Product</button>
+                                                    </td>
+                                                </tr>
+                                            </tfoot>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="memo">Memo</label>
+                                        <textarea class="form-control" id="memo" name="memo" rows="5">${SET.filterNull(data.memo)}</textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="memo">Message</label>
+                                        <textarea class="form-control" id="message" name="message" rows="5">${SET.filterNull(data.message)}</textarea>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <div class="col-md-4 text-right">
+                                            <h4>Sub Total</h4>
+                                        </div>
+                                        <div class="col-md-8 text-right">
+                                            <h4 id="sub_total_text">Rp. 0</h4>
+                                            <input type="hidden" value="0" class="form-control" name="sub_total" id="sub_total">
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-4 text-right">
+                                            <h4>Discount</h4>
+                                        </div>
+                                        <div class="col-md-8 text-right">
+                                            <h4 id="all_discount_text">Rp. 0</h4>
+                                            <input type="hidden" value="0" class="form-control" name="all_discount" id="all_discount">
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-4 text-right">
+                                            <h4>Total</h4>
+                                        </div>
+                                        <div class="col-md-8 text-right">
+                                            <h4 id="total_dpp_text">Rp. 0</h4>
+                                            <input type="hidden" value="0" class="form-control" name="total_dpp" id="total_dpp">
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-4 text-right">
+                                            <h4>PPN (10%)</h4>
+                                        </div>
+                                        <div class="col-md-8 text-right">
+                                            <h4 id="ppn_text">Rp. 0</h4>
+                                            <input type="hidden" value="0" class="form-control" name="total_ppn" id="total_ppn">
+                                        </div>
+                                    </div>
+
+                                    <div class="row mt-3">
+                                        <div class="col-md-4 text-right">
+                                            <h3><b>Grand Total</b></h3>
+                                        </div>
+                                        <div class="col-md-8 text-right">
+                                            <b><h3 id="grand_total_text">Rp. 0</h3></b>
+                                            <input type="hidden" value="0" class="form-control" name="grand_total" id="grand_total">
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="col-md-12 mt-3">
+                                    <div class="form-group text-right">
+                                        <input type="hidden" name="_method" id="_method" value="put">
+                                        <a class="btn btn-md btn-danger" href="#/product">Cancel</a>
+                                        <button class="btn btn-md btn-success" type="submit">Update</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            `
+
+            $('#main_content').html(html)
         }
     }
 })(settingController)
@@ -909,7 +1132,7 @@ const purchaseReturnController = ((SET, DT, UI, LU) => {
         let discount = 0;
         let total_ppn = 0;
 
-        $('.total_return').each(function () {
+        $('.total').each(function () {
             let total = $(this).val();
 
             if (total !== '') {
@@ -974,6 +1197,266 @@ const purchaseReturnController = ((SET, DT, UI, LU) => {
             attributes: true,
             childList: true,
         });
+    }
+
+    const _editObserver = (TOKEN, id, returns) => {
+        MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
+
+        let container = document.querySelector("#edit_container")
+
+        let observer = new MutationObserver(function (mutations, observer) {
+            if (container.contains($('#form_edit')[0])) {
+
+                $('.dropify').dropify();
+
+                $('#contact_id').select2({
+                    ajax: {
+                        url: `${SET.apiURL()}suppliers`,
+                        dataType: 'JSON',
+                        type: 'GET',
+                        headers: {
+                            "Authorization": "Bearer " + TOKEN,
+                            "Content-Type": "application/json",
+                        },
+                        data: function (params) {
+                            var query = {
+                                search: params.term,
+                                limit: 100,
+                                type: 'Supplier'
+                            }
+
+                            return query;
+                        },
+                        processResults: function (data) {
+                            let filtered = [];
+
+                            data.results.map(v => {
+                                let obj = {
+                                    id: v.id,
+                                    text: v.contact_name,
+                                    email: v.email,
+                                    address: v.address
+                                }
+
+                                filtered.push(obj)
+                            })
+
+                            return {
+                                results: filtered
+                            };
+                        }
+
+                    }
+                });
+
+                $('#contact_id').on('select2:open', () => {
+                    $(".select2-results:not(:has(a))").prepend('<a href="javascript:void(0)" class="select2_add_supplier" style="padding: 6px;height: 20px;display: inline-table;">Create new item</a>');
+                })
+
+                let option = new Option(returns.contact.contact_name, returns.contact.id, true, true);
+                $('#contact_id').append(option).trigger('change');
+
+                $('#contact_id').trigger({
+                    type: 'select2:select',
+                    params: {
+                        data: {
+                            id: returns.contact.id,
+                            text: returns.contact.contact_name,
+                            email: returns.contact.email,
+                            address: returns.contact.address
+                        }
+                    }
+                });
+
+                $('#purchase_id').select2({
+                    ajax: {
+                        url: `${SET.apiURL()}purchases`,
+                        dataType: 'JSON',
+                        type: 'GET',
+                        headers: {
+                            "Authorization": "Bearer " + TOKEN,
+                            "Content-Type": "application/json",
+                        },
+                        data: function (params) {
+                            var query = {
+                                search: params.term,
+                                limit: 100,
+                                supplier: returns.contact.id
+                            }
+
+                            return query;
+                        },
+                        processResults: function (data) {
+                            let filtered = [];
+
+                            data.results.map(v => {
+                                let obj = {
+                                    id: v.id,
+                                    text: v.purchase_number,
+                                }
+
+                                filtered.push(obj)
+                            })
+
+                            return {
+                                results: filtered
+                            };
+                        }
+                    }
+                })
+
+                if (returns.purchase !== null) {
+                    let option2 = new Option(returns.purchase.purchase_number, returns.purchase.id, true, true);
+                    $('#purchase_id').append(option2).trigger('change');
+
+                    $('#purchase_id').trigger({
+                        type: 'select2:select',
+                        params: {
+                            data: {
+                                id: returns.purchase.id,
+                                text: returns.purchase.purchase_number
+                            }
+                        }
+                    });
+                }
+
+                $('.product_id').each(function (v) {
+                    let myId = $(this).data('id');
+
+                    let data = {
+                        id: $(this).data('sid'),
+                        text: $(this).data('sname'),
+                        price: $(this).data('sprice'),
+                        unit: $(this).data('sunit')
+                    }
+
+                    $(this).select2({
+                        ajax: {
+                            url: `${SET.apiURL()}products`,
+                            dataType: 'JSON',
+                            type: 'GET',
+                            headers: {
+                                "Authorization": "Bearer " + TOKEN,
+                                "Content-Type": "application/json",
+                            },
+                            data: function (params) {
+                                var query = {
+                                    search: params.term,
+                                    limit: 100
+                                }
+
+                                return query;
+                            },
+                            processResults: function (data) {
+                                let filtered = [];
+
+                                data.results.map(v => {
+                                    let obj = {
+                                        id: v.id,
+                                        text: v.product_name,
+                                        price: v.purchase_price,
+                                        unit: v.unit === null ? null : v.unit.unit_name
+                                    }
+
+                                    filtered.push(obj)
+                                })
+
+                                return {
+                                    results: filtered
+                                };
+                            }
+                        }
+                    })
+
+                    let option = new Option(data.text, data.id, true, true);
+                    $(this).append(option).trigger('change');
+
+                    $(this).trigger({
+                        type: 'select2:select',
+                        params: {
+                            data: data
+                        }
+                    });
+
+                    $(this).on('select2:open', () => {
+                        $(".select2-results:not(:has(a))").prepend('<a href="javascript:void(0)" data-id="' + myId + '" class="select2_add_product" style="padding: 6px;height: 20px;display: inline-table;">Create new item</a>');
+                    })
+
+                })
+
+
+                LU.lookupProduct(TOKEN, 'purchase')
+                LU.lookupSupplier(TOKEN)
+
+                _calculateAll()
+                _onChangeSupplier(TOKEN)
+                _addRow(TOKEN)
+                _onChangeProduct()
+                _removeRow()
+                _onChangePpn()
+                _onKeyupUnitPrice()
+                _onKeyupQtyReturn()
+                _onPercentKeyup()
+                _onKeyupDiscount()
+                _onPpnCheck()
+                _onKeyupTotal()
+
+
+                _submitEdit(TOKEN, id)
+            }
+
+
+            observer.disconnect();
+        });
+
+        observer.observe(container, {
+            subtree: true,
+            attributes: true,
+            childList: true,
+        });
+    }
+
+    const _submitEdit = (TOKEN, id) => {
+        $('#form_edit').validate({
+            errorClass: 'is-invalid',
+            successClass: 'is-valid',
+            validClass: 'is-valid',
+            errorElement: 'div',
+            errorPlacement: function (error, element) {
+                error.addClass('invalid-feedback');
+                error.insertAfter(element)
+            },
+            rules: {
+                contact_id: 'required',
+                purchase_number: 'required',
+                date: 'required',
+            },
+            submitHandler: form => {
+                $.ajax({
+                    url: `${SET.apiURL()}purchase_returns/${id}`,
+                    type: 'POST',
+                    dataType: 'JSON',
+                    data: new FormData(form),
+                    contentType: false,
+                    processData: false,
+                    beforeSend: xhr => {
+                        xhr.setRequestHeader("Authorization", "Bearer " + TOKEN)
+                        console.log(form)
+                        SET.contentLoader('#edit_container')
+                    },
+                    success: res => {
+                        toastr.success(res.message, 'Success', { "progressBar": true, "closeButton": true, "positionClass": 'toast-bottom-right' });
+                        location.hash = `#/purchase_return/${res.results.id}`
+                    },
+                    error: ({ responseJSON }) => {
+                        toastr.error(responseJSON.message, 'Failed', { "progressBar": true, "closeButton": true, "positionClass": 'toast-bottom-right' });
+                    },
+                    complete: () => {
+                        SET.closeSelectedElement('#edit_container')
+                    }
+                })
+            }
+        })
     }
 
     return {
@@ -1199,6 +1682,7 @@ const purchaseReturnController = ((SET, DT, UI, LU) => {
                 $('#modal_delete').modal('hide')
             })
         },
+
         detail: (TOKEN, id) => {
             console.log('Detail Adjustment Controller is running...')
 
@@ -1212,6 +1696,7 @@ const purchaseReturnController = ((SET, DT, UI, LU) => {
                 location.hash = '#/supplier_return'
             })
         },
+
         addWithPurchase: (TOKEN, id) => {
             UI.resetCount()
 
@@ -1220,6 +1705,7 @@ const purchaseReturnController = ((SET, DT, UI, LU) => {
                 UI.renderFormAdd(data)
             })
         },
+
         add: TOKEN => {
             console.log('Add Adjustment Controller is running...')
 
@@ -1335,6 +1821,15 @@ const purchaseReturnController = ((SET, DT, UI, LU) => {
             _submitAdd(TOKEN)
 
         },
+
+        edit: (TOKEN, id) => {
+            UI.resetCount()
+
+            _fetchSupplierReturn(TOKEN, id, data => {
+                _editObserver(TOKEN, id, data)
+                UI.renderFormEdit(data)
+            })
+        }
     }
 })(settingController, dtController, purchaseReturnUI, lookupController)
 

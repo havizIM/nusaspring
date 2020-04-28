@@ -307,7 +307,6 @@
     <script src="<?= base_url() ?>assets/libs/typeahead.js/dist/typeahead.jquery.min.js"></script>
     <script src="<?= base_url() ?>assets/libs/typeahead.js/dist/bloodhound.min.js"></script>
     <script src="<?= base_url() ?>assets/libs/chart.js/dist/Chart.min.js"></script>
-    <script src="<?= base_url() ?>assets/libs/bootstrap-switch/dist/js/bootstrap-switch.min.js"></script>
 
 
     <script src="<?= base_url() ?>src/setting.js"></script>

@@ -70,7 +70,7 @@
                                                 <div class="input-group-prepend">
                                                     <span class="input-group-text" id="basic-addon1">Rp. </span>
                                                 </div>
-                                                <input type="number"  min="0" max="${SET.positiveNumber(parseFloat(data.total_payment + bills))}" value="0" name="amount" id="amount" class="form-control amount">
+                                                <input type="number"  min="0" value="0" name="amount" id="amount" class="form-control amount">
                                             </div>
                                         </div>
                                         
