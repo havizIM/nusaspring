@@ -21,6 +21,11 @@ class HandlePage extends CI_Controller {
 	public function session_expired()
 	{
 		$this->load->view('errors/session_expired');
+	}
+	
+	public function unauthorized()
+	{
+		$this->load->view('errors/unauthorized');
     }
     
 }

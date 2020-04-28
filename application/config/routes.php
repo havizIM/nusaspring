@@ -52,6 +52,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 $route['default_controller'] = 'main';
 $route['404_override'] = '';
 $route['unauthenticated'] = 'HandlePage/session_expired';
+$route['unauthorized'] = 'HandlePage/unauthorized';
 $route['page_not_found'] = 'HandlePage/page_not_found';
 $route['data_not_found'] = 'HandlePage/data_not_found';
 $route['maintenance'] = 'HandlePage/maintenance';

@@ -298,7 +298,6 @@ const supplierUI = ((SET) => {
             $('#main_content').html(html)
         },
 
-
         renderError: () => {
 
         },
@@ -409,6 +408,22 @@ const supplierController = ((SET, DT, UI) => {
             },
             error: ({ responseJSON }) => {
                 toastr.error(responseJSON.message, 'Failed', { "progressBar": true, "closeButton": true, "positionClass": 'toast-bottom-right' });
+            },
+            statusCode: {
+                404: () => {
+                    $('#app_content').load(`${SET.baseURL()}data_not_found`)
+                },
+                401: err => {
+                    let error = err.responseJSON
+
+                    if (error.message === 'Unauthenticated.') {
+                        $('#app_content').load(`${SET.baseURL()}unauthenticated`)
+                    }
+
+                    if (error.message === 'Unauthorized.') {
+                        $('#app_content').load(`${SET.baseURL()}unauthorized`)
+                    }
+                }
             },
             complete: () => {
 
@@ -772,6 +787,22 @@ const supplierController = ((SET, DT, UI) => {
                         $('#sum_debts').text(`Rp. ${SET.realCurrency(total)}`)
 
                         return res.results
+                    },
+                    statusCode: {
+                        404: () => {
+                            $('#app_content').load(`${SET.baseURL()}data_not_found`)
+                        },
+                        401: err => {
+                            let error = err.responseJSON
+
+                            if (error.message === 'Unauthenticated.') {
+                                $('#app_content').load(`${SET.baseURL()}unauthenticated`)
+                            }
+
+                            if (error.message === 'Unauthorized.') {
+                                $('#app_content').load(`${SET.baseURL()}unauthorized`)
+                            }
+                        }
                     },
                     error: err => {
 

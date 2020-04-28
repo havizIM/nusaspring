@@ -71,6 +71,19 @@ const profileController = ((SET, UI) => {
                 UI.renderError()
                 toastr.error(responseJSON.message, 'Failed', { "progressBar": true, "closeButton": true, "positionClass": 'toast-bottom-right' });
             },
+            statusCode: {
+                401: err => {
+                    let error = err.responseJSON
+
+                    if (error.message === 'Unauthenticated.') {
+                        $('#app_content').load(`${SET.baseURL()}unauthenticated`)
+                    }
+
+                    if (error.message === 'Unauthorized.') {
+                        $('#app_content').load(`${SET.baseURL()}unauthorized`)
+                    }
+                }
+            },
             complete: () => {
                 SET.closeSelectedElement('#task_container')
             }

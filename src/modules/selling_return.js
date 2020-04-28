@@ -756,6 +756,22 @@ const sellingReturnController = ((SET, DT, UI, LU) => {
             error: ({ responseJSON }) => {
                 toastr.error(responseJSON.message, 'Failed', { "progressBar": true, "closeButton": true, "positionClass": 'toast-bottom-right' });
             },
+            statusCode: {
+                404: () => {
+                    $('#app_content').load(`${SET.baseURL()}data_not_found`)
+                },
+                401: err => {
+                    let error = err.responseJSON
+
+                    if (error.message === 'Unauthenticated.') {
+                        $('#app_content').load(`${SET.baseURL()}unauthenticated`)
+                    }
+
+                    if (error.message === 'Unauthorized.') {
+                        $('#app_content').load(`${SET.baseURL()}unauthorized`)
+                    }
+                }
+            },
             complete: () => {
 
             }
@@ -1595,6 +1611,19 @@ const sellingReturnController = ((SET, DT, UI, LU) => {
                         $('#sum_cust_returns').text(`Rp. ${SET.positiveCurrency(sum_total)}`)
 
                         return res.results
+                    },
+                    statusCode: {
+                        401: err => {
+                            let error = err.responseJSON
+
+                            if (error.message === 'Unauthenticated.') {
+                                $('#app_content').load(`${SET.baseURL()}unauthenticated`)
+                            }
+
+                            if (error.message === 'Unauthorized.') {
+                                $('#app_content').load(`${SET.baseURL()}unauthorized`)
+                            }
+                        }
                     },
                     error: err => {
 

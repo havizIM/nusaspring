@@ -154,7 +154,18 @@ const reminderController = ((SET) => {
                         xhr.setRequestHeader("Content-Type", 'application/json')
                         xhr.setRequestHeader("Authorization", "Bearer " + TOKEN)
                     },
-                    error: function () {
+                    error: function (err) {
+                        let error = err.responseJSON
+                        let status = err.status
+
+                        if (status === 401 && error.message === 'Unauthenticated.') {
+                            $('#app_content').load(`${SET.baseURL()}unauthenticated`)
+                        }
+
+                        if (status === 401 && error.message === 'Unauthorized.') {
+                            $('#app_content').load(`${SET.baseURL()}unauthorized`)
+                        }
+
                         toastr.error(responseJSON.message, 'Failed', { "progressBar": true, "closeButton": true, "positionClass": 'toast-bottom-right' });
                     },
                     success: function (res) {
@@ -175,7 +186,20 @@ const reminderController = ((SET) => {
                         $('#count_events').text(res.results.length)
 
                         return events_array;
-                    }
+                    },
+                    // statusCode: {
+                    //     401: err => {
+                    //         let error = err.responseJSON
+
+                    //         if (error.message === 'Unauthenticated.') {
+                    //             $('#app_content').load(`${SET.baseURL()}unauthenticated`)
+                    //         }
+
+                    //         if (error.message === 'Unauthorized.') {
+                    //             $('#app_content').load(`${SET.baseURL()}unauthorized`)
+                    //         }
+                    //     }
+                    // },
                 },
                 // loading: function(bool){
                 //   alert('Loading....');

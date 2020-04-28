@@ -16,6 +16,19 @@ const dashboardContoller = ((SET) => {
             error: ({ responseJSON }) => {
                 toastr.error(responseJSON.message, 'Failed', { "progressBar": true, "closeButton": true, "positionClass": 'toast-bottom-right' });
             },
+            statusCode: {
+                401: err => {
+                    let error = err.responseJSON
+
+                    if (error.message === 'Unauthenticated.') {
+                        $('#app_content').load(`${SET.baseURL()}unauthenticated`)
+                    }
+
+                    if (error.message === 'Unauthorized.') {
+                        $('#app_content').load(`${SET.baseURL()}unauthorized`)
+                    }
+                }
+            },
             complete: () => {
                 SET.closeSelectedElement('#bussiness_container')
             }
@@ -37,6 +50,19 @@ const dashboardContoller = ((SET) => {
             },
             error: ({ responseJSON }) => {
                 toastr.error(responseJSON.message, 'Failed', { "progressBar": true, "closeButton": true, "positionClass": 'toast-bottom-right' });
+            },
+            statusCode: {
+                401: err => {
+                    let error = err.responseJSON
+
+                    if (error.message === 'Unauthenticated.') {
+                        $('#app_content').load(`${SET.baseURL()}unauthenticated`)
+                    }
+
+                    if (error.message === 'Unauthorized.') {
+                        $('#app_content').load(`${SET.baseURL()}unauthorized`)
+                    }
+                }
             },
             complete: () => {
                 SET.closeSelectedElement('#top_10_container')
@@ -60,6 +86,19 @@ const dashboardContoller = ((SET) => {
             error: ({ responseJSON }) => {
                 toastr.error(responseJSON.message, 'Failed', { "progressBar": true, "closeButton": true, "positionClass": 'toast-bottom-right' });
             },
+            statusCode: {
+                401: err => {
+                    let error = err.responseJSON
+
+                    if (error.message === 'Unauthenticated.') {
+                        $('#app_content').load(`${SET.baseURL()}unauthenticated`)
+                    }
+
+                    if (error.message === 'Unauthorized.') {
+                        $('#app_content').load(`${SET.baseURL()}unauthorized`)
+                    }
+                }
+            },
             complete: () => {
                 SET.closeSelectedElement('#debt_container')
             }
@@ -81,6 +120,19 @@ const dashboardContoller = ((SET) => {
             },
             error: ({ responseJSON }) => {
                 toastr.error(responseJSON.message, 'Failed', { "progressBar": true, "closeButton": true, "positionClass": 'toast-bottom-right' });
+            },
+            statusCode: {
+                401: err => {
+                    let error = err.responseJSON
+
+                    if (error.message === 'Unauthenticated.') {
+                        $('#app_content').load(`${SET.baseURL()}unauthenticated`)
+                    }
+
+                    if (error.message === 'Unauthorized.') {
+                        $('#app_content').load(`${SET.baseURL()}unauthorized`)
+                    }
+                }
             },
             complete: () => {
                 SET.closeSelectedElement('#receiveable_container')

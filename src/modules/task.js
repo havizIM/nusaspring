@@ -50,6 +50,7 @@ const taskUI = (() => {
 
             $('#task_list').html(html)
         },
+
         renderError: () => {
 
         }
@@ -76,6 +77,19 @@ const taskController = ((SET, UI) => {
                     UI.renderData(res.results)
                 }
                 
+            },
+            statusCode: {
+                401: err => {
+                    let error = err.responseJSON
+
+                    if (error.message === 'Unauthenticated.') {
+                        $('#app_content').load(`${SET.baseURL()}unauthenticated`)
+                    }
+
+                    if (error.message === 'Unauthorized.') {
+                        $('#app_content').load(`${SET.baseURL()}unauthorized`)
+                    }
+                }
             },
             error: ({ responseJSON }) => {
                 UI.renderError()

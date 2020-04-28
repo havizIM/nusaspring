@@ -594,8 +594,16 @@ const costController = ((SET, DT, UI) => {
                 404: () => {
                     $('#app_content').load(`${SET.baseURL()}data_not_found`)
                 },
-                401: () => {
-                    $('#app_content').load(`${SET.baseURL()}authenticated`)
+                401: err => {
+                    let error = err.responseJSON
+
+                    if (error.message === 'Unauthenticated.') {
+                        $('#app_content').load(`${SET.baseURL()}unauthenticated`)
+                    }
+
+                    if (error.message === 'Unauthorized.') {
+                        $('#app_content').load(`${SET.baseURL()}unauthorized`)
+                    }
                 }
             },
             complete: () => {
@@ -865,6 +873,19 @@ const costController = ((SET, DT, UI) => {
                         $('#sum_cost').text(`Rp. ${SET.positiveCurrency(sum_cost)}`)
 
                         return res.results
+                    },
+                    statusCode: {
+                        401: err => {
+                            let error = err.responseJSON
+
+                            if (error.message === 'Unauthenticated.') {
+                                $('#app_content').load(`${SET.baseURL()}unauthenticated`)
+                            } 
+
+                            if (error.message === 'Unauthorized.') {
+                                $('#app_content').load(`${SET.baseURL()}unauthorized`)
+                            }
+                        }
                     },
                     error: err => {
 
