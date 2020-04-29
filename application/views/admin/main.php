@@ -185,6 +185,30 @@
 
     </div>
 
+    <?php if($this->session->flashdata('welcome') == TRUE): ?>
+        <div id="modal_welcome" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" style="display: none;">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title text-primary" id="myLargeModalLabel">Welcome To Inventory System</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    </div>
+                    <div class="modal-body">
+                        <div id="reminder_content">
+                            <div class="text-center">
+                                <h4>Loading...</h4>
+                                <h5>Fetch All Reminder</h5>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger waves-effect text-left" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <?php endif ?>
+
     <aside class="customizer">
         <a href="javascript:void(0)" class="service-panel-toggle" id="btn_panel"><i class="fa fa-spin fa-cog"></i></a>
         <div class="customizer-body">

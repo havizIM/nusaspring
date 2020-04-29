@@ -125,7 +125,6 @@ const reminderController = ((SET) => {
 
     return {
         init: TOKEN => {
-            console.log('Reminder Controller is Running...')
 
             $(".date-mask").inputmask("datetime", {
                 mask: "y-2-1 h:s:s",

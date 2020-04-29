@@ -1152,7 +1152,6 @@ const sellingReturnController = ((SET, DT, UI, LU) => {
             let total = (parseFloat(unit_price) * parseFloat(qty)) - parseFloat(discount_amount)
 
             if ($(this).is(':checked')) {
-                console.log(total)
                 ppn_amount = (total * 10) / 100
             } else {
                 ppn_amount = 0
@@ -1460,7 +1459,6 @@ const sellingReturnController = ((SET, DT, UI, LU) => {
                     processData: false,
                     beforeSend: xhr => {
                         xhr.setRequestHeader("Authorization", "Bearer " + TOKEN)
-                        console.log(form)
                         SET.contentLoader('#edit_container')
                     },
                     success: res => {

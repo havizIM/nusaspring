@@ -1,5 +1,5 @@
 <div class="container-fluid">
-    <div class="error-box" style="position: relative !important; min-height: 76vh">
+    <div class="error-box" style="position: relative !important; min-height: 76vh; background: white;">
         <div class="error-body text-center">
             <img src="<?= base_url() ?>assets/images/authenticate.svg" class="img-fluid mb-2" style="width: 37%">
             <h4 class="text-dark font-24">UD. Nusa Spring</h4>

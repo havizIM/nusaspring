@@ -139,7 +139,6 @@ const categoryController = ((SET) => {
 
     return {
         init: TOKEN => {
-            console.log('Category Controller is running...')
 
             const table = $('#t_category').DataTable({
                 columnDefs: [

@@ -27,6 +27,49 @@ const mainUI = (() => {
         renderNoData: () => {
 
         },
+        renderReminder: data => {
+
+            let html = `
+                <div class="mb-3">
+                    <h4>You have ( <b>${data.length}</b> ) list to do :</h4>
+                </div>
+                <div class="list-group">
+                    ${data.map(v => {
+                        return `
+                            <a href="javascript:void(0)" class="list-group-item list-group-item-action flex-column align-items-start bg-${v.color} text-white">
+                                <p class="mb-1">${v.description}</p>
+                                <small>${v.start_date} <b>To</b> ${v.end_date}</small>
+                            </a>
+                        `
+                    }).join('')}
+                </div>
+            `
+
+            
+
+            $('#reminder_content').html(html);
+        },
+        renderReminderNoData: () => {
+
+            let html = `
+                <div class="text-center">
+                    <h4 class="text-warning">No Data Founds</h4>
+                    <h5>No Reminder for Today</h5>
+                </div>
+            `
+
+            $('#reminder_content').html(html);
+        },
+        renderReminderError: () => {
+            let html = `
+                <div class="text-center">
+                    <h4 class="text-danger">Error</h4>
+                    <h5>Internal Server Error</h5>
+                </div>
+            `
+
+            $('#reminder_content').html(html);
+        },
         renderError: err => {
 
         }
@@ -34,6 +77,7 @@ const mainUI = (() => {
 })() 
 
 const mainController = ((SET, UI) => {
+
     const _loadContent = path => {
         $.ajax({
             url: `${SET.baseURL()}${path}`,
@@ -123,9 +167,46 @@ const mainController = ((SET, UI) => {
         })
     }
 
+    const _fetchTodayReminder = (TOKEN, callback) => {
+        $.ajax({
+            url: `${SET.apiURL()}reminders/today`,
+            type: 'GET',
+            dataType: 'JSON',
+            beforeSend: xhr => {
+                xhr.setRequestHeader("Authorization", "Bearer " + TOKEN)
+            },
+            success: res => {
+                if(res.results.length === 0){
+                    UI.renderReminderNoData()
+                } else {
+                    callback(res.results)
+                }
+            },
+            error: ({ responseJSON }) => {
+                UI.renderReminderError()
+                toastr.error(responseJSON.message, 'Failed', { "progressBar": true, "closeButton": true, "positionClass": 'toast-bottom-right' });
+            },
+            complete: () => {
+
+            }
+        })
+    }
+
+    const _welcomePanel = (TOKEN) => {
+        let has_modal = $('#modal_welcome').length;
+
+        if(has_modal === 1){
+            $('#modal_welcome').modal('show');
+
+            _fetchTodayReminder(TOKEN, data => {
+                UI.renderReminder(data)
+            })
+        }
+    }
+
     return {
         init: TOKEN => {
-            console.log('Main Controller is running...')
+            _welcomePanel(TOKEN)
 
             _logoutApp()
             _panelLog(TOKEN)

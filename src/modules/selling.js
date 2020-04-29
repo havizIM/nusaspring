@@ -782,7 +782,6 @@ const sellingController = ((SET, DT, UI, LU) => {
             let total = (parseFloat(unit_price) * parseFloat(qty)) - parseFloat(discount_amount)
 
             if ($(this).is(':checked')) {
-                console.log(total)
                 ppn_amount = (total * 10) / 100
             } else {
                 ppn_amount = 0
@@ -1243,7 +1242,6 @@ const sellingController = ((SET, DT, UI, LU) => {
 
     return {
         data: TOKEN => {
-            console.log('Selling Controller is running...')
 
             const table = $('#t_sellings').DataTable({
                 columnDefs: [
@@ -1501,7 +1499,6 @@ const sellingController = ((SET, DT, UI, LU) => {
             })
         },
         add: TOKEN => {
-            console.log('Add Adjustment Controller is running...')
 
             UI.resetCount()
 
@@ -1614,7 +1611,6 @@ const sellingController = ((SET, DT, UI, LU) => {
 
         },
         edit: (TOKEN, id) => {
-            console.log('Edit Customer Controller is running...')
 
             UI.resetCount()
 
@@ -1624,7 +1620,6 @@ const sellingController = ((SET, DT, UI, LU) => {
             })
         },
         detail: (TOKEN, id) => {
-            console.log('Detail Adjustment Controller is running...')
 
             _fetchSelling(TOKEN, id, data => {
                 UI.renderDetail(data)

@@ -39,6 +39,7 @@ class Authorization extends CI_Controller {
 			);
 
 			$this->session->set_userdata($payload);
+			$this->session->set_flashdata('welcome', TRUE);
 			echo $json;
 		}
 	}

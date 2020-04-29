@@ -34,7 +34,7 @@
             </div>
         </div>
 
-        <div class="auth-wrapper d-flex no-block justify-content-center align-items-center" style="background:url(<?= base_url() ?>assets/images/background1.jpg) no-repeat center center;">
+        <div class="auth-wrapper d-flex no-block justify-content-center align-items-center" style="background:url(<?= base_url() ?>assets/images/bg-auth.jpg) no-repeat center center; background-size: cover">
             <div class="auth-box on-sidebar">
                 <div id="loginform">
                     <div class="logo">

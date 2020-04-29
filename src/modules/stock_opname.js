@@ -723,8 +723,6 @@ const stockOpnameController = ((SET, DT, UI) => {
     return {
         data: TOKEN => {
 
-            console.log('Purchase Controller is running...')
-
             const table = $('#t_stock_opnames').DataTable({
                 columnDefs: [
                     {
@@ -978,7 +976,6 @@ const stockOpnameController = ((SET, DT, UI) => {
             })
         },
         add: TOKEN => {
-            console.log('Add Adjustment Controller is running...')
 
             UI.resetCount()
 
@@ -1044,7 +1041,6 @@ const stockOpnameController = ((SET, DT, UI) => {
 
         },
         edit: (TOKEN, id) => {
-            console.log('Edit Customer Controller is running...')
 
             UI.resetCount()
 
@@ -1054,7 +1050,6 @@ const stockOpnameController = ((SET, DT, UI) => {
             })
         },
         detail: (TOKEN, id) => {
-            console.log('Detail Adjustment Controller is running...')
 
             _fetcStockOpname(TOKEN, id, data => {
                 UI.renderDetail(data)

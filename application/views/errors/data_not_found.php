@@ -1,7 +1,7 @@
 
 <div class="container-fluid">
 
-    <div class="error-box" style="position: relative !important; min-height: 76vh">
+    <div class="error-box" style="position: relative !important; min-height: 76vh; background: white;">
         <div class="error-body text-center">
             <h1 class="error-title">404</h1>
             <h3 class="text-uppercase error-subtitle">DATA NOT FOUND !</h3>

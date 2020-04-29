@@ -658,7 +658,6 @@ const customerController = ((SET, DT, UI) => {
 
     return {
         data: TOKEN => {
-            console.log('Customer Controller is running...')
 
             const table = $('#t_customer').DataTable({
                 columnDefs: [
@@ -787,8 +786,6 @@ const customerController = ((SET, DT, UI) => {
                         $('#count_customer').text(res.results.length)
                         $('#sum_receiveable').text(`Rp. ${SET.positiveCurrency(total)}`)
 
-                        console.log(res.results)
-
                         return res.results
                     },
                     statusCode: {
@@ -868,12 +865,10 @@ const customerController = ((SET, DT, UI) => {
             })
         },
         add: TOKEN => {
-            console.log('Add Customer Controller is running...')
 
             _submitAdd(TOKEN)
         },
         edit: (TOKEN, id) => {
-            console.log('Edit Customer Controller is running...')
 
             _fetchCustomer(TOKEN, id, data => {
                 _editObserver(TOKEN, id)
@@ -881,7 +876,6 @@ const customerController = ((SET, DT, UI) => {
             })
         },
         detail: (TOKEN, id) => {
-            console.log('Detail Customer Controller is running...')
 
             _fetchCustomer(TOKEN, id, data => {
                 _detailObserver(TOKEN, id, data)

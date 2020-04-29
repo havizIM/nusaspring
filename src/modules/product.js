@@ -1065,7 +1065,6 @@ const productController = ((SET, DT, UI) => {
 
     return {
         data: TOKEN => {
-            console.log('Product Controller is Running...')
 
             const table = $('#t_product').DataTable({
                 columnDefs: [
@@ -1388,7 +1387,6 @@ const productController = ((SET, DT, UI) => {
         },
 
         detail: (TOKEN, id) => {
-            console.log('Detail Product Controller is running...')
 
             _fetchProduct(TOKEN, id, data => {
                 _detailObserver(TOKEN, id, data)

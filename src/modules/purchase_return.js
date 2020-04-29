@@ -943,7 +943,6 @@ const purchaseReturnController = ((SET, DT, UI, LU) => {
             let total = (parseFloat(unit_price) * parseFloat(qty)) - parseFloat(discount_amount)
 
             if ($(this).is(':checked')) {
-                console.log(total)
                 ppn_amount = (total * 10) / 100
             } else {
                 ppn_amount = 0
@@ -1457,7 +1456,6 @@ const purchaseReturnController = ((SET, DT, UI, LU) => {
                     processData: false,
                     beforeSend: xhr => {
                         xhr.setRequestHeader("Authorization", "Bearer " + TOKEN)
-                        console.log(form)
                         SET.contentLoader('#edit_container')
                     },
                     success: res => {
@@ -1713,7 +1711,6 @@ const purchaseReturnController = ((SET, DT, UI, LU) => {
         },
 
         detail: (TOKEN, id) => {
-            console.log('Detail Adjustment Controller is running...')
 
             _fetchSupplierReturn(TOKEN, id, data => {
                 UI.renderDetail(data)
@@ -1736,7 +1733,6 @@ const purchaseReturnController = ((SET, DT, UI, LU) => {
         },
 
         add: TOKEN => {
-            console.log('Add Adjustment Controller is running...')
 
             UI.resetCount()
 

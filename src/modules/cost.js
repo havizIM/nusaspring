@@ -724,7 +724,6 @@ const costController = ((SET, DT, UI) => {
                     processData: false,
                     beforeSend: xhr => {
                         xhr.setRequestHeader("Authorization", "Bearer " + TOKEN)
-                        console.log(form)
                         SET.contentLoader('#edit_container')
                     },
                     success: res => {
@@ -974,7 +973,6 @@ const costController = ((SET, DT, UI) => {
         },
 
         detail: (TOKEN, id) => {
-            console.log('Detail Adjustment Controller is running...')
 
             _fetchCost(TOKEN, id, data => {
                 UI.renderDetail(data)
@@ -988,7 +986,6 @@ const costController = ((SET, DT, UI) => {
         },
 
         add: TOKEN => {
-            console.log('Add Adjustment Controller is running...')
 
             UI.resetCount()
 

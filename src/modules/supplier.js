@@ -657,7 +657,6 @@ const supplierController = ((SET, DT, UI) => {
 
     return {
         data: TOKEN => {
-            console.log('Supplier Controller is running...')
 
             const table = $('#t_supplier').DataTable({
                 columnDefs: [
@@ -865,12 +864,10 @@ const supplierController = ((SET, DT, UI) => {
             })
         },
         add: TOKEN => {
-            console.log('Add Supplier Controller is running...')
 
             _submitAdd(TOKEN)
         },
         edit: (TOKEN, id) => {
-            console.log('Edit Supplier Controller is running...')
 
             _fetchSupplier(TOKEN, id, data => {
                 _editObserver(TOKEN, id)
@@ -878,7 +875,6 @@ const supplierController = ((SET, DT, UI) => {
             })
         },
         detail: (TOKEN, id) => {
-            console.log('Detail Supplier Controller is running...')
 
             _fetchSupplier(TOKEN, id, data => {
                 _detailObserver(TOKEN, id, data)

@@ -139,7 +139,6 @@ const unitController = ((SET) => {
 
     return {
         init: TOKEN => {
-            console.log('Unit Controller is running...')
 
             const table = $('#t_unit').DataTable({
                 columnDefs: [

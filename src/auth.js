@@ -49,8 +49,6 @@ const authController = ((SET) => {
 
     return {
         init: () => {
-            console.log('Auth Controller is Running...')
-
             _submitLogin();
             _showPassword();
         }

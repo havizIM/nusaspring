@@ -264,7 +264,6 @@ const taskController = ((SET, UI) => {
 
     return {
         init: TOKEN => {
-            console.log('Task Controller is Running...')
 
             $(".scrollable").niceScroll({
                 cursorborderradius: 4,

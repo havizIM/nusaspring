@@ -705,7 +705,6 @@ const purchasePaymentController = ((SET, DT, UI, LU) => {
                     processData: false,
                     beforeSend: xhr => {
                         xhr.setRequestHeader("Authorization", "Bearer " + TOKEN)
-                        console.log(form)
                         SET.contentLoader('#edit_container')
                     },
                     success: res => {
@@ -949,7 +948,6 @@ const purchasePaymentController = ((SET, DT, UI, LU) => {
         },
 
         detail: (TOKEN, id) => {
-            console.log('Detail Adjustment Controller is running...')
 
             _fetchPurchasePayment(TOKEN, id, data => {
                 UI.renderDetail(data)
