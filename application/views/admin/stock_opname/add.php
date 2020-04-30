@@ -32,7 +32,7 @@
                         <div class="col-md-12">
                             <form id="form_add">
                                 <div class="row">
-                                    <div class="col-md-8">
+                                    <div class="col-md-8 mb-3">
                                         <div class="form-group">
                                             <label for="fax">Stock Opname No</label>
                                             <input type="text" readonly placeholder="[ AUTO ]" value="[ AUTO ]" class="form-control" name="so_number" id="so_number">
@@ -48,70 +48,48 @@
                                             <input type="file" class="dropify" name="attachment" id="attachment">
                                         </div>
                                     </div>
-                                    <div class="col-md-12 mb-3">
+                                    <div class="col-md-12 mb-5">
+                                        <h4>Existing Products</h4>
+                                        <div class="table-responsive">
+                                            <table class="table" id="t_exist_products" style="overflow-x: scroll;">
+                                                <thead>
+                                                    <tr>
+                                                        <th style="min-width: 100px;">SKU</th>
+                                                        <th style="min-width: 300px;">Product</th>
+                                                        <th style="min-width: 200px;">Unit Price</th>
+                                                        <th style="min-width: 150px;">Qty</th>
+                                                        <th style="min-width: 200px;">Total</th>
+                                                        <th style="min-width: 200px;">Note</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody></tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12 mb-5">
+                                        <h4>Additional Products</h4>
                                         <div class="table-responsive">
                                             <table class="table" id="t_add_products" style="overflow-x: scroll;">
                                                 <thead>
                                                     <tr>
-                                                        <th style="min-width: 350px;">Product</th>
+                                                        <th style="min-width: 100px;">SKU</th>
+                                                        <th style="min-width: 300px;">Product</th>
                                                         <th style="min-width: 200px;">Unit Price</th>
                                                         <th style="min-width: 150px;">Qty</th>
                                                         <th style="min-width: 200px;">Total</th>
                                                         <th style="min-width: 200px;">Note</th>
                                                         <th>
-                                                            <button class="btn btn-info btn-md btn_add_row" type="button" id="btn_add_row"><i class="fa fa-plus"></i></button>
+                                                            <button class="btn btn-info btn-md btn_add_row" type="button"><i class="fa fa-plus"></i></button>
                                                         </th>
                                                     </tr>
                                                 </thead>
                                                 <tbody id="coba">
-                                                    <tr id="row_0">
-                                                        <td>
-                                                            <select name="product_id[0]" id="product_id_0" data-id="0" class="form-control product_id" required>
-                                                                <option value="" disabled="" selected="">-- Choose Product --</option>
-                                                            </select>
-                                                            <input type="hidden" name="description[0]" id="description_0" data-id="0">
-                                                        </td>
-                                                        <td>
-                                                            <div class="input-group mb-3">
-                                                                <div class="input-group-prepend">
-                                                                    <span class="input-group-text" id="basic-addon1">Rp. </span>
-                                                                </div>
-                                                                <input type="number"  min="0" value="0" name="unit_price[0]" id="unit_price_0" data-id="0" class="form-control unit_price">
-                                                            </div>
-                                                        </td>
-                                                        <td>
-                                                            <div class="input-group mb-3">
-                                                                <input type="number"  min="0" value="0" name="actual_qty[0]" id="actual_qty_0" data-id="0" class="form-control actual_qty" required>
-                                                                <div class="input-group-prepend">
-                                                                    <input type="hidden" name="unit[0]" id="unit_0" data-id="0" class="form-control">
-                                                                    <span class="input-group-text" id="unit_text_0" data-id="0">-</span>
-                                                                </div>
-                                                            </div>
-                                                        </td>
-                                                        <td>
-                                                            <div class="input-group mb-3">
-                                                                <div class="input-group-prepend">
-                                                                    <span class="input-group-text" id="basic-addon1">Rp. </span>
-                                                                </div>
-                                                                <input type="number" min="0" value="0" name="actual_total[0]" id="actual_total_0" data-id="0" class="form-control actual_total">
-                                                            </div>
-                                                        </td>
-                                                        <td>
-                                                            <div class="form-group">
-                                                                <textarea name="note[0]" id="note_0" data-id="0" rows="1" class="form-control"></textarea>
-                                                            </div>
-                                                        </td>
-                                                        <td>
-                                                            <input type="hidden" name="system_qty[0]" id="system_qty_0" data-id="0" class="system_qty" value="0">
-                                                            <input type="hidden" name="system_total[0]" id="system_total_0" data-id="0" class="system_total" value="0">
-                                                            <!-- <button class="btn btn-danger btn-md" type="button" id="btn_remove_row" data-id="0" data-remove="false"><i class="fa fa-times"></i></button> -->
-                                                        </td>
-                                                    </tr>
+
                                                 </tbody>
                                                 <tfoot>
                                                     <tr>
                                                         <td colspan="8">
-                                                            <button class="btn btn-info btn-md btn_add_row" type="button" id="btn_add_row"><i class="fa fa-plus"></i> Add Product</button>
+                                                            <button class="btn btn-info btn-md btn_add_row" type="button"><i class="fa fa-plus"></i> Add Product</button>
                                                         </td>
                                                     </tr>
                                                 </tfoot>
@@ -165,6 +143,67 @@
         </div>
     </div>
 </div>
+
+<form id="form_add_product_2">
+    <div id="modal_add_product_2" class="modal fade" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Add Product</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="contact_name">Name</label>
+                        <input type="text" class="form-control" id="product_name" name="product_name">
+                    </div>
+                    <div class="form-group">
+                        <label for="pic">SKU</label>
+                        <input type="text" class="form-control" id="sku" name="sku">
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-md-6">
+                            <label for="phone">Category</label>
+                            <select class="form-control" id="category_id" name="category_id" style="width: 100%">
+                                <option value="" disabled="" selected="">-- Choose Category --</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="fax">Unit</label>
+                            <select class="form-control" id="unit_id" name="unit_id" style="width: 100%">
+                                <option value="" disabled="" selected="">-- Choose Unit --</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-md-6">
+                            <label for="handphone">Purchase Price</label>
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" id="basic-addon1">Rp. </span>
+                                </div>
+                                <input type="number" min="0" value="0" class="form-control" name="purchase_price" id="purchase_price">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="email">Selling Price</label>
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" id="basic-addon1">Rp. </span>
+                                </div>
+                                <input type="number" min="0" value="0" class="form-control" name="selling_price" id="selling_price">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger waves-effect" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-info waves-effect waves-light">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
 
 <footer class="footer text-center">
     All Rights Reserved by UD. Nusa Spring. Designed and Developed by

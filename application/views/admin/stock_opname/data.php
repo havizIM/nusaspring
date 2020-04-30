@@ -168,6 +168,28 @@
     </div>
 </form>
 
+<form id="form_validate">
+    <div id="modal_validate" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Validate Stock Opname</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                </div>
+                <div class="modal-body">
+                    <h4><b>Are You Sure?</b></h4>
+                    <p><b id="validate_desc"></b> will validated and will not able to be updated permanently.</p>
+                </div>
+                <div class="modal-footer">
+                    <input type="hidden" id="validate_id" name="validate_id">
+                    <button type="button" class="btn btn-danger waves-effect" data-dismiss="modal">No</button>
+                    <button type="submit" class="btn btn-success waves-effect waves-light">Yes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
 <footer class="footer text-center">
     All Rights Reserved by UD. Nusa Spring. Designed and Developed by
     <a href="https://wrappixel.com">CodeManiac</a>.
