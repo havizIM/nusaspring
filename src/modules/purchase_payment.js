@@ -78,6 +78,31 @@ const purchasePaymentUI = ((SET) => {
                                                     </tr>
                                                 </table>
                                             </div>
+                                            <div class="col-md-12 mt-5">
+                                                <hr>
+                                                <table style="width: 100%">
+                                                    <tr>
+                                                        <td style="width: 50%" class="text-center">
+                                                            <h5>Mengetahui</h5>
+                                                            <br>
+                                                            <br>
+                                                            <br>
+                                                            <br>
+                                                            <br>
+                                                            <hr style="width: 50%">
+                                                        </td>
+                                                        <td style="width: 50%" class="text-center">
+                                                            <h5>Dibuat Oleh</h5>
+                                                            <br>
+                                                            <br>
+                                                            <br>
+                                                            <br>
+                                                            <br>
+                                                            <hr style="width: 50%">
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="card-body">

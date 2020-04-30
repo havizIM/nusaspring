@@ -119,6 +119,13 @@ const adjustmentUI = ((SET) => {
                                                     `
                                                 }).join('')}
                                             </tbody>
+                                            <tfoot>
+                                                <tr>
+                                                    <td colspan="5">
+                                                        <button class="btn btn-info btn-md btn_add_row" type="button" id="btn_add_row"><i class="fa fa-plus"></i> Add Product</button>
+                                                    </td>
+                                                </tr>
+                                            </tfoot>
                                         </table>
                                     </div>
                                 </div>
@@ -219,6 +226,31 @@ const adjustmentUI = ((SET) => {
                                                         <div class="m-t-30 text-right">
                                                             <h3><b>Grand Total :</b> Rp. ${SET.realCurrency(data.products.reduce((a, b) => a + b.total, 0))}</h3>
                                                         </div>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                        <div class="col-md-12 mt-5">
+                                            <hr>
+                                            <table style="width: 100%">
+                                                <tr>
+                                                    <td style="width: 50%" class="text-center">
+                                                        <h5>Mengetahui</h5>
+                                                        <br>
+                                                        <br>
+                                                        <br>
+                                                        <br>
+                                                        <br>
+                                                        <hr style="width: 50%">
+                                                    </td>
+                                                    <td style="width: 50%" class="text-center">
+                                                        <h5>Dibuat Oleh</h5>
+                                                        <br>
+                                                        <br>
+                                                        <br>
+                                                        <br>
+                                                        <br>
+                                                        <hr style="width: 50%">
                                                     </td>
                                                 </tr>
                                             </table>
@@ -348,7 +380,7 @@ const adjustmentController = ((SET, DT, UI, LU) => {
 
     /* -------------------- ADD ACTION ----------------- */
     const _addRow = TOKEN => {
-        $('#btn_add_row').click(function(){
+        $('.btn_add_row').click(function(){
             UI.renderRow(TOKEN)
         })
     }
