@@ -329,7 +329,7 @@ const purchaseUI = ((SET) => {
                                                     </thead>
                                                     <tbody>
                                                         ${data.products.map(v => {
-                return `
+                                                            return `
                                                                 <tr>
                                                                     <td class="text-center">${no++}</td>
                                                                     <td><a href="#/product/${v.product_id}">${v.description}</a></td>
@@ -338,7 +338,7 @@ const purchaseUI = ((SET) => {
                                                                     <td class="text-right"> Rp. ${SET.positiveCurrency(v.total)} </td>
                                                                 </tr>
                                                             `
-            }).join('')}
+                                                        }).join('')}
                                                     </tbody>
                                                 </table>
                                             </div>
