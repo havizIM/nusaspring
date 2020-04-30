@@ -333,7 +333,7 @@ const purchaseUI = ((SET) => {
                                                                 <tr>
                                                                     <td class="text-center">${no++}</td>
                                                                     <td><a href="#/product/${v.product_id}">${v.description}</a></td>
-                                                                    <td class="text-right">${v.qty} ${v.unit}</td>
+                                                                    <td class="text-right">${v.qty} ${v.unit !== null ? v.unit : ''}</td>
                                                                     <td class="text-right"> Rp. ${SET.positiveCurrency(v.unit_price)} </td>
                                                                     <td class="text-right"> Rp. ${SET.positiveCurrency(v.total)} </td>
                                                                 </tr>
@@ -1448,6 +1448,7 @@ const purchaseController = ((SET, DT, UI, LU) => {
                 $('#modal_delete').modal('hide')
             })
         },
+
         add: TOKEN => {
             UI.resetCount()
 
@@ -1558,6 +1559,7 @@ const purchaseController = ((SET, DT, UI, LU) => {
             _submitAdd(TOKEN)
 
         },
+
         edit: (TOKEN, id) => {
             UI.resetCount()
 
@@ -1566,6 +1568,7 @@ const purchaseController = ((SET, DT, UI, LU) => {
                 UI.renderEdit(data)
             })
         },
+
         detail: (TOKEN, id) => {
             _fetchPurchase(TOKEN, id, data => {
                 UI.renderDetail(data)

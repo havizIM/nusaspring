@@ -96,7 +96,7 @@ const purchaseReturnUI = ((SET) => {
                                                                 <tr>
                                                                     <td class="text-center">${no++}</td>
                                                                     <td><a href="#/product/${v.product_id}">${v.description}</a></td>
-                                                                    <td class="text-right">${Math.abs(v.qty)} ${v.unit}</td>
+                                                                    <td class="text-right">${Math.abs(v.qty)} ${v.unit !== null ? v.unit : ''}</td>
                                                                     <td class="text-right"> Rp. ${SET.positiveCurrency(v.unit_price)} </td>
                                                                     <td class="text-right"> Rp. ${SET.positiveCurrency(v.total)} </td>
                                                                 </tr>
