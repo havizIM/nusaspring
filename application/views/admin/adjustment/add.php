@@ -73,7 +73,7 @@
                                                         <th style="min-width: 150px;">Qty</th>
                                                         <th style="min-width: 200px;">Total</th>
                                                         <th>
-                                                            <button class="btn btn-info btn-md" type="button" id="btn_add_row"><i class="fa fa-plus"></i></button>
+                                                            <button class="btn btn-info btn-md btn_add_row" type="button" id="btn_add_row"><i class="fa fa-plus"></i></button>
                                                         </th>
                                                     </tr>
                                                 </thead>

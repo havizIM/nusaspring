@@ -70,7 +70,7 @@ const adjustmentUI = ((SET) => {
                                                     <th style="width: 20%;">Qty</th>
                                                     <th style="width: 20%;">Total</th>
                                                     <th style="width: 10%;">
-                                                        <button class="btn btn-info btn-md" type="button" id="btn_add_row"><i class="fa fa-plus"></i></button>
+                                                        <button class="btn btn-info btn-md btn_add_row" type="button" id="btn_add_row"><i class="fa fa-plus"></i></button>
                                                     </th>
                                                 </tr>
                                             </thead>
