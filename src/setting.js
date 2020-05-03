@@ -474,7 +474,7 @@ const lookupController = ((SET) => {
     }
 
     const _addCategory = TOKEN => {
-        $(document).on('click', '.select2_add_category', function () {
+        $('#modal_add_product').on('click', '.select2_add_category', function () {
             let name = $(this).data('name')
 
             $.ajax({
@@ -514,7 +514,7 @@ const lookupController = ((SET) => {
     }
 
     const _addUnit = TOKEN => {
-        $(document).on('click', '.select2_add_unit', function () {
+        $('#modal_add_product').on('click', '.select2_add_unit', function () {
             let name = $(this).data('name')
 
             $.ajax({
@@ -556,6 +556,7 @@ const lookupController = ((SET) => {
     return {
         lookupProduct: (TOKEN, type) => {
             _openAddProduct(id => {
+                
                 $('#category_id').select2({
                     dropdownParent: $('#modal_add_product'),
                     ajax: {

@@ -806,6 +806,7 @@ const productController = ((SET, DT, UI) => {
                 $('.dropify').dropify();
 
                 $('#category_id').select2({
+                    dropdownParent: $('.container-fluid'),
                     ajax: {
                         url: `${SET.apiURL()}categories`,
                         dataType: 'JSON',
@@ -853,6 +854,7 @@ const productController = ((SET, DT, UI) => {
                 });
 
                 $('#unit_id').select2({
+                    dropdownParent: $('.container-fluid'),
                     ajax: {
                         url: `${SET.apiURL()}units`,
                         dataType: 'JSON',
@@ -984,7 +986,7 @@ const productController = ((SET, DT, UI) => {
     }
 
     const _addCategory = TOKEN => {
-        $(document).on('click', '.select2_add_category', function () {
+        $('.container-fluid').on('click', '.select2_add_category', function () {
             let name = $(this).data('name')
 
             $.ajax({
@@ -1024,7 +1026,7 @@ const productController = ((SET, DT, UI) => {
     }
 
     const _addUnit = TOKEN => {
-        $(document).on('click', '.select2_add_unit', function(){
+        $('.container-fluid').on('click', '.select2_add_unit', function(){
             let name = $(this).data('name')
 
             $.ajax({
@@ -1278,6 +1280,7 @@ const productController = ((SET, DT, UI) => {
             $('.dropify').dropify();
 
             $('#category_id').select2({
+                dropdownParent: $('.container-fluid'),
                 ajax: {
                     url: `${SET.apiURL()}categories`,
                     dataType: 'JSON',
@@ -1326,6 +1329,7 @@ const productController = ((SET, DT, UI) => {
             });
 
             $('#unit_id').select2({
+                dropdownParent: $('.container-fluid'),
                 ajax: {
                     url: `${SET.apiURL()}units`,
                     dataType: 'JSON',
