@@ -116,12 +116,6 @@ const mainController = ((SET, UI) => {
                 // $('.modal').modal('hide');
                 $('.modal-backdrop').remove();
             }
-
-            // if($('select').length >= 1){
-            //     $('select').select2('destroy')
-            // }
-
-            console.log($('select').length)
                 
             _loadContent(path.substr(2));
         });
