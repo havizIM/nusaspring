@@ -412,7 +412,7 @@ const adjustmentController = ((SET, DT, UI, LU) => {
     }
 
     const _onKeyupQty = () => {
-        $('#t_add_products').on('keyup', '.qty', function () {
+        $('#t_add_products').on('keyup blur change input', '.qty', function () {
             let id = $(this).data('id')
             let qty = $(this).val()
             let unit_price = $('#unit_price_'+id).val()
@@ -422,7 +422,7 @@ const adjustmentController = ((SET, DT, UI, LU) => {
     }
 
     const _onUnitPrice = () => {
-        $('#t_add_products').on('keyup', '.unit_price', function () {
+        $('#t_add_products').on('keyup blur change input', '.unit_price', function () {
             let id = $(this).data('id')
             let unit_price = $(this).val()
             let qty = $('#qty_' + id).val()
@@ -432,7 +432,7 @@ const adjustmentController = ((SET, DT, UI, LU) => {
     }
 
     const _onTotalKeyup = () => {
-        $('#t_add_products').on('keyup', '.total', function () {
+        $('#t_add_products').on('keyup blur change input', '.total', function () {
             let id = $(this).data('id')
 
             _getTotal()

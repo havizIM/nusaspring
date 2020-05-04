@@ -712,7 +712,7 @@ const sellingController = ((SET, DT, UI, LU) => {
     }
 
     const _onKeyupUnitPrice = () => {
-        $('#t_add_products').on('keyup', '.unit_price', function () {
+        $('#t_add_products').on('keyup blur change input', '.unit_price', function () {
             let id = $(this).data('id')
             let thisVal = $(this).val()
             let qty = $('#qty_' + id).val()
@@ -736,7 +736,7 @@ const sellingController = ((SET, DT, UI, LU) => {
     }
 
     const _onKeyupQty = () => {
-        $('#t_add_products').on('keyup', '.qty', function () {
+        $('#t_add_products').on('keyup blur change input', '.qty', function () {
             let id = $(this).data('id')
             let thisVal = $(this).val()
             let unit_price = $('#unit_price_' + id).val()
@@ -760,7 +760,7 @@ const sellingController = ((SET, DT, UI, LU) => {
     }
 
     const _onPercentKeyup = () => {
-        $('#t_add_products').on('keyup', '.discount_percent', function () {
+        $('#t_add_products').on('keyup blur change input', '.discount_percent', function () {
             let id = $(this).data('id')
             let thisVal = $(this).val()
 
@@ -775,7 +775,7 @@ const sellingController = ((SET, DT, UI, LU) => {
     }
 
     const _onKeyupDiscount = () => {
-        $('#t_add_products').on('keyup', '.discount_amount', function () {
+        $('#t_add_products').on('keyup blur change input', '.discount_amount', function () {
             let thisVal = $(this).val()
             let thisId = $(this).data('id')
             let ppn_amount;
@@ -819,7 +819,7 @@ const sellingController = ((SET, DT, UI, LU) => {
     }
 
     const _onKeyupTotal = () => {
-        $('#t_add_products').on('keyup', '.total', function (event, state) {
+        $('#t_add_products').on('keyup blur change input', '.total', function (event, state) {
             _calculateAll()
         })
     }

@@ -541,7 +541,7 @@ const stockOpnameController = ((SET, DT, UI) => {
     }
 
     const _onKeyupUnitPrice = table => {
-        $('#t_exist_products').on('keyup', '.unit_price', function () {
+        $('#t_exist_products').on('keyup blur change input', '.unit_price', function () {
             let id = $(this).data('id')
             let thisVal = $(this).val()
             
@@ -558,7 +558,7 @@ const stockOpnameController = ((SET, DT, UI) => {
     }
 
     const _onKeyupQty = table => {
-        $('#t_exist_products').on('keyup', '.actual_qty', function () {
+        $('#t_exist_products').on('keyup blur change input', '.actual_qty', function () {
             let id = $(this).data('id')
             let thisVal = $(this).val()
             let unit_price = $('#unit_price_' + id).val()
@@ -571,13 +571,13 @@ const stockOpnameController = ((SET, DT, UI) => {
     }
 
     const _onKeyupTotal = table => {
-        $('#t_exist_products').on('keyup', '.actual_total', function (event, state) {
+        $('#t_exist_products').on('keyup blur change input', '.actual_total', function (event, state) {
             _calculateAll(table)
         })
     }
 
     const _onKeyupAddUnitPrice = table => {
-        $('#t_add_products').on('keyup', '.add_unit_price', function () {
+        $('#t_add_products').on('keyup blur change input', '.add_unit_price', function () {
             let id = $(this).data('id')
             let thisVal = $(this).val()
 
@@ -594,7 +594,7 @@ const stockOpnameController = ((SET, DT, UI) => {
     }
 
     const _onKeyupAddQty = table => {
-        $('#t_add_products').on('keyup', '.add_actual_qty', function () {
+        $('#t_add_products').on('keyup blur change input', '.add_actual_qty', function () {
             let id = $(this).data('id')
             let thisVal = $(this).val()
             let unit_price = $('#add_unit_price_' + id).val()
@@ -607,7 +607,7 @@ const stockOpnameController = ((SET, DT, UI) => {
     }
 
     const _onKeyupAddTotal = table => {
-        $('#t_add_products').on('keyup', '.add_actual_total', function (event, state) {
+        $('#t_add_products').on('keyup blur change input', '.add_actual_total', function (event, state) {
             _calculateAll(table)
         })
     }

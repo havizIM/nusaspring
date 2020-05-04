@@ -443,7 +443,7 @@ const costController = ((SET, DT, UI) => {
     }
 
     const _onKeyupAmount = () => {
-        $('#t_add_products').on('keyup', '.amount', function () {
+        $('#t_add_products').on('keyup blur change input', '.amount', function () {
             let id = $(this).data('id')
             let thisVal = $(this).val()
             let discount_amount = $('#discount_amount_' + id).val()
@@ -465,7 +465,7 @@ const costController = ((SET, DT, UI) => {
     }
 
     const _onPercentKeyup = () => {
-        $('#t_add_products').on('keyup', '.discount_percent', function () {
+        $('#t_add_products').on('keyup blur change input', '.discount_percent', function () {
             let id = $(this).data('id')
             let thisVal = $(this).val()
 
@@ -478,7 +478,7 @@ const costController = ((SET, DT, UI) => {
     }
 
     const _onKeyupDiscount = () => {
-        $('#t_add_products').on('keyup', '.discount_amount', function () {
+        $('#t_add_products').on('keyup blur change input', '.discount_amount', function () {
             let thisVal = $(this).val()
             let thisId = $(this).data('id')
             let ppn_amount;
