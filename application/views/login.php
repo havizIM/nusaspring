@@ -15,6 +15,9 @@
     <link href="<?= base_url() ?>dist/css/style.min.css" rel="stylesheet">
     <link href="<?= base_url() ?>assets/libs/toastr/build/toastr.min.css" rel="stylesheet">
     
+    <link rel="stylesheet" type="text/css" href="<?= base_url() ?>assets/libs/loaders/loaders.css">
+    <link rel="stylesheet" type="text/css" href="<?= base_url() ?>assets/libs/loaders/loaders-palette.css">
+    
     <script src="<?= base_url() ?>src/setting.js"></script>
     <script src="<?= base_url() ?>src/auth.js"></script>
     <script>
