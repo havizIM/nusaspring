@@ -1378,7 +1378,18 @@ const stockOpnameController = ((SET, DT, UI) => {
                     {
                         data: "memo",
                         render: function (data, type, row) {
-                            return `${SET.realCurrency(parseFloat(((row.total_actual_amount - row.total_system_amount) / row.total_system_amount) * 100))} %`
+                            let shrinkage = 0;
+                            let operations;
+
+                            if (row.total_actual_amount <= row.total_system_amount) {
+                                operations = '-'
+                                shrinkage = parseFloat(((row.total_actual_amount - row.total_system_amount) / row.total_system_amount) * 100)
+                            } else {
+                                operations = '+'
+                                shrinkage = parseFloat(((row.total_actual_amount - row.total_system_amount) / row.total_actual_amount) * 100)
+                            }
+
+                            return `${SET.realCurrency(parseFloat(shrinkage))} %`
                         }
                     },
                     {
