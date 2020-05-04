@@ -20,6 +20,11 @@
     <link href="<?= base_url() ?>assets/extra-libs/calendar/calendar.css" rel="stylesheet" />
     <link rel="stylesheet" type="text/css" href="<?= base_url() ?>assets/libs/select2/dist/css/select2.min.css">
     <link rel="stylesheet" type="text/css" href="<?= base_url() ?>assets/libs/bootstrap-switch/dist/css/bootstrap3/bootstrap-switch.min.css">
+
+    
+    <link rel="stylesheet" type="text/css" href="<?= base_url() ?>assets/libs/loaders/loaders.css">
+    <link rel="stylesheet" type="text/css" href="<?= base_url() ?>assets/libs/loaders/loaders-palette.css">
+
     <link href="<?= base_url() ?>dist/css/style.min.css" rel="stylesheet">
 
     <style>

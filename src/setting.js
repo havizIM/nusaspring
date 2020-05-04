@@ -23,7 +23,15 @@ const settingController = (() => {
         contentLoader: container => {
             $(container).block({
                 message: `
-                    <i class="fas fa-spin fa-sync text-white"></i>
+                    <div class="loader-wrapper">
+                      <div class="loader-container">
+                        <div class="ball-pulse loader-primary">
+                          <div></div>
+                          <div></div>
+                          <div></div>
+                        </div>
+                      </div>
+                    </div>
                 `,
                 overlayCSS: {
                     backgroundColor: '#fff',
@@ -41,7 +49,13 @@ const settingController = (() => {
         buttonLoader: btn => {
             $(btn).block({
                 message: `
-                    <i class="fas fa-spin fa-sync text-white"></i>
+                    <div class="loader-wrapper">
+                      <div class="loader-container">
+                        <div class="ball-clip-rotate loader-primary">
+                          <div></div>
+                        </div>
+                      </div>
+                    </div>
                 `,
                 overlayCSS: {
                     backgroundColor: '#fff',
@@ -59,7 +73,21 @@ const settingController = (() => {
         pageLoader: () => {
             $.blockUI({
                 message: `
-                    <i class="fas fa-spin fa-sync text-white fa-5x"></i>
+                    <div class="loader-wrapper">
+                      <div class="loader-container">
+                        <div class="ball-grid-pulse loader-primary">
+                          <div></div>
+                          <div></div>
+                          <div></div>
+                          <div></div>
+                          <div></div>
+                          <div></div>
+                          <div></div>
+                          <div></div>
+                          <div></div>
+                        </div>
+                      </div>
+                    </div>
                 `,
                 overlayCSS: {
                     backgroundColor: '#fff',
@@ -81,6 +109,44 @@ const settingController = (() => {
         closeSelectedElement: el => {
             $(el).unblock()
         },
+
+        dtLanguage: () => {
+            const PROTOCOL = window.location.protocol
+            const HOST = window.location.host
+            const PATH = HOST === 'localhost' ? 'nusaspring/' : ''
+            const BASE_URL = `${PROTOCOL}//${HOST}/${PATH}`
+
+            return {
+                "search": "Quick Search:",
+                zeroRecords: function () {
+                    return `
+                        <div class="text-center">
+                            <img class="img-fluid" style="width: 25%;" src="${BASE_URL}/assets/images/no_data.svg">
+                            <div>No Data Found</div>
+                        </div>`
+                },
+                loadingRecords: `
+                    <div style="padding-top: 12%;">
+                        <div class="loader-wrapper">
+                            <div class="loader-container">
+                                <div class="line-spin-fade-loader loader-blue">
+                                <div></div>
+                                <div></div>
+                                <div></div>
+                                <div></div>
+                                <div></div>
+                                <div></div>
+                                <div></div>
+                                <div></div>
+                                </div>
+                            </div>
+                            </div>
+                    </div>
+                `,
+                infoFiltered: ""
+            }
+        },
+        
         clearModal: () => {
             $(window).on('hashchange', function () {
                 let modal = $('.modal').hasClass('open');

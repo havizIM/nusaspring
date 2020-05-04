@@ -1242,7 +1242,7 @@ const purchaseController = ((SET, DT, UI, LU) => {
                 //     style: "multiple",
                 //     selector: "td:first-child"
                 // },
-                // language: SET.dtLanguage(),
+                language: SET.dtLanguage(),
                 dom: "<'row mt-2 mb-2'<'col-md-6'B><'col-md-6'f>><t><'row'<'col-md-6'i><'col-md-6'p>>",
                 keys: { columns: [1, 2] },
                 pageLength: 50,

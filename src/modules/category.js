@@ -160,7 +160,7 @@ const categoryController = ((SET) => {
                 //     style: "multiple",
                 //     selector: "td:first-child"
                 // },
-                // language: SET.dtLanguage(),
+                language: SET.dtLanguage(),
                 dom: "<'row mt-2 mb-2'<'col-md-6'B><'col-md-6'f>><t><'row'<'col-md-6'i><'col-md-6'p>>",
                 keys: { columns: [0, 1] },
                 pageLength: 50,

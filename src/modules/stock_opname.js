@@ -840,6 +840,7 @@ const stockOpnameController = ((SET, DT, UI) => {
                     processing: false,
                     keys: { columns: [0, 1, 2, 3, 4, 5] },
                     pageLength: 50,
+                    language: SET.dtLanguage(),
                     ajax: {
                         url: `${SET.apiURL()}products`,
                         type: 'GET',
@@ -1204,7 +1205,7 @@ const stockOpnameController = ((SET, DT, UI) => {
                 //     style: "multiple",
                 //     selector: "td:first-child"
                 // },
-                // language: SET.dtLanguage(),
+                language: SET.dtLanguage(),
                 dom: "<'row mt-2 mb-2'<'col-md-6'B><'col-md-6'f>><t><'row'<'col-md-6'i><'col-md-6'p>>",
                 keys: { columns: [1, 2] },
                 pageLength: 50,
@@ -1464,6 +1465,7 @@ const stockOpnameController = ((SET, DT, UI) => {
                 processing: false,
                 keys: { columns: [0, 1, 2, 3, 4, 5] },
                 pageLength: 50,
+                language: SET.dtLanguage(),
                 ajax: {
                     url: `${SET.apiURL()}products`,
                     type: 'GET',
