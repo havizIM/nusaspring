@@ -138,7 +138,7 @@ const purchaseUI = ((SET) => {
                                                                     <div class="input-group-prepend">
                                                                         <span class="input-group-text" id="basic-addon1">Rp. </span>
                                                                     </div>
-                                                                    <input type="number"  min="0" value="${SET.positiveNumber(v.discount_amount)}" name="discount_amount[${count}]" id="discount_amount_${count}" data-id="${count}" class="form-control discount_amount">
+                                                                    <input type="number"  min="0" value="0" value="${SET.positiveNumber(v.discount_amount)}" name="discount_amount[${count}]" id="discount_amount_${count}" data-id="${count}" class="form-control discount_amount">
                                                                 </div>
                                                             </td>
                                                             <td>
@@ -329,16 +329,13 @@ const purchaseUI = ((SET) => {
                                                     </thead>
                                                     <tbody>
                                                         ${data.products.map(v => {
-
-                                                            let discount_unit = parseFloat(v.discount_amount / v.qty)
-
                                                             return `
                                                                 <tr>
                                                                     <td class="text-center">${no++}</td>
                                                                     <td><a href="#/product/${v.product_id}">${v.description}</a></td>
                                                                     <td class="text-right">${v.qty} ${v.unit !== null ? v.unit : ''}</td>
-                                                                    <td class="text-right"> Rp. ${SET.positiveCurrency(v.unit_price + discount_unit)} </td>
-                                                                    <td class="text-right"> Rp. ${SET.positiveCurrency(v.total + v.discount_amount)} </td>
+                                                                    <td class="text-right"> Rp. ${SET.positiveCurrency(v.unit_price)} </td>
+                                                                    <td class="text-right"> Rp. ${SET.positiveCurrency(v.total)} </td>
                                                                 </tr>
                                                             `
                                                         }).join('')}
@@ -355,7 +352,9 @@ const purchaseUI = ((SET) => {
                                                     </td>
                                                     <td class="w-50">
                                                         <div class="m-t-30 text-right">
-                                                            <p>Sub Total : <b>Rp. ${SET.positiveCurrency(parseFloat(data.grand_total + data.total_discount))}</b></p>
+                                                            <p>Sub Total : <b>Rp. ${SET.positiveCurrency(data.grand_total)}</b></p>
+                                                            <p>Discount : <b>(Rp. ${SET.positiveCurrency(data.total_discount)})</b></p>
+                                                            <p>Total DPP : <b>Rp. ${SET.positiveCurrency(parseFloat(data.grand_total + data.total_discount))}</b></p>
                                                             <p>Vat (10%) : <b>Rp. ${SET.positiveCurrency(parseFloat(data.total_ppn))}</b></p>
                                                             <p><h4>Grand Total : <b>Rp. ${SET.positiveCurrency(parseFloat(data.grand_total) + parseFloat(data.total_ppn) + parseFloat(data.total_discount))}</b></h4></p>
                                                         </div>

@@ -92,16 +92,19 @@ const sellingReturnUI = ((SET) => {
                                                     </thead>
                                                     <tbody>
                                                         ${data.products.map(v => {
-                return `
+
+                                                            let discount_unit = parseFloat(v.discount_amount / v.qty)
+
+                                                            return `
                                                                 <tr>
                                                                     <td class="text-center">${no++}</td>
                                                                     <td><a href="#/product/${v.product_id}">${v.description}</a></td>
                                                                     <td class="text-right">${Math.abs(v.qty)} ${v.unit !== null ? v.unit : ''}</td>
-                                                                    <td class="text-right"> Rp. ${SET.positiveCurrency(v.unit_price)} </td>
-                                                                    <td class="text-right"> Rp. ${SET.positiveCurrency(v.total)} </td>
+                                                                    <td class="text-right"> Rp. ${SET.positiveCurrency(v.unit_price + discount_unit)} </td>
+                                                                    <td class="text-right"> Rp. ${SET.positiveCurrency(v.total + v.discount_amount)} </td>
                                                                 </tr>
                                                             `
-            }).join('')}
+                                                        }).join('')}
                                                     </tbody>
                                                 </table>
                                             </div>
@@ -115,9 +118,7 @@ const sellingReturnUI = ((SET) => {
                                                     </td>
                                                     <td class="w-50">
                                                         <div class="m-t-30 text-right">
-                                                            <p>Sub Total : <b>Rp. ${SET.positiveCurrency(data.grand_total)}</b></p>
-                                                            <p>Discount : <b>(Rp. ${SET.positiveCurrency(data.total_discount)})</b></p>
-                                                            <p>Total DPP : <b>Rp. ${SET.positiveCurrency(parseFloat(data.grand_total + data.total_discount))}</b></p>
+                                                            <p>Sub Total : <b>Rp. ${SET.positiveCurrency(parseFloat(data.grand_total + data.total_discount))}</b></p>
                                                             <p>Vat (10%) : <b>Rp. ${SET.positiveCurrency(parseFloat(data.total_ppn))}</b></p>
                                                             <hr>
                                                             <h3><b>Grand Total :</b> Rp. ${SET.positiveCurrency(parseFloat(data.grand_total) + parseFloat(data.total_ppn) + parseFloat(data.total_discount))}</h3>
