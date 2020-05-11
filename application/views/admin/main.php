@@ -31,6 +31,17 @@
         .dataTables_scrollHeadInner, .table{
             width:100%!important
          };
+
+         @media print {
+             .printableArea a:link {
+                 border-bottom: none !important;
+                 text-decoration: none !important;
+             }
+
+             .printableArea a[href]:after {
+                 content: none !important;
+             }
+         };
     </style>
 </head>
 
