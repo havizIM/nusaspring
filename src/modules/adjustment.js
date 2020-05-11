@@ -158,7 +158,7 @@ const adjustmentUI = ((SET) => {
                     <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#attachment" role="tab"><span class="hidden-sm-up"><i class="ti-user"></i></span> <span class="hidden-xs-down">Attachment</span></a> </li>
                 </ul>
 
-                <div class="tab-content tabcontent-border">
+                <div class="tab-content tabcontent-border" style="font-family: 'Courier New', monospace">
                     <div class="tab-pane active" id="detail" role="tabpanel">
                         <div class="row">
                             <div class="col-md-12">
