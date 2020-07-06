@@ -1432,9 +1432,13 @@ const sellingController = ((SET, DT, UI, LU) => {
                     {
                         data: "contact",
                         render: function (data, type, row) {
-                            return `
-                                <a href="#/customer/${row.contact.id}">${row.contact.contact_name}</a>
-                            `;
+                            if(row.contact.id !== null){
+                                return '-'
+                            } else {
+                                return `
+                                    <a href="#/customer/${row.contact.id}">${row.contact.contact_name}</a>
+                                `;
+                            }
                         }
                     },
                     {
