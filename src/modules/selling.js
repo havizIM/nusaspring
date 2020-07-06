@@ -1432,7 +1432,8 @@ const sellingController = ((SET, DT, UI, LU) => {
                     {
                         data: "contact",
                         render: function (data, type, row) {
-                            if(row.contact.id !== null){
+                            console.log(row.contact)
+                            if(!row.contact){
                                 return '-'
                             } else {
                                 return `
