@@ -1265,10 +1265,69 @@ const sellingController = ((SET, DT, UI, LU) => {
         });
     }
 
+    const renderFilter = (callback) => {
+        let date = new Date();
+        let monthArray = new Array();
+        let this_month =  date.getMonth();
+        let this_year = date.getFullYear();
+        let min_year = this_year - 3;
+
+        monthArray[0] = "January";
+        monthArray[1] = "February";
+        monthArray[2] = "March";
+        monthArray[3] = "April";
+        monthArray[4] = "May";
+        monthArray[5] = "June";
+        monthArray[6] = "July";
+        monthArray[7] = "August";
+        monthArray[8] = "September";
+        monthArray[9] = "October";
+        monthArray[10] = "November";
+        monthArray[11] = "December";
+
+        for(let m = 0; m <= 11; m++) {
+            var optn = document.createElement("OPTION");
+            optn.text = monthArray[m];
+            // server side month start from one
+            optn.value = (m+1);
+            // if june selected
+            if ( m == this_month) {
+                optn.selected = true;
+            }
+
+            document.getElementById('filter_bulan').options.add(optn);
+        }
+
+
+        for(let y = min_year; y <= this_year; y++) {
+            var optn = document.createElement("OPTION");
+            optn.text = y;
+            optn.value = (y);
+            if ( y == this_year) {
+                optn.selected = true;
+            }
+
+            document.getElementById('filter_tahun').options.add(optn);
+        }
+    }
+
+    const onChangeFilter = table => {
+        $('#filter_bulan, #filter_tahun').on('change', function() {
+            let bulan = $('#filter_bulan').val()
+            let tahun = $('#filter_tahun').val()
+
+            table.ajax.url(`${SET.apiURL()}sellings?bulan=${bulan}&tahun=${tahun}`).load()
+        })
+    }
+
     return {
         data: TOKEN => {
+            renderFilter()
 
-            const table = $('#t_sellings').DataTable({
+            let bulan = $('#filter_bulan').val()
+            let tahun = $('#filter_tahun').val()
+
+            let table = $('#t_sellings').DataTable({
                 columnDefs: [
                     {
                         targets: [3, 4, 6],
@@ -1284,8 +1343,9 @@ const sellingController = ((SET, DT, UI, LU) => {
                 scrollX: true,
                 scrollY: 300,
                 processing: true,
+                deferLoading: false,
                 language: SET.dtLanguage(),
-                dom: "<'row mt-2 mb-2'<'col-md-6'B><'col-md-6'f>><t><'row'<'col-md-6'i><'col-md-6'p>>",
+                dom: "<'row mt-2 mb-2'<'col-md-6'B><'col-md-6'f>><tr><'row'<'col-md-6'i><'col-md-6'p>>",
                 keys: { columns: [1, 2] },
                 pageLength: 50,
                 buttons: {
@@ -1375,42 +1435,8 @@ const sellingController = ((SET, DT, UI, LU) => {
                         },
                     ]
                 },
-                // serverSide: true,
-                // search: {
-                //     "regex": true
-                // },
-                // ajax: {
-                //     url: `${SET.apiURL()}sellings/dt`,
-                //     type: 'GET',
-                //     dataType: 'JSON',
-                //     beforeSend: xhr => {
-                //         xhr.setRequestHeader("Content-Type", 'application/json')
-                //         xhr.setRequestHeader("Authorization", "Bearer " + TOKEN)
-                //     },
-                //     dataFilter: function (res) {
-                //         let response = JSON.parse(res);
-
-                //         $('#count_sellings').text(response.recordsTotal)
-
-                //         let sum_sellings = response.results.reduce((a, b) => a + b.grand_total, 0);
-                //         let sum_ppn = response.results.reduce((a, b) => a + b.total_ppn, 0);
-                //         let sum_discount = response.results.reduce((a, b) => a + b.total_discount, 0);
-
-                //         let sum_return = response.results.reduce((a, b) => a + b.total_return, 0);
-                //         let sum_return_ppn = response.results.reduce((a, b) => a + b.total_ppn_return, 0);
-                //         let sum_return_discount = response.results.reduce((a, b) => a + b.total_return_discount, 0);
-
-                //         let sum_total = parseFloat((sum_sellings + sum_ppn + sum_discount))
-
-                //         $('#count_sellings').text(SET.positiveCurrency(response.results.length))
-                //         $('#sum_sellings').text(`Rp. ${SET.positiveCurrency(sum_total)}`)
-
-                        
-                //         return res;
-                //     },
-                // },
                 ajax: {
-                    url: `${SET.apiURL()}sellings`,
+                    url: `${SET.apiURL()}sellings?bulan=${bulan}&tahun=${tahun}`,
                     type: 'GET',
                     dataType: 'JSON',
                     beforeSend: xhr => {
@@ -1462,7 +1488,6 @@ const sellingController = ((SET, DT, UI, LU) => {
                     {
                         data: "contact.contact_name",
                         render: function (data, type, row) {
-                            console.log(row.contact)
                             if(!row.contact){
                                 return '-'
                             } else {
@@ -1551,6 +1576,8 @@ const sellingController = ((SET, DT, UI, LU) => {
 
             DT.dtFilter(table)
             DT.dtFilterRange(table, 2)
+            
+            onChangeFilter(table)
 
             _openDelete('#t_sellings')
             _submitDelete(TOKEN, data => {

@@ -58,27 +58,54 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table" id="t_sellings" style="width: 100%">
-                            <thead>
-                                <tr>
-                                    <th>Selling No</th>
-                                    <th>Customer</th>
-                                    <th>Date</th>
-                                    <th>Status</th>
-                                    <th>Amount</th>
-                                    <th>Memo</th>
-                                    <th>Settings</th>
-                                </tr>
-                            </thead>
-                            <tbody></tbody>
-                            <tfoot>
-                                <tr>
-                                    <th colspan="7" style="text-align:right" id="table_sum">Total:</th>
-                                </tr>
-                            </tfoot>
-                        </table>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">Bulan</span>
+                                </div>
+                                <select class="form-control" name="filter_bulan" id="filter_bulan">
+                                    <option value="">All Month</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">Tahun</span>
+                                </div>
+                                <select class="form-control" name="filter_tahun" id="filter_tahun">
+                                    <option value="">All Year</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12 mt-3">
+                            <div class="table-responsive">
+                                <table class="table" id="t_sellings" style="width: 100%">
+                                    <thead>
+                                        <tr>
+                                            <th>Selling No</th>
+                                            <th>Customer</th>
+                                            <th>Date</th>
+                                            <th>Status</th>
+                                            <th>Amount</th>
+                                            <th>Memo</th>
+                                            <th>Settings</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <th colspan="7" style="text-align:right" id="table_sum">Total:</th>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
                     </div>
+                    
                 </div>
             </div>
         </div>
