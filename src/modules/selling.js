@@ -1271,11 +1271,11 @@ const sellingController = ((SET, DT, UI, LU) => {
             const table = $('#t_sellings').DataTable({
                 columnDefs: [
                     {
-                        targets: [4],
+                        targets: [3, 4, 6],
                         orderable: false
                     },
                     {
-                        targets: [4],
+                        targets: [3, 4, 6],
                         searchable: false
                     }
                 ],
@@ -1283,11 +1283,7 @@ const sellingController = ((SET, DT, UI, LU) => {
                 responsive: false,
                 scrollX: true,
                 scrollY: 300,
-                processing: false,
-                // select: {
-                //     style: "multiple",
-                //     selector: "td:first-child"
-                // },
+                processing: true,
                 language: SET.dtLanguage(),
                 dom: "<'row mt-2 mb-2'<'col-md-6'B><'col-md-6'f>><t><'row'<'col-md-6'i><'col-md-6'p>>",
                 keys: { columns: [1, 2] },
@@ -1309,7 +1305,7 @@ const sellingController = ((SET, DT, UI, LU) => {
                                     extend: 'pdfHtml5',
                                     text: 'PDF',
                                     exportOptions: {
-                                        columns: [0, 1, 2, 3]
+                                        columns: [0, 1, 2, 3, 4, 5]
                                     },
                                     filename: 'DATA_SELLING',
                                     title: 'Data Selling',
@@ -1318,7 +1314,7 @@ const sellingController = ((SET, DT, UI, LU) => {
                                     extend: 'excelHtml5',
                                     text: 'Excel',
                                     exportOptions: {
-                                        columns: [0, 1, 2, 3]
+                                        columns: [0, 1, 2, 3, 4, 5]
                                     },
                                     filename: 'DATA_SELLING',
                                     title: 'Data Selling'
@@ -1327,7 +1323,7 @@ const sellingController = ((SET, DT, UI, LU) => {
                                     extend: 'csvHtml5',
                                     text: 'CSV',
                                     exportOptions: {
-                                        columns: [0, 1, 2, 3]
+                                        columns: [0, 1, 2, 3, 4, 5]
                                     },
                                     filename: 'DATA_SELLING',
                                     title: 'Data Selling'
@@ -1336,7 +1332,7 @@ const sellingController = ((SET, DT, UI, LU) => {
                                     extend: 'print',
                                     text: 'Print',
                                     exportOptions: {
-                                        columns: [0, 1, 2, 3]
+                                        columns: [0, 1, 2, 3, 4, 5]
                                     },
                                     filename: 'DATA_SELLING',
                                     title: '<h4>Data Selling</h4>'
@@ -1346,7 +1342,7 @@ const sellingController = ((SET, DT, UI, LU) => {
                         {
                             extend: 'colvis',
                             text: '<i class="fa fa-eye"></i>',
-                            columns: [1, 2, 3],
+                            columns: [1, 2, 3, 4, 5],
                             titleAttr: 'Hide Coloum'
                         },
                         {
@@ -1379,6 +1375,40 @@ const sellingController = ((SET, DT, UI, LU) => {
                         },
                     ]
                 },
+                // serverSide: true,
+                // search: {
+                //     "regex": true
+                // },
+                // ajax: {
+                //     url: `${SET.apiURL()}sellings/dt`,
+                //     type: 'GET',
+                //     dataType: 'JSON',
+                //     beforeSend: xhr => {
+                //         xhr.setRequestHeader("Content-Type", 'application/json')
+                //         xhr.setRequestHeader("Authorization", "Bearer " + TOKEN)
+                //     },
+                //     dataFilter: function (res) {
+                //         let response = JSON.parse(res);
+
+                //         $('#count_sellings').text(response.recordsTotal)
+
+                //         let sum_sellings = response.results.reduce((a, b) => a + b.grand_total, 0);
+                //         let sum_ppn = response.results.reduce((a, b) => a + b.total_ppn, 0);
+                //         let sum_discount = response.results.reduce((a, b) => a + b.total_discount, 0);
+
+                //         let sum_return = response.results.reduce((a, b) => a + b.total_return, 0);
+                //         let sum_return_ppn = response.results.reduce((a, b) => a + b.total_ppn_return, 0);
+                //         let sum_return_discount = response.results.reduce((a, b) => a + b.total_return_discount, 0);
+
+                //         let sum_total = parseFloat((sum_sellings + sum_ppn + sum_discount))
+
+                //         $('#count_sellings').text(SET.positiveCurrency(response.results.length))
+                //         $('#sum_sellings').text(`Rp. ${SET.positiveCurrency(sum_total)}`)
+
+                        
+                //         return res;
+                //     },
+                // },
                 ajax: {
                     url: `${SET.apiURL()}sellings`,
                     type: 'GET',
@@ -1422,7 +1452,7 @@ const sellingController = ((SET, DT, UI, LU) => {
                 },
                 columns: [
                     {
-                        data: "id",
+                        data: "selling_number",
                         render: function (data, type, row) {
                             return `
                                 <a href="#/selling/${row.id}">${row.selling_number}</a>
@@ -1430,7 +1460,7 @@ const sellingController = ((SET, DT, UI, LU) => {
                         }
                     },
                     {
-                        data: "contact",
+                        data: "contact.contact_name",
                         render: function (data, type, row) {
                             console.log(row.contact)
                             if(!row.contact){

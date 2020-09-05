@@ -143,6 +143,24 @@ const settingController = (() => {
                             </div>
                     </div>
                 `,
+                processing: `
+                    <div style="padding-top: 12%;">
+                        <div class="loader-wrapper">
+                            <div class="loader-container">
+                                <div class="line-spin-fade-loader loader-blue">
+                                <div></div>
+                                <div></div>
+                                <div></div>
+                                <div></div>
+                                <div></div>
+                                <div></div>
+                                <div></div>
+                                <div></div>
+                                </div>
+                            </div>
+                            </div>
+                    </div>
+                `,
                 infoFiltered: ""
             }
         },

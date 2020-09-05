@@ -1083,13 +1083,9 @@ const productController = ((SET, DT, UI) => {
                 responsive: false,
                 scrollX: true,
                 scrollY: 300,
-                processing: false,
-                // select: {
-                //     style: "multiple",
-                //     selector: "td:first-child"
-                // },
+                processing: true,
                 language: SET.dtLanguage(),
-                dom: "<'row mt-2 mb-2'<'col-md-6'B><'col-md-6'f>><t><'row'<'col-md-6'i><'col-md-6'p>>",
+                dom: "<'row mt-2 mb-2'<'col-md-6'B><'col-md-6'f>><tr><'row'<'col-md-6'i><'col-md-6'p>>",
                 keys: { columns: [1, 2] },
                 pageLength: 50,
                 buttons: {
@@ -1172,43 +1168,28 @@ const productController = ((SET, DT, UI) => {
                         },
                     ]
                 },
+                serverSide: true,
+                search: {
+                    "regex": true
+                },
                 ajax: {
-                    url: `${SET.apiURL()}products`,
+                    url: `${SET.apiURL()}products/dt`,
                     type: 'GET',
                     dataType: 'JSON',
                     beforeSend: xhr => {
                         xhr.setRequestHeader("Content-Type", 'application/json')
                         xhr.setRequestHeader("Authorization", "Bearer " + TOKEN)
                     },
-                    dataSrc: res => {
-                        $('#count_product').text(res.results.length)
+                    dataFilter: function (res) {
+                        let response = JSON.parse(res);
+                        $('#count_product').text(response.recordsTotal)
 
-                        return res.results
-
+                        return res;
                     },
-                    statusCode: {
-                        404: () => {
-                            $('#app_content').load(`${SET.baseURL()}data_not_found`)
-                        },
-                        401: err => {
-                            let error = err.responseJSON
-
-                            if (error.message === 'Unauthenticated.') {
-                                $('#app_content').load(`${SET.baseURL()}unauthenticated`)
-                            }
-
-                            if (error.message === 'Unauthorized.') {
-                                $('#app_content').load(`${SET.baseURL()}unauthorized`)
-                            }
-                        }
-                    },
-                    error: err => {
-
-                    }
                 },
                 columns: [
                     {
-                        data: "id",
+                        data: "product_name",
                         render: function (data, type, row) {
                             return `
                                 <a href="#/product/${row.id}">${row.product_name}</a>
